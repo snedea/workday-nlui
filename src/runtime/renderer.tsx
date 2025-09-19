@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UiNode } from './types';
+import { emit } from './actions';
 
 interface RenderUiProps {
   node: UiNode;
@@ -7,6 +8,10 @@ interface RenderUiProps {
 
 export const renderUi = (node: UiNode): React.ReactNode => {
   return <RenderNode key={Math.random()} node={node} />;
+};
+
+export const UiRenderer: React.FC<{ node: UiNode }> = ({ node }) => {
+  return <RenderNode node={node} />;
 };
 
 const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
@@ -51,6 +56,18 @@ const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
     case 'Card':
       return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+          {props.image && (
+            <img
+              src={props.image}
+              alt={props.title || 'Card image'}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDMwMCAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTkyIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMjAgODBIMTgwVjEyMEgxODBWODBIMTgwVjgwSDEyMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTEzMCAxMDBMMTQwIDExMEwxNjAgOTBMMTgwIDEwMFYxMjBIMTIwVjEwMFoiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+';
+                target.alt = '🖼️ Image not found';
+              }}
+            />
+          )}
           {props.title && (
             <h3 className="text-md font-medium text-gray-900 mb-3">
               {props.title}
@@ -88,12 +105,39 @@ const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
 
     case 'Button':
       const buttonVariant = props.variant === 'primary' ? 'btn-primary' : 'btn-secondary';
+      const buttonText = props.text || props.children || 'Button';
+
+      const handleClick = () => {
+        // Map common button texts to actions
+        const text = buttonText.toLowerCase();
+        if (text.includes('request swap') || text.includes('swap')) {
+          emit('submitSwapBid', { position: props.position, date: props.date });
+        } else if (text.includes('bid')) {
+          emit('submitSwapBid', { type: 'bid', position: props.position, date: props.date });
+        } else if (text.includes('approve')) {
+          emit('approveRequest', { requestId: props.requestId });
+        } else if (text.includes('decline')) {
+          emit('declineRequest', { requestId: props.requestId });
+        } else if (text.includes('submit') && text.includes('expense')) {
+          emit('submitExpenseReport', { total: props.total });
+        } else if (text.includes('save draft')) {
+          emit('saveDraft');
+        } else if (text.includes('submit')) {
+          emit('submitForm', { type: props.formType || 'form' });
+        } else if (text.includes('open') || text.includes('view')) {
+          emit('openDrawer');
+        } else if (text.includes('close')) {
+          emit('closeDrawer');
+        }
+      };
+
       return (
         <button
           className={`${buttonVariant} ${props.className || ''}`}
           disabled={props.disabled}
+          onClick={handleClick}
         >
-          {props.text || props.children || 'Button'}
+          {buttonText}
         </button>
       );
 
@@ -123,11 +167,21 @@ const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
       return <TableComponent props={props} />;
 
     case 'Banner':
+      const bannerStyle = props.image
+        ? { backgroundImage: `url(${props.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        : {};
+
       return (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-          <div className="flex">
-            <div className="text-blue-600 mr-3">📢</div>
-            <div className="text-blue-800">
+        <div
+          className={`${props.image ? 'text-white' : 'bg-blue-50 text-blue-800'} border border-blue-200 rounded-lg p-4 mb-4 relative overflow-hidden`}
+          style={bannerStyle}
+        >
+          {props.image && (
+            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          )}
+          <div className="flex relative z-10">
+            <div className={`${props.image ? 'text-white' : 'text-blue-600'} mr-3`}>📢</div>
+            <div>
               {props.message || props.text || 'Information banner'}
             </div>
           </div>
@@ -161,6 +215,9 @@ const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
           {iconMap[props.name] || '📷'}
         </span>
       );
+
+    case 'Avatar':
+      return <AvatarComponent props={props} />;
 
     default:
       return (
@@ -254,6 +311,51 @@ const FieldComponent: React.FC<{ props: any }> = ({ props }) => {
 const TableComponent: React.FC<{ props: any }> = ({ props }) => {
   const { columns = [], rows = [] } = props;
 
+  const renderCellContent = (content: string) => {
+    if (!content || content === '—') return '—';
+
+    // Enhanced image URL detection for badges and various image services
+    const imageUrlPattern = /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
+    const imageDomainPatterns = [
+      'images.credly.com',
+      'upload.wikimedia.org',
+      'via.placeholder.com',
+      'badgelibraryprovider',
+      'scrumalliance.org/images',
+      'hawaii.edu',
+      '/images/',
+      '/badge',
+      'cdn.',
+      'amazonaws.com'
+    ];
+
+    const isImageUrl = imageUrlPattern.test(content) ||
+      imageDomainPatterns.some(pattern => content.includes(pattern)) ||
+      (content.startsWith('http') && content.toLowerCase().includes('image'));
+
+    if (isImageUrl) {
+      return (
+        <div className="flex items-center justify-center">
+          <img
+            src={content}
+            alt="Badge"
+            className="w-12 h-12 object-contain rounded border border-gray-200 bg-white"
+            onError={(e) => {
+              // Replace with placeholder on error
+              const target = e.target as HTMLImageElement;
+              target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkgzMlYzMkgzMlYxNkgzMlYxNkgxNloiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTIwIDI0TDI0IDI4TDMyIDIwTDMyIDI0VjI4SDE2VjI0WiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K';
+              target.alt = '🏆 Badge';
+              target.title = `Failed to load: ${content}`;
+            }}
+            title={content}
+          />
+        </div>
+      );
+    }
+
+    return content;
+  };
+
   return (
     <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
       <table className="min-w-full divide-y divide-gray-300">
@@ -274,7 +376,10 @@ const TableComponent: React.FC<{ props: any }> = ({ props }) => {
             <tr key={i}>
               {columns.map((column: string, j: number) => (
                 <td key={j} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {row[column] || '—'}
+                  <div className="flex items-center">
+                    {renderCellContent(row[column])}
+                    <span className="hidden"></span>
+                  </div>
                 </td>
               ))}
             </tr>
@@ -324,6 +429,60 @@ const ModalComponent: React.FC<{ props: any; children: UiNode[] }> = ({ props, c
           </button>
         </div>
       </div>
+    </div>
+  );
+};
+
+const AvatarComponent: React.FC<{ props: any }> = ({ props }) => {
+  const {
+    src,
+    alt = 'Avatar',
+    name = '',
+    size = 'md',
+    variant = 'circle'
+  } = props;
+
+  const sizeClasses = {
+    sm: 'w-8 h-8 text-xs',
+    md: 'w-12 h-12 text-sm',
+    lg: 'w-16 h-16 text-base',
+    xl: 'w-24 h-24 text-xl'
+  };
+
+  const variantClasses = {
+    circle: 'rounded-full',
+    square: 'rounded-lg'
+  };
+
+  const sizeClass = sizeClasses[size as keyof typeof sizeClasses] || sizeClasses.md;
+  const variantClass = variantClasses[variant as keyof typeof variantClasses] || variantClasses.circle;
+
+  // If we have an image source, try to display it
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className={`${sizeClass} ${variantClass} object-cover border-2 border-gray-200`}
+        onError={(e) => {
+          // Fallback to initials avatar on error
+          const target = e.target as HTMLImageElement;
+          const parent = target.parentElement!;
+          target.style.display = 'none';
+
+          const fallback = document.createElement('div');
+          fallback.className = `${sizeClass} ${variantClass} bg-workday-blue text-white flex items-center justify-center font-semibold border-2 border-gray-200`;
+          fallback.textContent = name ? name.charAt(0).toUpperCase() : '?';
+          parent.appendChild(fallback);
+        }}
+      />
+    );
+  }
+
+  // Fallback to initials avatar
+  return (
+    <div className={`${sizeClass} ${variantClass} bg-workday-blue text-white flex items-center justify-center font-semibold border-2 border-gray-200`}>
+      {name ? name.charAt(0).toUpperCase() : '?'}
     </div>
   );
 };

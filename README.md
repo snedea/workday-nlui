@@ -1,16 +1,18 @@
 # Workday NLUI Studio - Natural Language UI Design Studio
 
-A local, browser-based design studio that turns natural-language prompts into Workday-style UI previews using React, Vite, AI, and Canvas Kit patterns.
+A local, browser-based design studio that turns natural-language prompts into **authentic Workday UI** using React, Vite, AI, and **Canvas Kit v14** with official fonts and design system.
 
 ## Features
 
-- **📚 Interactive Prompt Library**: Browse searchable objects, fields, controls, and icons with examples
+- **🎨 Authentic Canvas Kit v14 Integration**: True Workday components with official fonts (Roboto) and design system
+- **📚 Interactive Prompt Library**: Browse searchable objects, fields, controls, and 600+ Canvas icons with examples
+- **🔤 Official Workday Typography**: Canvas Kit fonts loaded from Workday CDN with proper spacing
 - **📄 Template Management**: Save, import, and reuse custom templates with built-in patterns for common workflows
 - **✍️ Smart Composer**: Build prompts using patterns, library tokens, and template snippets
 - **🤖 AI Integration**: Generate UI JSON via OpenAI or Azure OpenAI with intelligent prompt processing
-- **👀 Live Preview**: Render generated UI components in real-time with Canvas Kit styling
+- **👀 Dual Renderer System**: Toggle between Canvas Kit v14 and Tailwind CSS renderers
 - **💾 Smart Persistence**: Automatically saves prompts, responses, and custom templates
-- **🎨 Workday-Style**: Components designed to match Canvas Kit patterns and design system
+- **🎯 Workday Design Language**: Proper button spacing, component layout, and visual hierarchy
 
 ## Quick Start
 
@@ -88,9 +90,10 @@ npm start
 
 ### Frontend (`src/`)
 - **React + TypeScript + Vite** for fast development
-- **Tailwind CSS** for styling with Workday-inspired design tokens
-- **Component Library**: Modular UI components that mirror Canvas Kit patterns
-- **Runtime Renderer**: Converts AI JSON responses into React components
+- **Canvas Kit v14**: Official Workday component library with authentic fonts and design system
+- **Dual Renderer System**: Canvas Kit v14 renderer + Tailwind CSS fallback renderer
+- **Canvas Icons**: 600+ official Workday icons (System, Accent, Applet)
+- **Runtime Renderer**: Converts AI JSON responses into React components with proper Workday spacing
 - **Template System**: Dynamic template loading with localStorage persistence and real-time updates
 
 ### Backend (`server/`)
@@ -156,14 +159,15 @@ Check server status and configuration.
 
 ## Supported UI Components
 
-The renderer supports these component types with Canvas Kit-inspired props:
+The Canvas Kit v14 renderer supports these authentic Workday components:
 
-- **Layout**: Page, Header, Section, Card
+- **Layout**: Page, Header, Section, Card (with proper spacing)
 - **Navigation**: Tabs, Breadcrumbs
-- **Forms**: Form, Field (text/select/date/combobox), Button
-- **Data**: Table, Badge, Text
+- **Forms**: Form, FormField, TextInput, Select, Button (Primary/Secondary/Tertiary)
+- **Data**: Table, StatusIndicator (replaces Badge), Text, Avatar
 - **Feedback**: Banner, Toast, Modal
-- **Visual**: Icon
+- **Visual**: SystemIcon, AccentIcon, AppletIcon (600+ official Workday icons)
+- **Typography**: Authentic Roboto fonts from Workday CDN with proper line height and spacing
 
 ## Development
 
@@ -179,9 +183,33 @@ The renderer supports these component types with Canvas Kit-inspired props:
 
 All environment variables are handled server-side. API keys are never exposed to the browser.
 
-### Extending the Renderer
+### Canvas Kit Integration
 
-The UI renderer in `src/runtime/renderer.tsx` can be easily extended or swapped out for @workday/canvas-kit-react components later.
+The application features two renderers:
+- **Canvas Kit Renderer** (`src/runtime/canvasRenderer.tsx`): Uses authentic Canvas Kit v14 components with official Workday fonts
+- **Tailwind Renderer** (`src/runtime/renderer.tsx`): Fallback using Tailwind CSS for comparison
+
+Toggle between renderers in the preview window to compare Canvas Kit fidelity vs. custom styling.
+
+## Canvas Kit v14 Features
+
+### Authentic Workday Typography
+- **Roboto Font Family**: Official Workday fonts loaded from CDN
+- **Proper Line Heights**: Consistent with Workday design specifications
+- **Button Spacing**: 12px horizontal spacing between button groups (Submit/Cancel)
+- **Component Spacing**: 16px vertical spacing between sections and elements
+
+### Canvas Icons Library
+- **System Icons** (600+): UI glyphs for buttons, navigation, status indicators
+- **Accent Icons** (200+): Decorative icons for emphasis and visual interest
+- **Applet Icons** (150+): Product entry point icons for applications
+
+### Component Fidelity
+- **StatusIndicator**: Replaces generic badges with Workday-style status components
+- **FormField + TextInput/Select**: Authentic form controls with proper labels
+- **Card System**: Proper card layout with headers, bodies, and spacing
+- **Button Variants**: Primary, Secondary, Tertiary with correct styling
+- **Avatar Component**: User profile avatars with size variants
 
 ## Troubleshooting
 

@@ -36,6 +36,7 @@ export const LIB: LibraryData = {
     {name:"Toast", tags:["notification","success"], example:'Show a success toast after saving.', visual:"🍞"},
     {name:"Table", tags:["data","rows"], example:'Add a table of direct reports with columns Name, Title, Location.', visual:"📊"},
     {name:"Card", tags:["container","group"], example:'Create a Worker card with avatar and quick actions.', visual:"🃏"},
+    {name:"Avatar", tags:["profile","photo","image"], example:'Add a profile avatar with name initials or photo.', visual:"👤"},
     {name:"Breadcrumbs", tags:["nav","path"], example:'Add breadcrumbs: Home / Directory / Worker.', visual:"🍞"},
   ],
   icons: [

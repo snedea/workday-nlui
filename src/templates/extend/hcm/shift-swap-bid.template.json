@@ -1,0 +1,10 @@
+{
+  "id": "hcm/shift-swap-bid",
+  "title": "Shift Swap/Bid",
+  "summary": "Restaurant workers can swap shifts or bid on open shifts",
+  "tags": ["Scheduling", "HCM", "Restaurant"],
+  "canvasKit": ["Tabs", "Table", "Button", "Badge", "DatePicker"],
+  "prompt": "Create a shift management page with tabs for 'My Shifts', 'Available Shifts', and 'Swap Requests'. Include a table showing shift dates, times, positions, and status badges. Add primary buttons for 'Request Swap' and 'Bid on Shift'.",
+  "version": "1.0",
+  "category": "Templates"
+}

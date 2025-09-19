@@ -11,7 +11,8 @@ UiResponse = {
 UiNode = {
   "type": "Page" | "Header" | "Section" | "Card" | "Tabs" | "Tab" |
            "Table" | "Form" | "Field" | "Text" | "Badge" | "Button" |
-           "Icon" | "Banner" | "Toast" | "Modal",
+           "Icon" | "Banner" | "Toast" | "Modal" | "Avatar" |
+           "Breadcrumbs" | "Footer",
   "props"?: { [key: string]: any },
   "children"?: UiNode[]
 }
@@ -24,6 +25,11 @@ Guidelines:
   - Badge: { status: "Active" | "On Leave" | "Terminated" | "Draft" }
   - Tabs: children are Tab nodes with { label: string }
   - Table: { columns: string[], rows: Array<Record<string,string>> }
+  - Avatar: { src?: string, name: string, size?: "sm" | "md" | "lg" | "xl", variant?: "circle" | "square" }
+  - Card: { title?: string, image?: string }
+  - Banner: { message: string, image?: string }
+- For images in tables: Use placeholder URLs like "https://via.placeholder.com/150x150/0066cc/ffffff?text=CHARACTER" or emoji (🦸‍♂️) instead of real image URLs
+- When asked for character images, prefer using emoji representations or placeholder images rather than attempting real URLs
 - Avoid custom CSS or code. No markdown, no prose. JSON ONLY.`;
 
 export async function generateUI(prompt: string): Promise<UiResponse> {

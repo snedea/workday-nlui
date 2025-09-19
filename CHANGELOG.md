@@ -5,6 +5,65 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2025-09-18
+
+### 🎨 Canvas Kit v14 Integration
+
+This release transforms Workday NLUI Studio from Canvas Kit-inspired styling to **authentic Workday UI** using official Canvas Kit v14 components, fonts, and design system.
+
+### ✨ Added
+
+#### Canvas Kit v14 Components
+- **Authentic Workday Typography**: Official Roboto fonts loaded from Workday CDN
+- **600+ Canvas Icons**: System, Accent, and Applet icons searchable in library
+- **StatusIndicator**: Replaces generic badges with Workday-style status components
+- **FormField + TextInput/Select**: Authentic form controls with proper labels
+- **Avatar Component**: User profile avatars with size variants
+- **Button Variants**: Primary, Secondary, Tertiary with correct Canvas Kit styling
+
+#### Design System Improvements
+- **Smart Button Spacing**: 12px horizontal spacing between button groups (Submit/Cancel)
+- **Component Spacing**: 16px vertical spacing between sections and elements
+- **Workday Design Language**: Proper typography, spacing, and visual hierarchy
+- **Dual Renderer System**: Toggle between Canvas Kit v14 and Tailwind CSS renderers
+
+#### Technical Enhancements
+- **Canvas Kit Packages**: `@workday/canvas-kit-react` v14.0.2 with all official packages
+- **Font Loading**: `@workday/canvas-kit-react-fonts` with Emotion Global injection
+- **Icon Libraries**: System, Accent, and Applet icon packages with 600+ icons
+- **Smart Layout Logic**: Automatic detection of button groups for proper spacing
+
+### 🔄 Changed
+- **Primary Renderer**: Canvas Kit v14 is now the default renderer (was Tailwind)
+- **Typography**: All text components use authentic Workday Roboto font family
+- **Package Description**: Updated to highlight Canvas Kit v14 integration
+- **Component Fidelity**: True Workday appearance instead of approximations
+
+### 📚 Documentation
+- **Comprehensive README Update**: Canvas Kit v14 features and setup guide
+- **Architecture Section**: Dual renderer system documentation
+- **Component Reference**: Updated to reflect Canvas Kit components
+- **Typography Guide**: Font loading and spacing implementation details
+
+### 🛠 Technical Details
+
+**New Dependencies:**
+```json
+{
+  "@workday/canvas-kit-react": "^14.0.2",
+  "@workday/canvas-kit-react-fonts": "^14.0.2",
+  "@workday/canvas-kit-preview-react": "^14.0.2",
+  "@workday/canvas-system-icons-web": "^3.0.36",
+  "@workday/canvas-accent-icons-web": "^3.0.17",
+  "@workday/canvas-applet-icons-web": "^2.0.15",
+  "@workday/canvas-tokens-web": "^3.0.0"
+}
+```
+
+**New Files:**
+- `src/runtime/canvasRenderer.tsx` - Canvas Kit v14 renderer with smart spacing
+- `src/data/canvasIcons.ts` - Canvas icons library integration
+
 ## [0.1.0] - 2025-09-18
 
 ### 🎉 Initial Release

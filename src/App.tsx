@@ -1,14 +1,21 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
+import { CanvasProvider } from '@workday/canvas-kit-react';
+// Remove fonts CSS import - it's not needed for v14
+import '@workday/canvas-tokens-web/css/base/_variables.css';
+import '@workday/canvas-tokens-web/css/brand/_variables.css';
+import '@workday/canvas-tokens-web/css/system/_variables.css';
 import { SearchBar } from './components/SearchBar';
 import { GroupTabs } from './components/GroupTabs';
 import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
 import { renderUi } from './runtime/renderer';
+import { renderCanvasUi } from './runtime/canvasRenderer';
 import { LIB } from './data/library';
+import { canvasIconsLibrary } from './data/canvasIcons';
 import { loadTemplates } from './templates/loader';
-import { LibraryItem, UiResponse, TemplateLibraryItem } from './runtime/types';
-import { on, emit, showToast } from './runtime/actions';
+import { LibraryItem, UiResponse } from './runtime/types';
+import { on, showToast } from './runtime/actions';
 import { addCustomTemplate, onTemplateChange, saveTemplateFile } from './templates/templateStore';
 
 const STORAGE_KEYS = {
@@ -31,6 +38,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
+  const [useCanvasRenderer, setUseCanvasRenderer] = useState(true); // Use Canvas Kit by default
 
   const groupTabs = [
     { id: "all", label: "All" },
@@ -63,6 +71,7 @@ function App() {
       ...withType(LIB.fields, "Field"),
       ...withType(LIB.controls, "Control"),
       ...withType(LIB.icons, "Icon"),
+      ...canvasIconsLibrary, // Add all Canvas icons
       ...templatesAsLibraryItems,
     ];
   }, [templateVersion]); // Re-run when templates change
@@ -114,6 +123,161 @@ function App() {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
+  };
+
+  const openPreviewInNewTab = (uiResponse: UiResponse) => {
+    const previewHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${uiResponse.title} - Preview</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .btn-primary {
+            @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors;
+        }
+        .btn-secondary {
+            @apply px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">${uiResponse.title}</h1>
+            <p class="text-sm text-gray-600 mb-4">Generated with Workday NLUI Studio</p>
+        </div>
+        <div id="preview-root" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"></div>
+    </div>
+
+    <script type="text/babel">
+        ${getRendererJSX()}
+
+        const uiData = ${JSON.stringify(uiResponse.tree)};
+
+        function App() {
+            return React.createElement(RenderNode, { node: uiData });
+        }
+
+        ReactDOM.render(React.createElement(App), document.getElementById('preview-root'));
+    </script>
+</body>
+</html>`;
+
+    const blob = new Blob([previewHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+
+    // Clean up the URL after a short delay
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const getRendererJSX = () => {
+    // This is a simplified version of the renderer for the new tab
+    return `
+function RenderNode({ node }) {
+    const { type, props = {}, children = [] } = node;
+
+    const renderChildren = () => children.map((child, i) =>
+        React.createElement(RenderNode, { key: i, node: child })
+    );
+
+    switch (type) {
+        case 'Page':
+            return React.createElement('div', { className: 'space-y-6' }, renderChildren());
+
+        case 'Header':
+            return React.createElement('header', { className: 'bg-white border-b border-gray-200 px-6 py-4 mb-6' }, renderChildren());
+
+        case 'Section':
+            return React.createElement('section', { className: 'space-y-4' }, renderChildren());
+
+        case 'Card':
+            return React.createElement('div', { className: 'bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4' },
+                props.title && React.createElement('h3', { className: 'text-md font-medium text-gray-900 mb-3' }, props.title),
+                renderChildren()
+            );
+
+        case 'Text':
+            return React.createElement('p', { className: 'text-gray-800' }, props.content || props.children || 'Text');
+
+        case 'Button':
+            const buttonClass = props.variant === 'primary' ? 'btn-primary' : 'btn-secondary';
+            return React.createElement('button', {
+                className: buttonClass + ' ' + (props.className || ''),
+                disabled: props.disabled
+            }, props.text || props.children || 'Button');
+
+        case 'Form':
+            return React.createElement('form', { className: 'space-y-4' }, renderChildren());
+
+        case 'Field':
+            const fieldType = props.type || 'text';
+            return React.createElement('div', { className: 'mb-4' },
+                props.label && React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, props.label),
+                fieldType === 'select'
+                    ? React.createElement('select', {
+                        className: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                        value: props.value || ''
+                    }, (props.options || []).map((opt, i) =>
+                        React.createElement('option', { key: i, value: opt }, opt)
+                    ))
+                    : React.createElement('input', {
+                        type: fieldType,
+                        className: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                        placeholder: props.placeholder,
+                        value: props.value || ''
+                    })
+            );
+
+        case 'Table':
+            return React.createElement('div', { className: 'overflow-x-auto' },
+                React.createElement('table', { className: 'min-w-full divide-y divide-gray-200' },
+                    React.createElement('thead', { className: 'bg-gray-50' },
+                        React.createElement('tr', {},
+                            (props.columns || []).map((col, i) =>
+                                React.createElement('th', {
+                                    key: i,
+                                    className: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                                }, col)
+                            )
+                        )
+                    ),
+                    React.createElement('tbody', { className: 'bg-white divide-y divide-gray-200' },
+                        (props.rows || []).map((row, i) =>
+                            React.createElement('tr', { key: i },
+                                (props.columns || []).map((col, j) =>
+                                    React.createElement('td', {
+                                        key: j,
+                                        className: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900'
+                                    }, row[col] || '')
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+
+        case 'Badge':
+            return React.createElement('span', {
+                className: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + (
+                    props.status === 'Active' ? 'bg-green-100 text-green-800' :
+                    props.status === 'On Leave' ? 'bg-yellow-100 text-yellow-800' :
+                    props.status === 'Terminated' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                )
+            }, props.status || props.text || props.children || 'Badge');
+
+        default:
+            return React.createElement('div', { className: 'text-gray-500 italic' }, 'Unknown component: ' + type);
+    }
+}
+`;
   };
 
   const handleGenerate = async () => {
@@ -243,20 +407,20 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen max-w-7xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <CanvasProvider>
+      <div className="min-h-screen bg-gray-50">
+        {/* Workday Gradient Bar */}
+        <div className="h-1 bg-gradient-to-r from-blue-600 via-teal-500 to-purple-600"></div>
+
+        <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Workday NLUI Studio</h1>
+          <p className="text-xs text-gray-500 mb-1">Workday Natural Language UI Studio</p>
           <p className="text-sm text-gray-600">
             Design Workday-style interfaces with natural language prompts, reusable templates, and live preview — powered by AI and Canvas Kit patterns.
           </p>
-        </div>
-        <div className="hidden md:flex items-center gap-2 text-xs text-gray-500">
-          <span className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700">⌘</span>
-          <span>+</span>
-          <span className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700">K</span>
-          <span> to focus search</span>
         </div>
       </div>
 
@@ -304,10 +468,28 @@ function App() {
             <div className="bg-white border border-gray-200 rounded-2xl p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900">Preview</h3>
-                <span className="text-xs text-gray-500">{generatedUI.title}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    className={`px-2 py-1 text-xs rounded border transition-colors ${
+                      useCanvasRenderer ? 'bg-blue-100 border-blue-300' : 'hover:bg-gray-50'
+                    }`}
+                    onClick={() => setUseCanvasRenderer(!useCanvasRenderer)}
+                    title="Toggle renderer"
+                  >
+                    {useCanvasRenderer ? 'Canvas Kit' : 'Tailwind'}
+                  </button>
+                  <button
+                    className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+                    onClick={() => openPreviewInNewTab(generatedUI)}
+                    title="Open preview in new tab"
+                  >
+                    ↗
+                  </button>
+                  <span className="text-xs text-gray-500">{generatedUI.title}</span>
+                </div>
               </div>
               <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto">
-                {renderUi(generatedUI.tree)}
+                {useCanvasRenderer ? renderCanvasUi(generatedUI.tree) : renderUi(generatedUI.tree)}
               </div>
             </div>
           )}
@@ -318,7 +500,9 @@ function App() {
           </div>
         </div>
       </div>
+      </div>
     </div>
+    </CanvasProvider>
   );
 }
 

@@ -29,7 +29,7 @@ const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCo
   return (
     <div className="mb-6">
       <SectionHeader title={label} count={items.length} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
         {items.map((item, idx) => (
           <LibraryCard
             key={`${label}-${idx}`}
@@ -55,7 +55,8 @@ export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy }
       Object: [],
       Field: [],
       Control: [],
-      Icon: []
+      Icon: [],
+      Templates: []
     };
 
     filteredItems.forEach(item => {
@@ -73,6 +74,7 @@ export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy }
       <CategoryPanel label="Fields" items={grouped.Field} onUse={onUse} onCopy={onCopy} />
       <CategoryPanel label="Controls (Canvas Kit)" items={grouped.Control} onUse={onUse} onCopy={onCopy} />
       <CategoryPanel label="Icons" items={grouped.Icon} onUse={onUse} onCopy={onCopy} />
+      <CategoryPanel label="Templates" items={grouped.Templates} onUse={onUse} onCopy={onCopy} />
     </div>
   );
 };

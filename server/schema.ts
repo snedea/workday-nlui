@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const UiNode = z.object({
   type: z.enum([
     'Page','Header','Section','Card','Tabs','Tab','Table','Form','Field',
-    'Text','Badge','Button','Icon','Banner','Toast','Modal'
+    'Text','Badge','Button','Icon','Banner','Toast','Modal','Avatar',
+    'Breadcrumbs','Footer'
   ]),
   props: z.record(z.any()).optional(),
   children: z.array(z.lazy(() => UiNode)).optional()

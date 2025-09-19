@@ -1,0 +1,10 @@
+{
+  "id": "finance/expense-report",
+  "title": "Expense Report",
+  "summary": "Submit and track business expense reports with receipts",
+  "tags": ["Finance", "Expenses", "Travel"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "DatePicker", "Badge"],
+  "prompt": "Create an expense report form with header showing report status and total amount. Include a table of expense line items with columns for Date, Description, Category, Amount, and Receipt status. Add fields for business purpose and submission date. Include primary 'Submit' and secondary 'Save Draft' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

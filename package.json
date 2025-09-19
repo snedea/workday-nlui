@@ -1,8 +1,8 @@
 {
   "name": "workday-nlui-studio",
-  "description": "A local, browser-based design studio that turns natural-language prompts into Workday-style UI previews using React, Vite, AI, and Canvas Kit patterns.",
+  "description": "A local, browser-based design studio that turns natural-language prompts into authentic Workday UI using React, Vite, AI, and Canvas Kit v14 with official fonts and design system.",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
@@ -17,20 +17,29 @@
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"server/**/*.ts\""
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@workday/canvas-accent-icons-web": "^3.0.17",
+    "@workday/canvas-applet-icons-web": "^2.0.15",
+    "@workday/canvas-kit-preview-react": "^14.0.2",
+    "@workday/canvas-kit-react": "^14.0.2",
+    "@workday/canvas-kit-react-fonts": "^14.0.2",
+    "@workday/canvas-system-icons-web": "^3.0.36",
+    "@workday/canvas-tokens-web": "^3.0.0",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "axios": "^1.6.2",
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "zod": "^3.22.4",
-    "dotenv": "^16.3.1"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.4",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "@types/express": "^4.17.21",
-    "@types/cors": "^2.8.17",
-    "@types/node": "^20.10.4",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
