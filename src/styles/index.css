@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+
+  .btn-primary {
+    @apply bg-workday-blue text-white px-4 py-2 rounded-md hover:bg-workday-blue-dark transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors;
+  }
+
+  .tab-active {
+    @apply border-b-2 border-workday-blue text-workday-blue;
+  }
+
+  .tab-inactive {
+    @apply text-gray-600 hover:text-gray-800;
+  }
+}

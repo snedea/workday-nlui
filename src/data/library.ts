@@ -1,0 +1,55 @@
+import { LibraryData } from '../runtime/types';
+
+export const LIB: LibraryData = {
+  objects: [
+    {name:"Worker", tags:["person","employee","profile"], example:'Add a Worker summary card with avatar, name, title, and status.' , visual:"👤"},
+    {name:"Job Requisition", tags:["recruiting","jobs"], example:'Create a Job Requisition dashboard with filters for location and status.', visual:"🧾"},
+    {name:"Business Process", tags:["workflow","approval"], example:'Show a Business Process timeline with steps and current status.', visual:"🔁"},
+    {name:"Time Off Request", tags:["time","pto","leave"], example:'Compose a Time Off Request form with start/end dates and balance.', visual:"🏖️"},
+    {name:"Expense Report", tags:["finance","receipt"], example:'Build an Expense Report page with line items and total.', visual:"🧾"},
+    {name:"Supplier", tags:["procurement","vendor"], example:'Create a Supplier profile with contacts and active contracts.', visual:"🏢"},
+  ],
+  fields: [
+    {name:"Employee ID", tags:["id","identifier","worker"], example:'Add a read-only Employee ID field to the header.', visual:"#️⃣"},
+    {name:"Legal Name", tags:["name","worker"], example:'Add a Legal Name text input with validation.', visual:"✍️"},
+    {name:"Preferred Name", tags:["name","alias"], example:'Include a Preferred Name field below Legal Name.', visual:"✨"},
+    {name:"Supervisory Org", tags:["org","hierarchy"], example:'Add a Supervisory Org selector with search.', visual:"🏛️"},
+    {name:"Location", tags:["office","site"], example:'Add a Location dropdown with city and country.', visual:"📍"},
+    {name:"Effective Date", tags:["date","effective"], example:'Insert an Effective Date with a date picker.', visual:"📅"},
+    {name:"Compensation Grade", tags:["pay","band"], example:'Add a read-only Compensation Grade badge.', visual:"🎖️"},
+    {name:"Status", tags:["state","badge"], example:'Show a Status badge (Active, On Leave, Terminated).', visual:"🏷️"},
+  ],
+  controls: [
+    {name:"Primary Button", tags:["cta","submit"], example:'Add a primary button labeled "Submit".', visual:"🔵"},
+    {name:"Secondary Button", tags:["cancel","alt"], example:'Add a secondary button labeled "Cancel".', visual:"⚪"},
+    {name:"Icon Button", tags:["toolbar","compact"], example:'Add an icon button for "Edit".', visual:"🖊️"},
+    {name:"Text Input", tags:["form","field"], example:'Add a text input labeled "Legal Name".', visual:"📝"},
+    {name:"Select / Dropdown", tags:["picker","choice"], example:'Add a department dropdown with common options.', visual:"▾"},
+    {name:"Combobox", tags:["search","autocomplete"], example:'Add an employee search combobox.', visual:"🔎"},
+    {name:"Checkbox", tags:["boolean","agree"], example:'Add a checkbox labeled "I agree to the terms".', visual:"☑️"},
+    {name:"Radio Group", tags:["exclusive","choice"], example:'Add a radio group for "Employment Type".', visual:"🔘"},
+    {name:"Switch", tags:["toggle","settings"], example:'Add a switch labeled "Notifications".', visual:"🔀"},
+    {name:"Date Picker", tags:["calendar"], example:'Add a date picker for "Effective Date".', visual:"📅"},
+    {name:"Tabs", tags:["navigation","sections"], example:'Create tabs: Profile, Job, Pay, Time Off.', visual:"📑"},
+    {name:"Modal Dialog", tags:["overlay","confirm"], example:'Show a confirmation modal for deletions.', visual:"🗨️"},
+    {name:"Banner", tags:["notice","info"], example:'Add an informational banner at the top.', visual:"📢"},
+    {name:"Toast", tags:["notification","success"], example:'Show a success toast after saving.', visual:"🍞"},
+    {name:"Table", tags:["data","rows"], example:'Add a table of direct reports with columns Name, Title, Location.', visual:"📊"},
+    {name:"Card", tags:["container","group"], example:'Create a Worker card with avatar and quick actions.', visual:"🃏"},
+    {name:"Breadcrumbs", tags:["nav","path"], example:'Add breadcrumbs: Home / Directory / Worker.', visual:"🍞"},
+  ],
+  icons: [
+    {name:"User", tags:["avatar","person"], example:'Use the User icon inside the profile header.', visual:"👤"},
+    {name:"Building", tags:["office","location"], example:'Use the Building icon next to Location.', visual:"🏢"},
+    {name:"Calendar", tags:["date"], example:'Use the Calendar icon in the Effective Date field.', visual:"📅"},
+    {name:"Search", tags:["find"], example:'Use the Search icon in global search.', visual:"🔍"},
+    {name:"Alert", tags:["warning"], example:'Use the Alert icon in error banners.', visual:"⚠️"},
+    {name:"Check", tags:["success"], example:'Use the Check icon in success toasts.', visual:"✅"},
+  ],
+  patterns: [
+    {name:"Entity Profile Page", snippet:"Create a Workday-style profile page for {{Object}} with header (avatar, name, title, status), tabs (Profile, Job, Pay, Time Off), and a side panel for quick actions."},
+    {name:"Form Page", snippet:"Create a form page for {{Object}} including {{Field1}}, {{Field2}}, {{Field3}} and a primary \"Submit\" and secondary \"Cancel\" button."},
+    {name:"List + Filters", snippet:"Create a list view for {{ObjectPlural}} with a search bar, filters ({{Field}}), table (columns: {{Col1}}, {{Col2}}, {{Col3}}), and pagination."},
+    {name:"Wizard / BP Steps", snippet:"Create a multi-step wizard for the {{BusinessProcess}} with stepper, per-step validation, and a summary review step."},
+  ]
+};
