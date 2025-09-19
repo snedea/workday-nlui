@@ -6,7 +6,10 @@ import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
 import { renderUi } from './runtime/renderer';
 import { LIB } from './data/library';
-import { LibraryItem, UiResponse } from './runtime/types';
+import { loadTemplates } from './templates/loader';
+import { LibraryItem, UiResponse, TemplateLibraryItem } from './runtime/types';
+import { on, emit, showToast } from './runtime/actions';
+import { addCustomTemplate, onTemplateChange, saveTemplateFile } from './templates/templateStore';
 
 const STORAGE_KEYS = {
   LAST_PROMPT: 'workday-nlui-last-prompt',
@@ -26,6 +29,8 @@ function App() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
 
   const groupTabs = [
     { id: "all", label: "All" },
@@ -33,24 +38,50 @@ function App() {
     { id: "field", label: "Fields" },
     { id: "control", label: "Controls" },
     { id: "icon", label: "Icons" },
+    { id: "templates", label: "Templates" },
   ];
 
   const flatLibrary = useMemo(() => {
     const withType = (arr: LibraryItem[], type: string) =>
       arr.map(x => ({ ...x, _type: type }));
 
+    // Load templates dynamically (includes custom templates)
+    const allTemplates = loadTemplates();
+    const templatesAsLibraryItems = allTemplates.map(t => ({
+      name: t.title,
+      tags: t.tags || [], // Use tags directly from TemplateEntry
+      example: t.summary,
+      visual: "📄", // Template icon
+      _type: "Templates",
+      onUseInsert: t.prompt // Use prompt directly from TemplateEntry
+    }));
+
+
+
     return [
       ...withType(LIB.objects, "Object"),
       ...withType(LIB.fields, "Field"),
       ...withType(LIB.controls, "Control"),
       ...withType(LIB.icons, "Icon"),
+      ...templatesAsLibraryItems,
     ];
-  }, []);
+  }, [templateVersion]); // Re-run when templates change
 
   const filteredItems = useMemo(() => {
     const term = searchQuery.trim().toLowerCase();
     return flatLibrary.filter(item => {
-      const inGroup = activeGroup === "all" || item._type?.toLowerCase() === activeGroup;
+      // Fix the group filtering logic
+      let inGroup = false;
+      if (activeGroup === "all") {
+        inGroup = true;
+      } else if (activeGroup === "templates") {
+        inGroup = item._type === "Templates";
+      } else {
+        // For other groups, match the pattern: "object" -> "Object", "field" -> "Field", etc.
+        const expectedType = activeGroup.charAt(0).toUpperCase() + activeGroup.slice(1);
+        inGroup = item._type === expectedType;
+      }
+
       if (!inGroup) return false;
       if (!term) return true;
 
@@ -62,7 +93,15 @@ function App() {
     });
   }, [searchQuery, flatLibrary, activeGroup]);
 
-  const insertToken = (item: LibraryItem) => {
+  const insertToken = (item: LibraryItem & { onUseInsert?: string }) => {
+    // For templates, use the onUseInsert prompt directly
+    if (item._type === "Templates" && item.onUseInsert) {
+      const newValue = composer.trim() + (composer.trim() ? "\n\n" : "") + item.onUseInsert;
+      setComposer(newValue);
+      return;
+    }
+
+    // For regular library items, use token format
     const token = `[${item._type}:${item.name}]`;
     const hint = item.example ? ` // ${item.example}` : "";
     const newValue = composer.trim() + (composer.trim() ? "\n" : "") + token + hint;
@@ -111,14 +150,106 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeydown);
   }, []);
 
+  // Listen for template changes and trigger re-render
+  useEffect(() => {
+    const unsubscribe = onTemplateChange(() => {
+      setTemplateVersion(prev => prev + 1);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  // Function to add a new template
+  const handleAddTemplate = (templateData: {
+    name: string;
+    description: string;
+    tags: string;
+    prompt: string;
+  }) => {
+    const slug = templateData.name.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    const template = {
+      id: `custom/${slug}`,
+      title: templateData.name,
+      summary: templateData.description,
+      tags: templateData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+      canvasKit: [],
+      prompt: templateData.prompt,
+      version: "1.0",
+      category: "Templates" as const
+    };
+
+    addCustomTemplate(template);
+
+    // Also save as file to /templates directory
+    try {
+      saveTemplateFile(template);
+      showToast(`Template "${templateData.name}" saved successfully! Check downloads for the .template.json file to add to /src/templates/custom/`, 'success');
+    } catch (error) {
+      showToast(`Template "${templateData.name}" saved to library. File download failed.`, 'info');
+    }
+  };
+
+  // Register action handlers for template interactivity
+  useEffect(() => {
+    // Drawer actions
+    on('openDrawer', () => {
+      setIsDrawerOpen(true);
+      showToast('Drawer opened', 'info');
+    });
+
+    on('closeDrawer', () => {
+      setIsDrawerOpen(false);
+      showToast('Drawer closed', 'info');
+    });
+
+    // Shift management actions
+    on('submitSwapBid', (payload) => {
+      const shiftInfo = payload ? `for ${payload.position || 'position'} on ${payload.date || 'selected date'}` : '';
+      showToast(`Swap request submitted ${shiftInfo}`, 'success');
+      // Mock: refresh My Requests (could update local state here)
+    });
+
+    on('approveRequest', (payload) => {
+      const requestInfo = payload ? `Request #${payload.requestId || 'unknown'}` : 'Request';
+      showToast(`${requestInfo} approved`, 'success');
+    });
+
+    on('declineRequest', (payload) => {
+      const requestInfo = payload ? `Request #${payload.requestId || 'unknown'}` : 'Request';
+      showToast(`${requestInfo} declined`, 'info');
+    });
+
+    // Expense report actions
+    on('submitExpenseReport', (payload) => {
+      const amount = payload?.total ? `$${payload.total}` : '';
+      showToast(`Expense report ${amount} submitted for approval`, 'success');
+    });
+
+    on('saveDraft', () => {
+      showToast('Draft saved successfully', 'success');
+    });
+
+    // Generic form submission
+    on('submitForm', (payload) => {
+      const formType = payload?.type || 'form';
+      showToast(`${formType} submitted successfully`, 'success');
+    });
+
+    // Note: Cleanup not needed since handlers are global
+  }, []);
+
   return (
     <div className="min-h-screen max-w-7xl mx-auto px-4 py-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Workday Prompt Library</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Workday NLUI Studio</h1>
           <p className="text-sm text-gray-600">
-            Searchable objects, fields, controls & icons — compose prompts that map to Canvas Kit.
+            Design Workday-style interfaces with natural language prompts, reusable templates, and live preview — powered by AI and Canvas Kit patterns.
           </p>
         </div>
         <div className="hidden md:flex items-center gap-2 text-xs text-gray-500">
@@ -155,6 +286,7 @@ function App() {
             onChange={setComposer}
             onGenerate={handleGenerate}
             isGenerating={isGenerating}
+            onAddTemplate={handleAddTemplate}
           />
 
           {/* Error Display */}

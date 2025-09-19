@@ -1,22 +1,23 @@
-# Workday NLUI - Natural Language UI Generator
+# Workday NLUI Studio - Natural Language UI Design Studio
 
-A local, browser-based app that turns natural-language prompts into Workday-style UI previews using React, Vite, and LLM integration.
+A local, browser-based design studio that turns natural-language prompts into Workday-style UI previews using React, Vite, AI, and Canvas Kit patterns.
 
 ## Features
 
 - **📚 Interactive Prompt Library**: Browse searchable objects, fields, controls, and icons with examples
-- **✍️ Smart Composer**: Build prompts using patterns and library tokens
-- **🤖 LLM Integration**: Generate UI JSON via OpenAI or Azure OpenAI
-- **👀 Live Preview**: Render generated UI components in real-time
-- **💾 Persistence**: Automatically saves last prompt and response
-- **🎨 Workday-Style**: Components designed to match Canvas Kit patterns
+- **📄 Template Management**: Save, import, and reuse custom templates with built-in patterns for common workflows
+- **✍️ Smart Composer**: Build prompts using patterns, library tokens, and template snippets
+- **🤖 AI Integration**: Generate UI JSON via OpenAI or Azure OpenAI with intelligent prompt processing
+- **👀 Live Preview**: Render generated UI components in real-time with Canvas Kit styling
+- **💾 Smart Persistence**: Automatically saves prompts, responses, and custom templates
+- **🎨 Workday-Style**: Components designed to match Canvas Kit patterns and design system
 
 ## Quick Start
 
 ### 1. Install Dependencies
 
 ```bash
-cd workday-nlui
+cd workday-nlui-studio
 npm install
 ```
 
@@ -63,11 +64,13 @@ npm start
 
 ## Usage
 
-1. **Browse Library**: Search and filter objects, fields, controls, and icons
+1. **Browse Library**: Search and filter objects, fields, controls, icons, and templates
 2. **Use Tokens**: Click "use" on any item to insert descriptive tokens into the prompt
-3. **Apply Patterns**: Use pre-built patterns for common UI layouts
-4. **Generate UI**: Click "Generate" to send your prompt to the LLM
-5. **Preview Results**: View the rendered UI components in real-time
+3. **Apply Templates**: Use built-in or custom templates for common workflows like shift management, expense reports, etc.
+4. **Apply Patterns**: Use pre-built patterns for common UI layouts
+5. **Save Custom Templates**: Create and save your own reusable templates with the "Save as Template" feature
+6. **Generate UI**: Click "Generate" to send your prompt to the AI
+7. **Preview Results**: View the rendered UI components in real-time with Canvas Kit styling
 
 ### Example Prompts
 
@@ -75,32 +78,40 @@ npm start
 - "Build a Time Off Request form with Effective Date picker, Status dropdown, and Submit button"
 - "Design a table of direct reports with columns: Legal Name, Location, Supervisory Org"
 
+### Example Templates
+
+- **Shift Swap/Bid**: Restaurant workers can swap shifts or bid on open shifts with tabs for My Shifts, Available Shifts, and Swap Requests
+- **Expense Report**: Submit and track business expense reports with receipt management and approval workflow
+- **Custom Templates**: Save your own frequently-used prompts as reusable templates with tags and descriptions
+
 ## Architecture
 
 ### Frontend (`src/`)
 - **React + TypeScript + Vite** for fast development
 - **Tailwind CSS** for styling with Workday-inspired design tokens
-- **Component Library**: Modular UI components that mirror the original HTML structure
-- **Runtime Renderer**: Converts LLM JSON responses into React components
+- **Component Library**: Modular UI components that mirror Canvas Kit patterns
+- **Runtime Renderer**: Converts AI JSON responses into React components
+- **Template System**: Dynamic template loading with localStorage persistence and real-time updates
 
 ### Backend (`server/`)
-- **Express.js** API server with LLM integration
+- **Express.js** API server with AI integration
 - **Provider-agnostic** client supporting OpenAI and Azure OpenAI
-- **Zod validation** ensures LLM responses match expected schema
+- **Zod validation** ensures AI responses match expected schema
 - **Error handling** for authentication, rate limits, and validation failures
 
 ### Key Files
 
 ```
-workday-nlui/
+workday-nlui-studio/
 ├── src/
 │   ├── components/          # UI components (Library, Composer, etc.)
 │   ├── runtime/            # UI renderer and type definitions
 │   ├── data/               # Library data and patterns
+│   ├── templates/          # Template system (catalog, loader, storage)
 │   └── App.tsx             # Main application
 ├── server/
 │   ├── server.ts           # Express API server
-│   ├── llm.ts              # LLM client (OpenAI/Azure)
+│   ├── llm.ts              # AI client (OpenAI/Azure)
 │   └── schema.ts           # Zod schemas for validation
 └── package.json
 ```

@@ -1,5 +1,6 @@
 {
-  "name": "workday-nlui",
+  "name": "workday-nlui-studio",
+  "description": "A local, browser-based design studio that turns natural-language prompts into Workday-style UI previews using React, Vite, AI, and Canvas Kit patterns.",
   "private": true,
   "version": "0.1.0",
   "type": "module",
