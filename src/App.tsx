@@ -6,7 +6,6 @@ import '@workday/canvas-tokens-web/css/base/_variables.css';
 import '@workday/canvas-tokens-web/css/brand/_variables.css';
 import '@workday/canvas-tokens-web/css/system/_variables.css';
 import { SearchBar } from './components/SearchBar';
-import { GroupTabs } from './components/GroupTabs';
 import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
 import { renderUi } from './runtime/renderer';
@@ -39,14 +38,6 @@ function App() {
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
   const [useCanvasRenderer, setUseCanvasRenderer] = useState(true); // Use Canvas Kit by default
 
-  const groupTabs = [
-    { id: "all", label: "All" },
-    { id: "object", label: "Objects" },
-    { id: "field", label: "Fields" },
-    { id: "control", label: "Controls" },
-    { id: "icon", label: "Icons" },
-    { id: "templates", label: "Templates" },
-  ];
 
   const flatLibrary = useMemo(() => {
     const withType = (arr: LibraryItem[], type: string) =>
@@ -444,7 +435,72 @@ function RenderNode({ node }) {
         </div>
       </div>
 
-      {/* Item Counts Display */}
+      {/* Preview - Always visible */}
+      <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-gray-900">Preview</h3>
+          {generatedUI && (
+            <div className="flex items-center gap-2">
+              <button
+                className={`px-2 py-1 text-xs rounded border transition-colors ${
+                  useCanvasRenderer ? 'bg-blue-100 border-blue-300' : 'hover:bg-gray-50'
+                }`}
+                onClick={() => setUseCanvasRenderer(!useCanvasRenderer)}
+                title="Toggle renderer"
+              >
+                {useCanvasRenderer ? 'Canvas Kit' : 'Tailwind'}
+              </button>
+              <button
+                className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+                onClick={() => openPreviewInNewTab(generatedUI)}
+                title="Open preview in new tab"
+              >
+                ↗
+              </button>
+              <span className="text-xs text-gray-500">{generatedUI.title}</span>
+            </div>
+          )}
+        </div>
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-[600px] overflow-y-auto">
+          {generatedUI ? (
+            useCanvasRenderer ? renderCanvasUi(generatedUI.tree) : renderUi(generatedUI.tree)
+          ) : (
+            <div className="text-center text-gray-500 py-8">
+              <div className="text-4xl mb-2">🎨</div>
+              <p>Your generated UI will appear here</p>
+              <p className="text-sm">Use the prompt composer below to create Workday-style interfaces</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Composer */}
+      <div className="mb-4">
+        <PromptComposer
+          value={composer}
+          onChange={setComposer}
+          onGenerate={handleGenerate}
+          isGenerating={isGenerating}
+          onAddTemplate={handleAddTemplate}
+        />
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4">
+            <div className="flex">
+              <div className="text-red-600 mr-3">⚠️</div>
+              <div className="text-red-800 text-sm">{error}</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Search */}
+      <div className="bg-white rounded-2xl border border-gray-200 p-3 mb-4">
+        <SearchBar value={searchQuery} onChange={setSearchQuery} />
+      </div>
+
+      {/* Item Counts Display (Filters) */}
       <div className="bg-white rounded-xl border border-gray-200 p-3 mb-4">
         <div className="flex flex-wrap gap-4 text-sm">
           {[
@@ -495,81 +551,18 @@ function RenderNode({ node }) {
         </div>
       </div>
 
-      {/* Search & Tabs */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-3 mb-4">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          <GroupTabs tabs={groupTabs} activeTab={activeGroup} onTabChange={setActiveGroup} />
-        </div>
+      {/* Library */}
+      <div className="w-full mb-4">
+        <Library
+          filteredItems={filteredItems}
+          onUse={insertToken}
+          onCopy={copyExample}
+        />
       </div>
 
-      {/* Body: Library + Composer + Preview */}
-      <div className="flex flex-col gap-4">
-        {/* Library - Top Section */}
-        <div className="w-full">
-          <Library
-            filteredItems={filteredItems}
-            onUse={insertToken}
-            onCopy={copyExample}
-          />
-        </div>
-
-        {/* Composer + Preview - Bottom Section (stacked vertically) */}
-        <div className="space-y-4">
-          <PromptComposer
-            value={composer}
-            onChange={setComposer}
-            onGenerate={handleGenerate}
-            isGenerating={isGenerating}
-            onAddTemplate={handleAddTemplate}
-          />
-
-          {/* Error Display */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex">
-                <div className="text-red-600 mr-3">⚠️</div>
-                <div className="text-red-800 text-sm">{error}</div>
-              </div>
-            </div>
-          )}
-
-          {/* Preview */}
-          {generatedUI && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-4">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900">Preview</h3>
-                <div className="flex items-center gap-2">
-                  <button
-                    className={`px-2 py-1 text-xs rounded border transition-colors ${
-                      useCanvasRenderer ? 'bg-blue-100 border-blue-300' : 'hover:bg-gray-50'
-                    }`}
-                    onClick={() => setUseCanvasRenderer(!useCanvasRenderer)}
-                    title="Toggle renderer"
-                  >
-                    {useCanvasRenderer ? 'Canvas Kit' : 'Tailwind'}
-                  </button>
-                  <button
-                    className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
-                    onClick={() => openPreviewInNewTab(generatedUI)}
-                    title="Open preview in new tab"
-                  >
-                    ↗
-                  </button>
-                  <span className="text-xs text-gray-500">{generatedUI.title}</span>
-                </div>
-              </div>
-              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-[600px] overflow-y-auto">
-                {useCanvasRenderer ? renderCanvasUi(generatedUI.tree) : renderUi(generatedUI.tree)}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="text-xs text-gray-500">
-          Library grouped for clarity: <strong>Objects</strong> (Workday entities), <strong>Fields</strong> (data attributes), <strong>Controls</strong> (Canvas Kit UI), <strong>Icons</strong> (visual cues).
-        </div>
+      {/* Info */}
+      <div className="text-xs text-gray-500">
+        Library grouped for clarity: <strong>Objects</strong> (Workday entities), <strong>Fields</strong> (data attributes), <strong>Controls</strong> (Canvas Kit UI), <strong>Icons</strong> (visual cues).
       </div>
     </div>
   </div>
