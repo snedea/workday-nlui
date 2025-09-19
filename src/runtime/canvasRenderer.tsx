@@ -185,9 +185,19 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
           <Table.Body>
             {(props.rows || []).map((row: any, i: number) => (
               <Table.Row key={i}>
-                {(props.columns || []).map((col: string, j: number) => (
-                  <Table.Cell key={j}>{row[col] || ''}</Table.Cell>
-                ))}
+                {(props.columns || []).map((col: string, j: number) => {
+                  const cellValue = row[col];
+                  // If cell contains a UiNode object, render it through CanvasRenderNode
+                  if (cellValue && typeof cellValue === 'object' && cellValue.type) {
+                    return (
+                      <Table.Cell key={j}>
+                        <CanvasRenderNode node={cellValue} />
+                      </Table.Cell>
+                    );
+                  }
+                  // Otherwise render as string
+                  return <Table.Cell key={j}>{cellValue || ''}</Table.Cell>;
+                })}
               </Table.Row>
             ))}
           </Table.Body>
@@ -198,19 +208,23 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       const getStatusVariant = () => {
         switch (props.status) {
           case 'Active':
-            return 'green';
+            return undefined; // Default/green variant
           case 'On Leave':
             return 'orange';
           case 'Terminated':
-            return 'red';
+            return 'blue'; // Using blue for terminated status
           default:
-            return 'gray';
+            return undefined; // Default variant
         }
       };
 
+      const variant = getStatusVariant();
+
       return (
-        <StatusIndicator variant={getStatusVariant()}>
-          {props.status || props.text || props.children || 'Badge'}
+        <StatusIndicator {...(variant && { variant })}>
+          <StatusIndicator.Label>
+            {props.status || props.text || props.children || 'Badge'}
+          </StatusIndicator.Label>
         </StatusIndicator>
       );
 
