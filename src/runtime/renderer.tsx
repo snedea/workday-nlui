@@ -133,7 +133,7 @@ const RenderNode: React.FC<RenderUiProps> = ({ node }) => {
 
       return (
         <button
-          className={`${buttonVariant} ${props.className || ''}`}
+          className={`${buttonVariant} ${props.className || ''} w-fit`}
           disabled={props.disabled}
           onClick={handleClick}
         >

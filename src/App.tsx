@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import axios from 'axios';
 import { CanvasProvider } from '@workday/canvas-kit-react';
 // Remove fonts CSS import - it's not needed for v14
@@ -36,7 +36,6 @@ function App() {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
   const [useCanvasRenderer, setUseCanvasRenderer] = useState(true); // Use Canvas Kit by default
 
@@ -101,6 +100,29 @@ function App() {
       );
     });
   }, [searchQuery, flatLibrary, activeGroup]);
+
+  // Calculate counts for each category
+  const counts = useMemo(() => {
+    const totalCounts = {
+      objects: flatLibrary.filter(item => item._type === "Object").length,
+      fields: flatLibrary.filter(item => item._type === "Field").length,
+      controls: flatLibrary.filter(item => item._type === "Control").length,
+      icons: flatLibrary.filter(item => item._type === "Icon").length,
+      templates: flatLibrary.filter(item => item._type === "Templates").length,
+      all: flatLibrary.length
+    };
+
+    const filteredCounts = {
+      objects: filteredItems.filter(item => item._type === "Object").length,
+      fields: filteredItems.filter(item => item._type === "Field").length,
+      controls: filteredItems.filter(item => item._type === "Control").length,
+      icons: filteredItems.filter(item => item._type === "Icon").length,
+      templates: filteredItems.filter(item => item._type === "Templates").length,
+      all: filteredItems.length
+    };
+
+    return { total: totalCounts, filtered: filteredCounts };
+  }, [flatLibrary, filteredItems]);
 
   const insertToken = (item: LibraryItem & { onUseInsert?: string }) => {
     // For templates, use the onUseInsert prompt directly
@@ -361,12 +383,10 @@ function RenderNode({ node }) {
   useEffect(() => {
     // Drawer actions
     on('openDrawer', () => {
-      setIsDrawerOpen(true);
       showToast('Drawer opened', 'info');
     });
 
     on('closeDrawer', () => {
-      setIsDrawerOpen(false);
       showToast('Drawer closed', 'info');
     });
 
@@ -424,6 +444,57 @@ function RenderNode({ node }) {
         </div>
       </div>
 
+      {/* Item Counts Display */}
+      <div className="bg-white rounded-xl border border-gray-200 p-3 mb-4">
+        <div className="flex flex-wrap gap-4 text-sm">
+          {[
+            { key: 'all', label: 'All', icon: '📚' },
+            { key: 'objects', label: 'Objects', icon: '🏢' },
+            { key: 'fields', label: 'Fields', icon: '📝' },
+            { key: 'controls', label: 'Controls', icon: '🎛️' },
+            { key: 'icons', label: 'Icons', icon: '🎨' },
+            { key: 'templates', label: 'Templates', icon: '📄' }
+          ].map(category => {
+            const isActive = activeGroup === (category.key === 'objects' ? 'object' :
+                                             category.key === 'fields' ? 'field' :
+                                             category.key === 'controls' ? 'control' :
+                                             category.key === 'icons' ? 'icon' :
+                                             category.key === 'templates' ? 'templates' :
+                                             category.key);
+            const count = counts.filtered[category.key as keyof typeof counts.filtered];
+            const total = counts.total[category.key as keyof typeof counts.total];
+            const isFiltered = searchQuery.trim() !== '' || activeGroup !== 'all';
+
+            return (
+              <button
+                key={category.key}
+                onClick={() => {
+                  setActiveGroup(category.key === 'objects' ? 'object' :
+                               category.key === 'fields' ? 'field' :
+                               category.key === 'controls' ? 'control' :
+                               category.key === 'icons' ? 'icon' :
+                               category.key === 'templates' ? 'templates' :
+                               'all');
+                }}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-blue-100 text-blue-700 border border-blue-300'
+                    : 'hover:bg-gray-100 text-gray-700'
+                }`}
+              >
+                <span>{category.icon}</span>
+                <span className="font-medium">{category.label}:</span>
+                <span className="font-semibold">
+                  {isFiltered && category.key !== 'all' && count !== total
+                    ? `${count} / ${total}`
+                    : count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Search & Tabs */}
       <div className="bg-white rounded-2xl border border-gray-200 p-3 mb-4">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -433,9 +504,9 @@ function RenderNode({ node }) {
       </div>
 
       {/* Body: Library + Composer + Preview */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Library */}
-        <div className="xl:col-span-2 space-y-6">
+      <div className="flex flex-col gap-4">
+        {/* Library - Top Section */}
+        <div className="w-full">
           <Library
             filteredItems={filteredItems}
             onUse={insertToken}
@@ -443,8 +514,8 @@ function RenderNode({ node }) {
           />
         </div>
 
-        {/* Composer + Preview */}
-        <div className="xl:col-span-1 space-y-4">
+        {/* Composer + Preview - Bottom Section (stacked vertically) */}
+        <div className="space-y-4">
           <PromptComposer
             value={composer}
             onChange={setComposer}
@@ -488,21 +559,21 @@ function RenderNode({ node }) {
                   <span className="text-xs text-gray-500">{generatedUI.title}</span>
                 </div>
               </div>
-              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto">
+              <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-[600px] overflow-y-auto">
                 {useCanvasRenderer ? renderCanvasUi(generatedUI.tree) : renderUi(generatedUI.tree)}
               </div>
             </div>
           )}
+        </div>
 
-          {/* Info */}
-          <div className="text-xs text-gray-500">
-            Library grouped for clarity: <strong>Objects</strong> (Workday entities), <strong>Fields</strong> (data attributes), <strong>Controls</strong> (Canvas Kit UI), <strong>Icons</strong> (visual cues).
-          </div>
+        {/* Info */}
+        <div className="text-xs text-gray-500">
+          Library grouped for clarity: <strong>Objects</strong> (Workday entities), <strong>Fields</strong> (data attributes), <strong>Controls</strong> (Canvas Kit UI), <strong>Icons</strong> (visual cues).
         </div>
       </div>
-      </div>
     </div>
-    </CanvasProvider>
+  </div>
+  </CanvasProvider>
   );
 }
 

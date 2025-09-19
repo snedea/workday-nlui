@@ -7,7 +7,6 @@ import {
   PrimaryButton,
   SecondaryButton,
   TertiaryButton,
-  FormField,
   TextInput,
   Select,
   Table,
@@ -133,7 +132,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
           : TertiaryButton;
 
       return (
-        <ButtonComponent>
+        <ButtonComponent style={{ width: 'fit-content' }}>
           {props.text || props.children || 'Button'}
         </ButtonComponent>
       );
@@ -148,28 +147,42 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
     case 'Field':
       if (props.type === 'select' && props.options) {
         return (
-          <FormField label={props.label}>
-            <Select name={props.name || 'select'}>
-              <Select.Option value="">Choose an option</Select.Option>
-              {props.options.map((opt: string, i: number) => (
-                <Select.Option key={i} value={opt}>
-                  {opt}
-                </Select.Option>
-              ))}
+          <div style={{ marginBottom: '16px' }}>
+            {props.label && (
+              <Text as="label" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+                {props.label}
+              </Text>
+            )}
+            <Select>
+              <Select.Input placeholder="Choose an option" />
+              <Select.Popper>
+                <Select.Card>
+                  {props.options.map((opt: string, i: number) => (
+                    <Select.Item key={i}>
+                      {opt}
+                    </Select.Item>
+                  ))}
+                </Select.Card>
+              </Select.Popper>
             </Select>
-          </FormField>
+          </div>
         );
       }
 
       return (
-        <FormField label={props.label}>
+        <div style={{ marginBottom: '16px' }}>
+          {props.label && (
+            <Text as="label" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
+              {props.label}
+            </Text>
+          )}
           <TextInput
             type={props.type || 'text'}
             placeholder={props.placeholder}
             value={props.value || ''}
             onChange={() => {}}
           />
-        </FormField>
+        </div>
       );
 
     case 'Table':
@@ -205,27 +218,26 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Badge':
-      const getStatusVariant = () => {
+      const getStatusType = () => {
         switch (props.status) {
           case 'Active':
-            return undefined; // Default/green variant
+            return 'green';
           case 'On Leave':
             return 'orange';
           case 'Terminated':
-            return 'blue'; // Using blue for terminated status
+            return 'red';
           default:
-            return undefined; // Default variant
+            return 'gray';
         }
       };
 
-      const variant = getStatusVariant();
+      const statusType = getStatusType();
 
       return (
-        <StatusIndicator {...(variant && { variant })}>
-          <StatusIndicator.Label>
-            {props.status || props.text || props.children || 'Badge'}
-          </StatusIndicator.Label>
-        </StatusIndicator>
+        <StatusIndicator
+          type={statusType as any}
+          label={props.status || props.text || props.children || 'Badge'}
+        />
       );
 
     case 'Icon':
@@ -246,13 +258,15 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       }
 
     case 'Avatar':
+      const avatarSize = props.size === 'sm' ? 'extraSmall' :
+                        props.size === 'lg' ? 'large' :
+                        props.size === 'xl' ? 'extraLarge' : 'medium';
       return (
         <Avatar
-          size={props.size || 'medium'}
+          name={props.name || 'User'}
+          size={avatarSize as any}
           variant={props.variant || 'light'}
-        >
-          {props.name ? props.name.charAt(0).toUpperCase() : 'U'}
-        </Avatar>
+        />
       );
 
     case 'Tabs':
@@ -280,7 +294,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
 
     case 'Banner':
       return (
-        <Banner variant={props.variant || 'full'}>
+        <Banner>
           <Banner.Icon />
           <Banner.Label>{props.message || 'Banner message'}</Banner.Label>
         </Banner>
@@ -289,7 +303,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
     case 'Toast':
       return (
         <Toast>
-          <Toast.Icon />
+          <Toast.Icon icon={systemIcons.checkCircleIcon} />
           <Toast.Message>{props.message || 'Toast message'}</Toast.Message>
         </Toast>
       );
