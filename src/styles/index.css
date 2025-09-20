@@ -51,6 +51,10 @@ body {
 }
 
 /* Drag handle styles */
+.drag-handle {
+  pointer-events: auto !important;
+}
+
 .drag-handle:hover {
   background-color: #0563c1 !important;
   transform: scale(1.1);
