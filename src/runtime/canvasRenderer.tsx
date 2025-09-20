@@ -242,7 +242,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
 
     case 'Field':
       if (props.type === 'select' && props.options) {
-        return (
+        return maybeWrapWithDraggable(
           <div style={{ marginBottom: '16px' }}>
             {props.label && (
               <Text as="label" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>
@@ -265,7 +265,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
         );
       }
 
-      return (
+      return maybeWrapWithDraggable(
         <div style={{ marginBottom: '16px' }}>
           {props.label && (
             <Text as="label" style={{ display: 'block', marginBottom: '4px', fontWeight: 500 }}>

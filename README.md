@@ -15,6 +15,30 @@ A local, browser-based design studio that turns natural-language prompts into **
 - **💾 Smart Persistence**: Automatically saves prompts, responses, layouts, and custom templates
 - **🎯 Workday Design Language**: Proper button spacing, component layout, and visual hierarchy
 
+## NLUI Studio Concepts
+
+### Drag & Drop Interface
+- **Drag Handles**: Blue circular controls (⋮⋮) that appear in the top-left corner of components in Edit Mode
+- **Edit Mode**: The default interface mode where components can be repositioned via drag-and-drop
+- **Grid Snapping**: Components snap to an 8px grid (Canvas Kit's base unit) for consistent alignment
+- **Component Positioning**: Drag handles allow precise positioning with real-time coordinate updates
+
+### Component Types
+- **Individual Components**: Draggable elements like Buttons, Text, Fields, Tables, Cards, and Badges
+- **Container Components**: Non-draggable containers like Forms, Pages, and Tabs that hold other components
+- **Field Components**: Input fields, dropdowns, and form elements that are individually draggable within forms
+
+### Component Hierarchy
+- Some components are nested within containers (e.g., Fields within Forms)
+- Individual components within containers can be moved independently
+- Container components maintain their structure while allowing internal repositioning
+- The drag-and-drop system respects Canvas Kit design patterns and spacing
+
+### Preview Modes
+- **Edit Mode**: Shows drag handles and enables component repositioning (default mode)
+- **Preview**: Displays the interface as it would appear to end users
+- **Resizable Preview**: The preview window can be vertically resized to test different viewport sizes
+
 ## Quick Start
 
 ### 1. Install Dependencies
