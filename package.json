@@ -2,7 +2,7 @@
   "name": "workday-nlui-studio",
   "description": "A local, browser-based design studio that turns natural-language prompts into authentic Workday UI using React, Vite, AI, and Canvas Kit v14 with official fonts and design system.",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@types/jszip": "^3.4.0",
     "@workday/canvas-accent-icons-web": "^3.0.17",
     "@workday/canvas-applet-icons-web": "^2.0.15",
     "@workday/canvas-kit-preview-react": "^14.0.2",
@@ -30,8 +31,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "jszip": "^3.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.5.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

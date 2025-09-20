@@ -1,5 +1,6 @@
 import React from 'react';
 import { UiNode } from './types';
+import { DraggableWrapper } from '../components/DraggableWrapper';
 import {
   Card,
   Heading,
@@ -26,21 +27,39 @@ import * as systemIcons from '@workday/canvas-system-icons-web';
 import * as accentIcons from '@workday/canvas-accent-icons-web';
 import * as appletIcons from '@workday/canvas-applet-icons-web';
 
-export const renderCanvasUi = (node: UiNode): React.ReactNode => {
-  return <CanvasRenderNode key={Math.random()} node={node} />;
+export const renderCanvasUi = (
+  node: UiNode,
+  isDraggableMode = false,
+  onPositionChange?: (id: string, position: { x: number; y: number }) => void
+): React.ReactNode => {
+  return (
+    <CanvasRenderNode
+      key={node.id || Math.random()}
+      node={node}
+      isDraggableMode={isDraggableMode}
+      onPositionChange={onPositionChange}
+    />
+  );
 };
 
 interface RenderUiProps {
   node: UiNode;
+  isDraggableMode?: boolean;
+  onPositionChange?: (id: string, position: { x: number; y: number }) => void;
 }
 
-const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
-  const { type, props = {}, children = [] } = node;
+const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = false, onPositionChange }) => {
+  const { type, props = {}, children = [], position, id } = node;
 
   const renderChildren = (spacing = '16px') => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing }}>
       {children.map((child, i) => (
-        <CanvasRenderNode key={i} node={child} />
+        <CanvasRenderNode
+          key={child.id || i}
+          node={child}
+          isDraggableMode={isDraggableMode}
+          onPositionChange={onPositionChange}
+        />
       ))}
     </div>
   );
@@ -55,12 +74,22 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing }}>
           {nonButtonChildren.map((child, i) => (
-            <CanvasRenderNode key={`non-btn-${i}`} node={child} />
+            <CanvasRenderNode
+              key={child.id || `non-btn-${i}`}
+              node={child}
+              isDraggableMode={isDraggableMode}
+              onPositionChange={onPositionChange}
+            />
           ))}
           {buttonChildren.length > 0 && (
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
               {buttonChildren.map((child, i) => (
-                <CanvasRenderNode key={`btn-${i}`} node={child} />
+                <CanvasRenderNode
+                  key={child.id || `btn-${i}`}
+                  node={child}
+                  isDraggableMode={isDraggableMode}
+                  onPositionChange={onPositionChange}
+                />
               ))}
             </div>
           )}
@@ -72,6 +101,47 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
     return renderChildren(spacing);
   };
 
+  // Helper function to determine if a component should be draggable
+  const isDraggableComponent = (componentType: string) => {
+    // Don't make containers draggable - only individual components
+    const nonDraggableTypes = ['Page', 'Tabs', 'Tab', 'Form'];
+    return !nonDraggableTypes.includes(componentType);
+  };
+
+  // Helper function to wrap component with DraggableWrapper if needed, or apply position in static mode
+  const maybeWrapWithDraggable = (component: React.ReactNode) => {
+    if (isDraggableComponent(type) && id) {
+      if (isDraggableMode) {
+        // Draggable mode: always wrap with DraggableWrapper (even if no position yet)
+        return (
+          <DraggableWrapper
+            componentId={id}
+            position={position || { x: 0, y: 0 }}
+            onPositionChange={onPositionChange}
+            isDraggableMode={isDraggableMode}
+          >
+            {component}
+          </DraggableWrapper>
+        );
+      } else if (position) {
+        // Static mode: only apply position if it exists
+        return (
+          <div
+            style={{
+              position: 'absolute',
+              left: position.x,
+              top: position.y,
+              display: 'inline-block'
+            }}
+          >
+            {component}
+          </div>
+        );
+      }
+    }
+    return component;
+  };
+
   switch (type) {
     case 'Page':
       return (
@@ -81,7 +151,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Header':
-      return (
+      return maybeWrapWithDraggable(
         <div>
           <Heading size="large" style={{ marginBottom: '16px' }}>
             {props.title || 'Page Title'}
@@ -91,7 +161,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Section':
-      return (
+      return maybeWrapWithDraggable(
         <Card>
           <Card.Body>
             {props.title && (
@@ -105,7 +175,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Card':
-      return (
+      return maybeWrapWithDraggable(
         <Card>
           {props.title && (
             <Card.Heading>
@@ -117,7 +187,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Text':
-      return (
+      return maybeWrapWithDraggable(
         <Text>
           {props.content || props.children || renderChildren() || 'Text'}
         </Text>
@@ -131,7 +201,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
           ? SecondaryButton
           : TertiaryButton;
 
-      return (
+      return maybeWrapWithDraggable(
         <ButtonComponent style={{ width: 'fit-content' }}>
           {props.text || props.children || 'Button'}
         </ButtonComponent>
@@ -186,7 +256,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
       );
 
     case 'Table':
-      return (
+      return maybeWrapWithDraggable(
         <Table>
           <Table.Head>
             <Table.Row>
@@ -204,7 +274,11 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
                   if (cellValue && typeof cellValue === 'object' && cellValue.type) {
                     return (
                       <Table.Cell key={j}>
-                        <CanvasRenderNode node={cellValue} />
+                        <CanvasRenderNode
+                          node={cellValue}
+                          isDraggableMode={isDraggableMode}
+                          onPositionChange={onPositionChange}
+                        />
                       </Table.Cell>
                     );
                   }
@@ -281,7 +355,12 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node }) => {
           {tabItems.map((tab, i) => (
             <Tabs.Panel key={i}>
               {tab.children?.map((child, j) => (
-                <CanvasRenderNode key={j} node={child} />
+                <CanvasRenderNode
+                  key={child.id || j}
+                  node={child}
+                  isDraggableMode={isDraggableMode}
+                  onPositionChange={onPositionChange}
+                />
               ))}
             </Tabs.Panel>
           ))}

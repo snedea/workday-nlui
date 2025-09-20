@@ -2,6 +2,8 @@ export interface UiNode {
   type: 'Page' | 'Header' | 'Section' | 'Card' | 'Tabs' | 'Tab' | 'Table' | 'Form' | 'Field' | 'Text' | 'Badge' | 'Button' | 'Icon' | 'Banner' | 'Toast' | 'Modal' | 'Avatar' | 'Breadcrumbs' | 'Footer';
   props?: Record<string, any>;
   children?: UiNode[];
+  position?: { x: number; y: number };
+  id?: string;
 }
 
 export interface UiResponse {

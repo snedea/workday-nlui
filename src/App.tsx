@@ -8,7 +8,6 @@ import '@workday/canvas-tokens-web/css/system/_variables.css';
 import { SearchBar } from './components/SearchBar';
 import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
-import { renderUi } from './runtime/renderer';
 import { renderCanvasUi } from './runtime/canvasRenderer';
 import { LIB } from './data/library';
 import { canvasIconsLibrary } from './data/canvasIcons';
@@ -22,6 +21,21 @@ const STORAGE_KEYS = {
   LAST_RESPONSE: 'workday-nlui-last-response'
 };
 
+// Generate IDs for components that don't have them
+const ensureComponentIds = (node: any, path: string = 'root'): any => {
+  const newNode = { ...node };
+  if (!newNode.id) {
+    const content = newNode.props?.text || newNode.props?.content || newNode.props?.label || newNode.type;
+    newNode.id = `${path}-${newNode.type}-${content}`.replace(/[^a-zA-Z0-9-]/g, '').substring(0, 50);
+  }
+  if (newNode.children) {
+    newNode.children = newNode.children.map((child: any, i: number) =>
+      ensureComponentIds(child, `${newNode.id}-${i}`)
+    );
+  }
+  return newNode;
+};
+
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeGroup, setActiveGroup] = useState("all");
@@ -31,12 +45,20 @@ function App() {
   });
   const [generatedUI, setGeneratedUI] = useState<UiResponse | null>(() => {
     const stored = localStorage.getItem(STORAGE_KEYS.LAST_RESPONSE);
-    return stored ? JSON.parse(stored) : null;
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      // Ensure loaded UI has IDs
+      return {
+        ...parsed,
+        tree: ensureComponentIds(parsed.tree)
+      };
+    }
+    return null;
   });
+  const [isDraggableMode, setIsDraggableMode] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
-  const [useCanvasRenderer, setUseCanvasRenderer] = useState(true); // Use Canvas Kit by default
 
 
   const flatLibrary = useMemo(() => {
@@ -138,160 +160,18 @@ function App() {
     }
   };
 
-  const openPreviewInNewTab = (uiResponse: UiResponse) => {
-    const previewHtml = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${uiResponse.title} - Preview</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .btn-primary {
-            @apply px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors;
-        }
-        .btn-secondary {
-            @apply px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 p-8">
-    <div class="max-w-6xl mx-auto">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
-            <h1 class="text-2xl font-bold text-gray-900 mb-2">${uiResponse.title}</h1>
-            <p class="text-sm text-gray-600 mb-4">Generated with Workday NLUI Studio</p>
-        </div>
-        <div id="preview-root" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"></div>
-    </div>
-
-    <script type="text/babel">
-        ${getRendererJSX()}
-
-        const uiData = ${JSON.stringify(uiResponse.tree)};
-
-        function App() {
-            return React.createElement(RenderNode, { node: uiData });
-        }
-
-        ReactDOM.render(React.createElement(App), document.getElementById('preview-root'));
-    </script>
-</body>
-</html>`;
-
-    const blob = new Blob([previewHtml], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-
-    // Clean up the URL after a short delay
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
-
-  const getRendererJSX = () => {
-    // This is a simplified version of the renderer for the new tab
-    return `
-function RenderNode({ node }) {
-    const { type, props = {}, children = [] } = node;
-
-    const renderChildren = () => children.map((child, i) =>
-        React.createElement(RenderNode, { key: i, node: child })
-    );
-
-    switch (type) {
-        case 'Page':
-            return React.createElement('div', { className: 'space-y-6' }, renderChildren());
-
-        case 'Header':
-            return React.createElement('header', { className: 'bg-white border-b border-gray-200 px-6 py-4 mb-6' }, renderChildren());
-
-        case 'Section':
-            return React.createElement('section', { className: 'space-y-4' }, renderChildren());
-
-        case 'Card':
-            return React.createElement('div', { className: 'bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4' },
-                props.title && React.createElement('h3', { className: 'text-md font-medium text-gray-900 mb-3' }, props.title),
-                renderChildren()
-            );
-
-        case 'Text':
-            return React.createElement('p', { className: 'text-gray-800' }, props.content || props.children || 'Text');
-
-        case 'Button':
-            const buttonClass = props.variant === 'primary' ? 'btn-primary' : 'btn-secondary';
-            return React.createElement('button', {
-                className: buttonClass + ' ' + (props.className || ''),
-                disabled: props.disabled
-            }, props.text || props.children || 'Button');
-
-        case 'Form':
-            return React.createElement('form', { className: 'space-y-4' }, renderChildren());
-
-        case 'Field':
-            const fieldType = props.type || 'text';
-            return React.createElement('div', { className: 'mb-4' },
-                props.label && React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-1' }, props.label),
-                fieldType === 'select'
-                    ? React.createElement('select', {
-                        className: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
-                        value: props.value || ''
-                    }, (props.options || []).map((opt, i) =>
-                        React.createElement('option', { key: i, value: opt }, opt)
-                    ))
-                    : React.createElement('input', {
-                        type: fieldType,
-                        className: 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
-                        placeholder: props.placeholder,
-                        value: props.value || ''
-                    })
-            );
-
-        case 'Table':
-            return React.createElement('div', { className: 'overflow-x-auto' },
-                React.createElement('table', { className: 'min-w-full divide-y divide-gray-200' },
-                    React.createElement('thead', { className: 'bg-gray-50' },
-                        React.createElement('tr', {},
-                            (props.columns || []).map((col, i) =>
-                                React.createElement('th', {
-                                    key: i,
-                                    className: 'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
-                                }, col)
-                            )
-                        )
-                    ),
-                    React.createElement('tbody', { className: 'bg-white divide-y divide-gray-200' },
-                        (props.rows || []).map((row, i) =>
-                            React.createElement('tr', { key: i },
-                                (props.columns || []).map((col, j) =>
-                                    React.createElement('td', {
-                                        key: j,
-                                        className: 'px-6 py-4 whitespace-nowrap text-sm text-gray-900'
-                                    }, row[col] || '')
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-
-        case 'Badge':
-            return React.createElement('span', {
-                className: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + (
-                    props.status === 'Active' ? 'bg-green-100 text-green-800' :
-                    props.status === 'On Leave' ? 'bg-yellow-100 text-yellow-800' :
-                    props.status === 'Terminated' ? 'bg-red-100 text-red-800' :
-                    'bg-gray-100 text-gray-800'
-                )
-            }, props.status || props.text || props.children || 'Badge');
-
-        default:
-            return React.createElement('div', { className: 'text-gray-500 italic' }, 'Unknown component: ' + type);
+  const toggleDraggableMode = () => {
+    // If switching from draggable to static, auto-save the layout
+    if (isDraggableMode && generatedUI) {
+      // Save the current layout with positions to localStorage
+      localStorage.setItem(STORAGE_KEYS.LAST_RESPONSE, JSON.stringify(generatedUI));
+      showToast('Layout saved automatically', 'success');
     }
-}
-`;
+
+    setIsDraggableMode(!isDraggableMode);
   };
+
+
 
   const handleGenerate = async () => {
     if (!composer.trim()) return;
@@ -301,10 +181,17 @@ function RenderNode({ node }) {
 
     try {
       const response = await axios.post('/api/generate', { prompt: composer });
-      setGeneratedUI(response.data);
+
+      // Add IDs to the tree when first generated
+      const uiWithIds = {
+        ...response.data,
+        tree: ensureComponentIds(response.data.tree)
+      };
+
+      setGeneratedUI(uiWithIds);
 
       localStorage.setItem(STORAGE_KEYS.LAST_PROMPT, composer);
-      localStorage.setItem(STORAGE_KEYS.LAST_RESPONSE, JSON.stringify(response.data));
+      localStorage.setItem(STORAGE_KEYS.LAST_RESPONSE, JSON.stringify(uiWithIds));
     } catch (err: any) {
       const errorMessage = err.response?.data?.error || err.message || 'Generation failed';
       setError(errorMessage);
@@ -369,6 +256,27 @@ function RenderNode({ node }) {
       showToast(`Template "${templateData.name}" saved to library. File download failed.`, 'info');
     }
   };
+
+  // Position handling for draggable mode
+  const handlePositionChange = (id: string, position: { x: number; y: number }) => {
+    setGeneratedUI(prev => {
+      if (!prev) return prev;
+
+      // Update the UI tree with new position
+      const updateNodePosition = (node: any): any => {
+        if (node.id === id) {
+          return { ...node, position };
+        }
+        if (node.children) {
+          return { ...node, children: node.children.map(updateNodePosition) };
+        }
+        return node;
+      };
+
+      return { ...prev, tree: updateNodePosition(prev.tree) };
+    });
+  };
+
 
   // Register action handlers for template interactivity
   useEffect(() => {
@@ -438,32 +346,32 @@ function RenderNode({ node }) {
       {/* Preview - Always visible */}
       <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">Preview</h3>
+          <h3 className="font-semibold text-gray-900">
+            Preview{generatedUI ? ` - ${generatedUI.title}` : ''}
+          </h3>
           {generatedUI && (
             <div className="flex items-center gap-2">
               <button
                 className={`px-2 py-1 text-xs rounded border transition-colors ${
-                  useCanvasRenderer ? 'bg-blue-100 border-blue-300' : 'hover:bg-gray-50'
+                  isDraggableMode ? 'bg-green-100 border-green-300' : 'hover:bg-gray-50'
                 }`}
-                onClick={() => setUseCanvasRenderer(!useCanvasRenderer)}
-                title="Toggle renderer"
+                onClick={toggleDraggableMode}
+                title={isDraggableMode ? 'Disable draggable mode' : 'Enable draggable mode'}
               >
-                {useCanvasRenderer ? 'Canvas Kit' : 'Tailwind'}
+                {isDraggableMode ? '🎯 Draggable' : '📋 Static'}
               </button>
-              <button
-                className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
-                onClick={() => openPreviewInNewTab(generatedUI)}
-                title="Open preview in new tab"
-              >
-                ↗
-              </button>
-              <span className="text-xs text-gray-500">{generatedUI.title}</span>
             </div>
           )}
         </div>
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 max-h-[600px] overflow-y-auto">
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[400px] max-h-[800px] h-[600px]">
           {generatedUI ? (
-            useCanvasRenderer ? renderCanvasUi(generatedUI.tree) : renderUi(generatedUI.tree)
+            <div style={{ position: 'relative', minHeight: '400px' }}>
+              {renderCanvasUi(
+                generatedUI.tree,
+                isDraggableMode,
+                handlePositionChange
+              )}
+            </div>
           ) : (
             <div className="text-center text-gray-500 py-8">
               <div className="text-4xl mb-2">🎨</div>

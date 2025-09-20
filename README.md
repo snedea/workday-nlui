@@ -10,8 +10,9 @@ A local, browser-based design studio that turns natural-language prompts into **
 - **📄 Template Management**: Save, import, and reuse custom templates with built-in patterns for common workflows
 - **✍️ Smart Composer**: Build prompts using patterns, library tokens, and template snippets
 - **🤖 AI Integration**: Generate UI JSON via OpenAI or Azure OpenAI with intelligent prompt processing
-- **👀 Dual Renderer System**: Toggle between Canvas Kit v14 and Tailwind CSS renderers
-- **💾 Smart Persistence**: Automatically saves prompts, responses, and custom templates
+- **🎯 Drag & Drop Design**: Interactive component positioning with react-draggable and grid snapping
+- **📐 Resizable Preview**: Vertically resizable preview window with persistent sizing
+- **💾 Smart Persistence**: Automatically saves prompts, responses, layouts, and custom templates
 - **🎯 Workday Design Language**: Proper button spacing, component layout, and visual hierarchy
 
 ## Quick Start
@@ -223,6 +224,24 @@ Toggle between renderers in the preview window to compare Canvas Kit fidelity vs
 ### Debug Mode
 
 Set `NODE_ENV=development` to see detailed logs in the server console.
+
+## Release Notes
+
+### Version 0.1.3 - Enhanced Drag & Drop Experience
+- 🎯 **New**: Interactive drag-and-drop component positioning
+- 📐 **New**: Resizable preview window (vertical resize only)
+- 🎨 **Improved**: Always use Canvas Kit (removed dual renderer toggle)
+- 🏷️ **Improved**: Dynamic page titles in "Preview - [Title]" format
+- ⚡ **Technical**: Replaced custom drag-and-drop with lightweight react-draggable
+- 🐛 **Known Issues**:
+  - Buttons may not consistently remember positions between mode switches
+  - Table components may change size when switching between static/draggable views
+  - See [CLAUDE.md](./CLAUDE.md) for detailed development notes
+
+### Version 0.1.2 - Enhanced UI Layout and Search Experience
+- 🐛 Fixed Canvas Kit Table and StatusIndicator rendering errors
+- 🎨 Canvas Kit v14 Integration with Authentic Workday Fonts and Spacing
+- 📚 Rebrand to Workday NLUI Studio with enhanced template features
 
 ## License
 
