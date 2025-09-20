@@ -33,3 +33,12 @@ dist-ld
 # Build outputs
 dist-server/
 build/
+
+# Playwright test results (temporary artifacts)
+test-results/
+
+# Playwright report
+playwright-report/
+
+# Audit artifacts
+audit/

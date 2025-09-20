@@ -16,7 +16,7 @@ test.describe('Form Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of the generated form
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('generated-form.png');
   });
 
@@ -41,7 +41,7 @@ test.describe('Form Components Visual Tests', () => {
     }
 
     // Take screenshot in static mode
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('form-static-mode.png');
   });
 
@@ -56,7 +56,7 @@ test.describe('Form Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of form fields
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('form-validation-fields.png');
   });
 });

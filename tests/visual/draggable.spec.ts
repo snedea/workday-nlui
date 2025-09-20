@@ -19,7 +19,7 @@ test.describe('Drag and Drop Visual Tests', () => {
     }
 
     // Take screenshot showing drag handles
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('draggable-mode-handles.png');
   });
 
@@ -41,7 +41,7 @@ test.describe('Drag and Drop Visual Tests', () => {
     }
 
     // Take screenshot of draggable components
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('draggable-components-with-handles.png');
   });
 
@@ -67,7 +67,7 @@ test.describe('Drag and Drop Visual Tests', () => {
     }
 
     // Take screenshot in static mode after transition
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('static-mode-after-draggable.png');
   });
 
@@ -82,7 +82,7 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot showing resize handle at bottom
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('resizable-preview-window.png');
   });
 
@@ -97,7 +97,7 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot showing the "Preview - [Title]" format
-    const headerSection = page.locator('div:has(h3:text("Preview"))').first();
+    const headerSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(headerSection).toHaveScreenshot('preview-title-format.png');
   });
 });

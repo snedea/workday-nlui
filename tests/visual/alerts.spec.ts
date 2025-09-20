@@ -12,7 +12,7 @@ test.describe('Alerts and Status Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of alert components
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('alerts-banners-toasts.png');
   });
 
@@ -27,7 +27,7 @@ test.describe('Alerts and Status Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of status indicators
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('status-badges.png');
   });
 
@@ -42,7 +42,7 @@ test.describe('Alerts and Status Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('notification-states.png');
   });
 
@@ -66,7 +66,7 @@ test.describe('Alerts and Status Components Visual Tests', () => {
       await expect(page).toHaveScreenshot('interactive-toast.png');
     } else {
       // Fallback screenshot if no interactive elements
-      const previewSection = page.locator('div:has(h3:text("Preview"))');
+      const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
       await expect(previewSection).toHaveScreenshot('form-without-toast.png');
     }
   });

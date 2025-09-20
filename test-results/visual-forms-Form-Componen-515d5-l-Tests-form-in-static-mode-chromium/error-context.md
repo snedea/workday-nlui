@@ -8,7 +8,7 @@
     - paragraph [ref=e11]: Design Workday-style interfaces with natural language prompts, reusable templates, and live preview — powered by AI and Canvas Kit patterns.
   - generic [ref=e12]:
     - generic [ref=e13]:
-      - heading "Preview - Contact Form" [level=3] [ref=e14]
+      - heading "Preview - Contact Us" [level=3] [ref=e14]
       - button "📋 Static" [ref=e16] [cursor=pointer]
     - generic [ref=e20]:
       - heading "Contact Us" [level=2] [ref=e22]

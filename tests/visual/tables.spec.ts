@@ -12,7 +12,7 @@ test.describe('Table Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of the table
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('employee-table.png');
   });
 
@@ -27,7 +27,7 @@ test.describe('Table Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot focusing on status indicators
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('table-status-indicators.png');
   });
 
@@ -49,7 +49,7 @@ test.describe('Table Components Visual Tests', () => {
     }
 
     // Take screenshot in draggable mode
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('table-draggable-mode.png');
   });
 
@@ -64,7 +64,7 @@ test.describe('Table Components Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Take screenshot of complex table
-    const previewSection = page.locator('div:has(h3:text("Preview"))');
+    const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
     await expect(previewSection).toHaveScreenshot('table-complex-content.png');
   });
 });

@@ -8,8 +8,8 @@ test.describe('Prompt Composer Visual Tests', () => {
     await expect(page.locator('h3:has-text("Prompt Composer")')).toBeVisible();
     await page.waitForTimeout(1000);
 
-    // Focus on composer area
-    const composerSection = page.locator('div:has(h3:text("Prompt Composer"))');
+    // Focus on composer area - use more specific selector
+    const composerSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl.p-4.flex.flex-col');
     await expect(composerSection).toHaveScreenshot('composer-empty.png');
   });
 
@@ -23,7 +23,7 @@ test.describe('Prompt Composer Visual Tests', () => {
     await page.waitForTimeout(500);
 
     // Take screenshot of filled composer
-    const composerSection = page.locator('div:has(h3:text("Prompt Composer"))');
+    const composerSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl.p-4.flex.flex-col');
     await expect(composerSection).toHaveScreenshot('composer-filled.png');
   });
 
@@ -47,7 +47,7 @@ test.describe('Prompt Composer Visual Tests', () => {
     await page.waitForTimeout(500);
 
     // Take screenshot with menu open
-    const composerSection = page.locator('div:has(h3:text("Prompt Composer"))');
+    const composerSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl.p-4.flex.flex-col');
     await expect(composerSection).toHaveScreenshot('composer-menu-open.png');
   });
 });

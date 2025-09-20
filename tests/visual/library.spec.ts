@@ -9,7 +9,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(2000);
 
     // Take screenshot of full library sidebar
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-sidebar-full.png');
   });
 
@@ -21,7 +21,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(1000);
 
     // Take screenshot of objects view
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-objects-category.png');
   });
 
@@ -33,7 +33,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(1000);
 
     // Take screenshot of fields view
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-fields-category.png');
   });
 
@@ -45,7 +45,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(1000);
 
     // Take screenshot of controls view
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-controls-category.png');
   });
 
@@ -57,7 +57,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(1000);
 
     // Take screenshot of icons view
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-icons-category.png');
   });
 
@@ -75,7 +75,7 @@ test.describe('Library and Templates Visual Tests', () => {
     }
 
     // Take screenshot showing use button interaction
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-item-use-button.png');
   });
 
@@ -88,7 +88,7 @@ test.describe('Library and Templates Visual Tests', () => {
     await page.waitForTimeout(1000);
 
     // Take screenshot of search results
-    const librarySection = page.locator('div:has(h3:text("Library"))');
+    const librarySection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Library' });
     await expect(librarySection).toHaveScreenshot('library-search-results.png');
   });
 });
