@@ -1,6 +1,6 @@
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    ...(process.env.TW_ENABLED === 'true' ? { tailwindcss: {} } : {}),
     autoprefixer: {},
   },
 }

@@ -75,19 +75,49 @@ Safely remove Tailwind CSS dependency from Workday NLUI Studio while maintaining
 - **Color system**: Already using some Canvas Kit tokens via Tailwind
 - **Typography**: Mix of Tailwind utilities and Canvas Kit components
 
-## Phase 2 — Component Migration (PENDING)
+## Phase 2 — Kill-Switch Implementation (COMPLETE) ✅
+- [x] Create separate Tailwind CSS file (`src/tw.css`)
+- [x] Implement conditional loading in `src/main.tsx`
+- [x] Update PostCSS configuration for conditional Tailwind
+- [x] Install cross-env dependency for cross-platform support
+- [x] Add npm scripts for Tailwind toggle
+- [x] Run visual regression tests with Tailwind disabled
+- [x] Document kill-switch usage
+
+**Kill-Switch Mechanism:**
+The application can now run with or without Tailwind CSS using environment variables:
+
+**Development Commands:**
+- `npm run tw:on` - Run dev server WITH Tailwind (normal mode)
+- `npm run tw:off` - Run dev server WITHOUT Tailwind (test mode)
+- `npm run tw:build:on` - Build WITH Tailwind
+- `npm run tw:build:off` - Build WITHOUT Tailwind
+- `npm run audit:tw` - Run Tailwind usage audit
+
+**Visual Impact Analysis:**
+- **With Tailwind OFF**: Complete layout breakdown, no styling, components unstyled
+- **Evidence**: Screenshots captured in `__screenshots__/diffs/` showing dramatic differences
+- **Conclusion**: Confirms heavy Tailwind dependency and validates need for systematic migration
+
+**Technical Implementation:**
+- `src/tw.css` - Contains isolated @tailwind directives
+- `src/main.tsx` - Conditional import based on `VITE_TW_ENABLED`
+- `postcss.config.cjs` - Conditional Tailwind plugin based on `TW_ENABLED`
+- `playwright-notw.config.ts` - Separate test config for no-Tailwind testing
+
+## Phase 3 — Component Migration (PENDING)
 - [ ] Migrate low-risk utility components first
 - [ ] Replace Tailwind layout classes with CSS Grid/Flexbox
 - [ ] Convert spacing/sizing to Canvas Kit tokens
 - [ ] Update color system to Canvas Kit palette
 
-## Phase 3 — Build System Updates (PENDING)
+## Phase 4 — Build System Updates (PENDING)
 - [ ] Remove Tailwind from build pipeline
 - [ ] Update PostCSS configuration
 - [ ] Clean up unused CSS files
 - [ ] Optimize bundle size
 
-## Phase 4 — Verification & Cleanup (PENDING)
+## Phase 5 — Verification & Cleanup (PENDING)
 - [ ] Run visual regression tests
 - [ ] Performance testing
 - [ ] Cross-browser validation
@@ -118,6 +148,15 @@ Safely remove Tailwind CSS dependency from Workday NLUI Studio while maintaining
 - Generated detailed reports: JSON, CSV, and Markdown formats
 - Identified migration priorities and hot spots
 - Updated documentation with findings
+
+### 2025-09-20 - Phase 2 Kill-Switch Complete
+- Implemented environment-gated Tailwind loading mechanism
+- Created separate `src/tw.css` file with @tailwind directives
+- Added conditional import in `src/main.tsx` and PostCSS config
+- Installed cross-env and added npm scripts for toggle functionality
+- Captured visual differences with Tailwind disabled
+- Confirmed complete layout breakdown without Tailwind (validates dependency)
+- Created documentation and comparison screenshots
 
 ---
 

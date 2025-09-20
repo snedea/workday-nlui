@@ -16,7 +16,12 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"server/**/*.ts\"",
     "test:visual": "playwright test",
-    "test:visual:update": "PLAYWRIGHT_UPDATE_SNAPSHOTS=1 playwright test"
+    "test:visual:update": "PLAYWRIGHT_UPDATE_SNAPSHOTS=1 playwright test",
+    "tw:on": "cross-env VITE_TW_ENABLED=true TW_ENABLED=true concurrently \"npm run dev:server\" \"vite\"",
+    "tw:off": "cross-env VITE_TW_ENABLED=false TW_ENABLED=false concurrently \"npm run dev:server\" \"vite\"",
+    "tw:build:on": "cross-env VITE_TW_ENABLED=true TW_ENABLED=true npm run build",
+    "tw:build:off": "cross-env VITE_TW_ENABLED=false TW_ENABLED=false npm run build",
+    "audit:tw": "npx tsx scripts/tw-audit.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -51,6 +56,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
+    "cross-env": "^10.0.0",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

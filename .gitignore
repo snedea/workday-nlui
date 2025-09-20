@@ -42,3 +42,6 @@ playwright-report/
 
 # Audit artifacts
 audit/
+
+# Visual diff screenshots
+__screenshots__/
