@@ -27,6 +27,32 @@ import * as systemIcons from '@workday/canvas-system-icons-web';
 import * as accentIcons from '@workday/canvas-accent-icons-web';
 import * as appletIcons from '@workday/canvas-applet-icons-web';
 
+// Helper function to detect if a string is an image URL
+const isImageURL = (url: string): boolean => {
+  if (!url || typeof url !== 'string') return false;
+
+  // Enhanced image URL detection for badges and various image services
+  const imageUrlPattern = /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
+  const imageDomainPatterns = [
+    'images.credly.com',
+    'upload.wikimedia.org',
+    'via.placeholder.com',
+    'badgelibraryprovider',
+    'scrumalliance.org/images',
+    'hawaii.edu',
+    '/images/',
+    '/badge',
+    'cdn.',
+    'amazonaws.com'
+  ];
+
+  const isImageUrl = imageUrlPattern.test(url) ||
+    imageDomainPatterns.some(pattern => url.includes(pattern)) ||
+    (url.startsWith('http') && url.toLowerCase().includes('image'));
+
+  return isImageUrl;
+};
+
 export const renderCanvasUi = (
   node: UiNode,
   isDraggableMode = false,
@@ -282,6 +308,37 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
                       </Table.Cell>
                     );
                   }
+
+                  // Check if cell value is an image URL
+                  if (cellValue && typeof cellValue === 'string') {
+                    const isImageUrl = isImageURL(cellValue);
+                    if (isImageUrl) {
+                      return (
+                        <Table.Cell key={j}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <img
+                              src={cellValue}
+                              alt="Badge"
+                              style={{
+                                width: '48px',
+                                height: '48px',
+                                objectFit: 'contain',
+                                borderRadius: '4px',
+                                border: '1px solid #e5e7eb',
+                                backgroundColor: 'white'
+                              }}
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                                target.parentElement!.innerHTML = '🖼️';
+                              }}
+                            />
+                          </div>
+                        </Table.Cell>
+                      );
+                    }
+                  }
+
                   // Otherwise render as string
                   return <Table.Cell key={j}>{cellValue || ''}</Table.Cell>;
                 })}
