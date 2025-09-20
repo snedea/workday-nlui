@@ -1,27 +1,51 @@
-@layer base {
-  body {
-    @apply bg-gray-50 text-gray-900;
-  }
+/* Base styles - will be populated by Tailwind when enabled */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
-@layer components {
-  .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200;
-  }
+/* Fallback styles for when Tailwind is disabled */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
 
-  .btn-primary {
-    @apply bg-workday-blue text-white px-4 py-2 rounded-md hover:bg-workday-blue-dark transition-colors;
-  }
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
 
-  .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition-colors;
-  }
+.btn-primary:hover {
+  background-color: #2563eb;
+}
 
-  .tab-active {
-    @apply border-b-2 border-workday-blue text-workday-blue;
-  }
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
 
-  .tab-inactive {
-    @apply text-gray-600 hover:text-gray-800;
-  }
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.tab-active {
+  border-bottom: 2px solid #3b82f6;
+  color: #3b82f6;
+}
+
+.tab-inactive {
+  color: #6b7280;
+}
+
+.tab-inactive:hover {
+  color: #374151;
 }
