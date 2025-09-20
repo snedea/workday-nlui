@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Drag and Drop Visual Tests', () => {
-  test('draggable mode activation', async ({ page }) => {
+  test('edit mode default activation', async ({ page }) => {
     await page.goto('/');
 
     // Create a simple layout with draggable components
@@ -11,16 +11,10 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Switch to draggable mode
-    const viewButton = page.locator('button:has-text("👁️ View")');
-    if (await viewButton.isVisible()) {
-      await viewButton.click();
-      await page.waitForTimeout(1000);
-    }
-
+    // Should automatically be in edit mode with drag handles visible
     // Take screenshot showing drag handles
     const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
-    await expect(previewSection).toHaveScreenshot('draggable-mode-handles.png');
+    await expect(previewSection).toHaveScreenshot('edit-mode-handles.png');
   });
 
   test('components with drag handles visible', async ({ page }) => {
@@ -33,19 +27,13 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Activate draggable mode
-    const viewButton = page.locator('button:has-text("👁️ View")');
-    if (await viewButton.isVisible()) {
-      await viewButton.click();
-      await page.waitForTimeout(1000);
-    }
-
+    // Should automatically show drag handles in edit mode
     // Take screenshot of draggable components
     const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
-    await expect(previewSection).toHaveScreenshot('draggable-components-with-handles.png');
+    await expect(previewSection).toHaveScreenshot('edit-components-with-handles.png');
   });
 
-  test('draggable to static mode transition', async ({ page }) => {
+  test('edit mode persistence', async ({ page }) => {
     await page.goto('/');
 
     // Create layout
@@ -55,20 +43,10 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Start in draggable mode
-    const viewButton = page.locator('button:has-text("👁️ View")');
-    if (await viewButton.isVisible()) {
-      await viewButton.click();
-      await page.waitForTimeout(1000);
-
-      // Now switch back to static
-      await page.click('button:has-text("✏️ Edit")');
-      await page.waitForTimeout(1000);
-    }
-
-    // Take screenshot in static mode after transition
+    // Should remain in edit mode with drag handles visible
+    // Take screenshot showing persistent edit mode
     const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
-    await expect(previewSection).toHaveScreenshot('static-mode-after-draggable.png');
+    await expect(previewSection).toHaveScreenshot('edit-mode-persistent.png');
   });
 
   test('resizable preview window', async ({ page }) => {

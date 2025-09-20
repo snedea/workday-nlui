@@ -31,7 +31,7 @@ test.describe('Table Components Visual Tests', () => {
     await expect(previewSection).toHaveScreenshot('table-status-indicators.png');
   });
 
-  test('table in draggable mode', async ({ page }) => {
+  test('table in edit mode', async ({ page }) => {
     await page.goto('/');
 
     // Create a table
@@ -41,16 +41,10 @@ test.describe('Table Components Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Switch to edit mode
-    const viewButton = page.locator('button:has-text("👁️ View")');
-    if (await viewButton.isVisible()) {
-      await viewButton.click();
-      await page.waitForTimeout(1000);
-    }
-
-    // Take screenshot in draggable mode
+    // Should automatically be in edit mode (with drag handles visible)
+    // Take screenshot showing drag handles
     const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
-    await expect(previewSection).toHaveScreenshot('table-draggable-mode.png');
+    await expect(previewSection).toHaveScreenshot('table-edit-mode.png');
   });
 
   test('complex table with mixed content', async ({ page }) => {

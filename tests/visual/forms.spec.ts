@@ -12,7 +12,7 @@ test.describe('Form Components Visual Tests', () => {
     await page.click('button:has-text("Generate")');
 
     // Wait for generation to complete
-    await expect(page.locator('text=Preview')).toBeVisible();
+    await expect(page.locator('h3:has-text("Preview")')).toBeVisible();
     await page.waitForTimeout(3000);
 
     // Take screenshot of the generated form
@@ -20,7 +20,7 @@ test.describe('Form Components Visual Tests', () => {
     await expect(previewSection).toHaveScreenshot('generated-form.png');
   });
 
-  test('form in static mode', async ({ page }) => {
+  test('form in edit mode', async ({ page }) => {
     await page.goto('/');
 
     // Create a form
@@ -30,19 +30,10 @@ test.describe('Form Components Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Ensure we're in view mode
-    const viewButton = page.locator('button:has-text("👁️ View")');
-    if (await viewButton.isVisible()) {
-      // Already in view mode
-    } else {
-      // Switch to view mode
-      await page.click('button:has-text("✏️ Edit")');
-      await page.waitForTimeout(1000);
-    }
-
-    // Take screenshot in static mode
+    // Should automatically be in edit mode (with drag handles visible)
+    // Take screenshot showing drag handles
     const previewSection = page.locator('.bg-white.border.border-gray-200.rounded-2xl').filter({ hasText: 'Preview' });
-    await expect(previewSection).toHaveScreenshot('form-static-mode.png');
+    await expect(previewSection).toHaveScreenshot('form-edit-mode.png');
   });
 
   test('form with validation states', async ({ page }) => {
