@@ -30,13 +30,13 @@ test.describe('Form Components Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Ensure we're in static mode
-    const staticButton = page.locator('button:has-text("📋 Static")');
-    if (await staticButton.isVisible()) {
-      // Already in static mode
+    // Ensure we're in view mode
+    const viewButton = page.locator('button:has-text("👁️ View")');
+    if (await viewButton.isVisible()) {
+      // Already in view mode
     } else {
-      // Switch to static mode
-      await page.click('button:has-text("🎯 Draggable")');
+      // Switch to view mode
+      await page.click('button:has-text("✏️ Edit")');
       await page.waitForTimeout(1000);
     }
 

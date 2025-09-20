@@ -41,10 +41,10 @@ test.describe('Table Components Visual Tests', () => {
     await page.click('button:has-text("Generate")');
     await page.waitForTimeout(3000);
 
-    // Switch to draggable mode
-    const draggableButton = page.locator('button:has-text("📋 Static")');
-    if (await draggableButton.isVisible()) {
-      await draggableButton.click();
+    // Switch to edit mode
+    const viewButton = page.locator('button:has-text("👁️ View")');
+    if (await viewButton.isVisible()) {
+      await viewButton.click();
       await page.waitForTimeout(1000);
     }
 

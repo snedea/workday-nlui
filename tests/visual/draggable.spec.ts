@@ -12,9 +12,9 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Switch to draggable mode
-    const staticButton = page.locator('button:has-text("📋 Static")');
-    if (await staticButton.isVisible()) {
-      await staticButton.click();
+    const viewButton = page.locator('button:has-text("👁️ View")');
+    if (await viewButton.isVisible()) {
+      await viewButton.click();
       await page.waitForTimeout(1000);
     }
 
@@ -34,9 +34,9 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Activate draggable mode
-    const staticButton = page.locator('button:has-text("📋 Static")');
-    if (await staticButton.isVisible()) {
-      await staticButton.click();
+    const viewButton = page.locator('button:has-text("👁️ View")');
+    if (await viewButton.isVisible()) {
+      await viewButton.click();
       await page.waitForTimeout(1000);
     }
 
@@ -56,13 +56,13 @@ test.describe('Drag and Drop Visual Tests', () => {
     await page.waitForTimeout(3000);
 
     // Start in draggable mode
-    const staticButton = page.locator('button:has-text("📋 Static")');
-    if (await staticButton.isVisible()) {
-      await staticButton.click();
+    const viewButton = page.locator('button:has-text("👁️ View")');
+    if (await viewButton.isVisible()) {
+      await viewButton.click();
       await page.waitForTimeout(1000);
 
       // Now switch back to static
-      await page.click('button:has-text("🎯 Draggable")');
+      await page.click('button:has-text("✏️ Edit")');
       await page.waitForTimeout(1000);
     }
 

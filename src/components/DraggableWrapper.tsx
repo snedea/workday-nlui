@@ -48,16 +48,17 @@ export const DraggableWrapper: React.FC<DraggableWrapperProps> = ({
             backgroundColor: '#0875e1',
             borderRadius: '50%',
             cursor: 'grab',
-            zIndex: 1000,
+            zIndex: 9999,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '8px',
             color: 'white',
             fontWeight: 'bold',
-            userSelect: 'none'
+            userSelect: 'none',
+            border: '1px solid #ffffff',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}
-          onMouseDown={() => {}}
         >
           ⋮⋮
         </div>

@@ -356,9 +356,9 @@ function App() {
                   isDraggableMode ? 'bg-green-100 border-green-300' : 'hover:bg-gray-50'
                 }`}
                 onClick={toggleDraggableMode}
-                title={isDraggableMode ? 'Disable draggable mode' : 'Enable draggable mode'}
+                title={isDraggableMode ? 'Switch to view mode' : 'Switch to edit mode'}
               >
-                {isDraggableMode ? '🎯 Draggable' : '📋 Static'}
+                {isDraggableMode ? '✏️ Edit' : '👁️ View'}
               </button>
             </div>
           )}

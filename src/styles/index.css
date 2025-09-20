@@ -49,3 +49,16 @@ body {
 .tab-inactive:hover {
   color: #374151;
 }
+
+/* Drag handle styles */
+.drag-handle:hover {
+  background-color: #0563c1 !important;
+  transform: scale(1.1);
+  cursor: grab !important;
+}
+
+.drag-handle:active {
+  background-color: #0563c1 !important;
+  cursor: grabbing !important;
+  transform: scale(0.95);
+}
