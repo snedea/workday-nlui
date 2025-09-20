@@ -337,9 +337,12 @@ function App() {
       {/* Preview - Always visible */}
       <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-4">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">
-            Preview{generatedUI ? ` - ${generatedUI.title}` : ''}
-          </h3>
+          <div className="flex items-center gap-1">
+            <span className="font-semibold text-gray-900">Preview:</span>
+            {generatedUI && (
+              <span className="text-sm text-gray-600">{generatedUI.title}</span>
+            )}
+          </div>
         </div>
         <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[300px] max-h-[600px] h-[450px]">
           {generatedUI ? (
