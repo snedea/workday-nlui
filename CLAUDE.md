@@ -1,17 +1,30 @@
 # Claude AI Development Notes - Workday NLUI Studio
 
-## Known Issues (v0.1.3)
+## Resolved Issues (Previous Versions)
 
-### 🐛 Drag & Drop Issues
+### ✅ Fixed in v0.1.4
+- **Nested Drag Handles**: Fixed issue where drag handles inside tables/complex layouts were visible but not clickable
+- Added `pointer-events: auto !important` CSS override for `.drag-handle` class
+- All nested components (fields, buttons) inside containers now fully draggable
+
+### ✅ Fixed in v0.1.3
 - **Button Position Memory**: Buttons don't consistently remember their dragged positions when switching between static/draggable modes
 - **Table Size Changes**: Table components change size when switching from static to draggable view, causing layout shifts
 
-### 🔧 Technical Debt
-- Need to investigate position persistence for all component types
-- Table rendering inconsistencies between modes need alignment
-- Component ID generation could be more stable
+## Recent Changes (v0.1.4)
 
-## Recent Changes (v0.1.3)
+### 🎯 Nested Drag & Drop Fix
+- **Issue**: Drag handles inside tables, forms, and complex layouts were visible but not clickable
+- **Root Cause**: Parent `DraggableWrapper` components set `pointer-events: none` on children, blocking nested handle interactions
+- **Solution**: Added CSS override `pointer-events: auto !important` specifically for `.drag-handle` elements
+- **Impact**: All nested components now fully draggable regardless of container depth
+
+### ✅ Completed v0.1.4
+- Fixed nested drag handle pointer events blocking
+- Enhanced CSS specificity for drag handle interactions
+- Improved user experience in complex layouts (tables, forms)
+
+## Previous Changes (v0.1.3)
 
 ### ✅ Completed
 - Replaced complex custom drag-and-drop with lightweight `react-draggable` library
@@ -113,10 +126,30 @@ src/
 ```
 
 ## Next Priority Fixes
-1. **Button position persistence** - investigate why buttons lose positions
-2. **Table size consistency** - ensure tables render same size in both modes
-3. **Component ID stability** - prevent ID regeneration on re-renders
-4. **Drag handle visibility** - ensure blue handles appear consistently
+1. **Component ID stability** - prevent ID regeneration on re-renders
+2. **Export functionality** - wireframe formats and AI-friendly code output
+3. **Enhanced positioning** - improve grid snapping and alignment tools
+4. **Performance optimization** - reduce re-renders during drag operations
+
+## Upcoming Features (v0.1.5 Roadmap)
+
+### 🔄 Export System
+- **Wireframe Formats**: Export to Figma JSON, Sketch, Adobe XD
+- **Code Output**: Generate React components, HTML, Vue templates
+- **AI-Friendly**: JSON schema optimized for LLM consumption
+- **Position Preservation**: Export with current drag positions
+- **Canvas Kit Integrity**: Maintain authentic Workday component structure
+
+### 📊 Export Technical Implementation
+```typescript
+// Planned export interface
+interface ExportOptions {
+  format: 'figma' | 'sketch' | 'react' | 'html' | 'vue' | 'json';
+  includePositions: boolean;
+  preserveCanvasKit: boolean;
+  optimizeForAI: boolean;
+}
+```
 
 ---
-*Last updated: v0.1.3 - Enhanced drag-and-drop with react-draggable*
+*Last updated: v0.1.4 - Fixed nested drag handle interactions*

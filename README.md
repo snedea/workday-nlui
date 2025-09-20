@@ -251,16 +251,18 @@ Set `NODE_ENV=development` to see detailed logs in the server console.
 
 ## Release Notes
 
+### Version 0.1.4 - Fixed Nested Drag Handle Interactions
+- 🐛 **Fixed**: Nested drag handles in tables and complex layouts now fully clickable
+- ⚡ **Technical**: Added CSS `pointer-events: auto !important` override for drag handles
+- 🎯 **Improved**: All components inside containers (tables, forms) now draggable
+- 📋 **Roadmap**: Export functionality coming in v0.1.5 (wireframes + AI-friendly code)
+
 ### Version 0.1.3 - Enhanced Drag & Drop Experience
 - 🎯 **New**: Interactive drag-and-drop component positioning
 - 📐 **New**: Resizable preview window (vertical resize only)
 - 🎨 **Improved**: Always use Canvas Kit (removed dual renderer toggle)
 - 🏷️ **Improved**: Dynamic page titles in "Preview - [Title]" format
 - ⚡ **Technical**: Replaced custom drag-and-drop with lightweight react-draggable
-- 🐛 **Known Issues**:
-  - Buttons may not consistently remember positions between mode switches
-  - Table components may change size when switching between static/draggable views
-  - See [CLAUDE.md](./CLAUDE.md) for detailed development notes
 
 ### Version 0.1.2 - Enhanced UI Layout and Search Experience
 - 🐛 Fixed Canvas Kit Table and StatusIndicator rendering errors
