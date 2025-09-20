@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { LIB } from '../data/library';
 
 interface PromptComposerProps {
@@ -22,7 +22,6 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
   onAddTemplate
 }) => {
   const [copied, setCopied] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [templateForm, setTemplateForm] = useState({
     name: '',
@@ -58,7 +57,6 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
     });
 
     setShowSaveDialog(true);
-    setShowMenu(false);
   };
 
   const handleSaveTemplate = () => {
@@ -78,7 +76,6 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
 
   const importTemplate = () => {
     fileInputRef.current?.click();
-    setShowMenu(false);
   };
 
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,22 +97,6 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
     event.target.value = ''; // Reset input
   };
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Don't close if clicking inside the menu container
-      const target = event.target as Element;
-      const menuContainer = target.closest('.template-menu-container');
-      if (!menuContainer && showMenu) {
-        setShowMenu(false);
-      }
-    };
-
-    if (showMenu) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [showMenu]);
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col">
@@ -130,32 +111,20 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
             {copied ? "Copied ✓" : "Copy"}
           </button>
 
-          {/* Template Actions Menu */}
-          <div className="relative template-menu-container">
-            <button
-              className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
-              onClick={() => setShowMenu(!showMenu)}
-            >
-              ⋯
-            </button>
-            {showMenu && (
-              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[160px]">
-                <button
-                  className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 first:rounded-t-lg disabled:opacity-50"
-                  onClick={saveAsTemplate}
-                  disabled={!value.trim() || !onAddTemplate}
-                >
-                  Save as Template...
-                </button>
-                <button
-                  className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 last:rounded-b-lg"
-                  onClick={importTemplate}
-                >
-                  Import Template
-                </button>
-              </div>
-            )}
-          </div>
+          <button
+            className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+            onClick={importTemplate}
+          >
+            Import Template
+          </button>
+
+          <button
+            className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+            onClick={saveAsTemplate}
+            disabled={!value.trim() || !onAddTemplate}
+          >
+            Save as Template
+          </button>
 
           <button
             className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
