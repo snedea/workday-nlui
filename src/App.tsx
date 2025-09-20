@@ -341,9 +341,9 @@ function App() {
             Preview{generatedUI ? ` - ${generatedUI.title}` : ''}
           </h3>
         </div>
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[400px] max-h-[800px] h-[600px]">
+        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[300px] max-h-[600px] h-[450px]">
           {generatedUI ? (
-            <div style={{ position: 'relative', minHeight: '400px' }}>
+            <div style={{ position: 'relative', minHeight: '300px' }}>
               {renderCanvasUi(
                 generatedUI.tree,
                 isDraggableMode,
