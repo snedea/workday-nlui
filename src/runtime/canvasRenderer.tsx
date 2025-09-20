@@ -104,7 +104,7 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
   // Helper function to determine if a component should be draggable
   const isDraggableComponent = (componentType: string) => {
     // Don't make containers draggable - only individual components
-    const nonDraggableTypes = ['Page', 'Tabs', 'Tab', 'Form'];
+    const nonDraggableTypes = ['Page', 'Tabs', 'Form'];
     return !nonDraggableTypes.includes(componentType);
   };
 

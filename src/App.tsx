@@ -55,7 +55,7 @@ function App() {
     }
     return null;
   });
-  const [isDraggableMode, setIsDraggableMode] = useState(false);
+  const [isDraggableMode, setIsDraggableMode] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
@@ -160,16 +160,6 @@ function App() {
     }
   };
 
-  const toggleDraggableMode = () => {
-    // If switching from draggable to static, auto-save the layout
-    if (isDraggableMode && generatedUI) {
-      // Save the current layout with positions to localStorage
-      localStorage.setItem(STORAGE_KEYS.LAST_RESPONSE, JSON.stringify(generatedUI));
-      showToast('Layout saved automatically', 'success');
-    }
-
-    setIsDraggableMode(!isDraggableMode);
-  };
 
 
 
@@ -189,6 +179,7 @@ function App() {
       };
 
       setGeneratedUI(uiWithIds);
+      setIsDraggableMode(true); // Always start in Edit mode
 
       localStorage.setItem(STORAGE_KEYS.LAST_PROMPT, composer);
       localStorage.setItem(STORAGE_KEYS.LAST_RESPONSE, JSON.stringify(uiWithIds));
@@ -349,19 +340,6 @@ function App() {
           <h3 className="font-semibold text-gray-900">
             Preview{generatedUI ? ` - ${generatedUI.title}` : ''}
           </h3>
-          {generatedUI && (
-            <div className="flex items-center gap-2">
-              <button
-                className={`px-2 py-1 text-xs rounded border transition-colors ${
-                  isDraggableMode ? 'bg-green-100 border-green-300' : 'hover:bg-gray-50'
-                }`}
-                onClick={toggleDraggableMode}
-                title={isDraggableMode ? 'Switch to view mode' : 'Switch to edit mode'}
-              >
-                {isDraggableMode ? '✏️ Edit' : '👁️ View'}
-              </button>
-            </div>
-          )}
         </div>
         <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[400px] max-h-[800px] h-[600px]">
           {generatedUI ? (
