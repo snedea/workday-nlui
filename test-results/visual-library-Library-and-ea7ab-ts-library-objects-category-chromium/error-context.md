@@ -1,0 +1,151 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e6]:
+  - generic [ref=e8]:
+    - heading "Workday NLUI Studio" [level=1] [ref=e9]
+    - paragraph [ref=e10]: Workday Natural Language UI Studio
+    - paragraph [ref=e11]: Design Workday-style interfaces with natural language prompts, reusable templates, and live preview — powered by AI and Canvas Kit patterns.
+  - generic [ref=e12]:
+    - heading "Preview" [level=3] [ref=e14]
+    - generic [ref=e16]:
+      - generic [ref=e17]: 🎨
+      - paragraph [ref=e18]: Your generated UI will appear here
+      - paragraph [ref=e19]: Use the prompt composer below to create Workday-style interfaces
+  - generic [ref=e21]:
+    - generic [ref=e22]:
+      - heading "Prompt Composer" [level=3] [ref=e23]
+      - generic [ref=e24]:
+        - button "Copy" [ref=e25] [cursor=pointer]
+        - button "⋯" [ref=e27] [cursor=pointer]
+        - button "Generate" [ref=e28] [cursor=pointer]
+    - textbox "Describe the page you want using library terms..." [ref=e29]: Create a Workday-style profile page for Worker with header (avatar, Legal Name, title, Status), tabs (Profile, Job, Pay, Time Off), and a primary "Save" button.
+    - generic [ref=e30]:
+      - heading "Patterns" [level=4] [ref=e31]
+      - generic [ref=e32]:
+        - button "Entity Profile Page" [ref=e33] [cursor=pointer]
+        - button "Form Page" [ref=e34] [cursor=pointer]
+        - button "List + Filters" [ref=e35] [cursor=pointer]
+        - button "Wizard / BP Steps" [ref=e36] [cursor=pointer]
+    - paragraph [ref=e37]:
+      - text: "Tip: Click"
+      - generic [ref=e38]: use
+      - text: on any item to insert a token like
+      - code [ref=e39]: "[Object: Worker]"
+      - text: or a descriptive phrase into the prompt.
+  - textbox "Search… try \"Worker\", \"Effective Date\", \"dropdown\", \"tabs\"" [ref=e42]
+  - generic [ref=e44]:
+    - 'button "📚 All: 6" [ref=e45] [cursor=pointer]':
+      - generic [ref=e46] [cursor=pointer]: 📚
+      - generic [ref=e47] [cursor=pointer]: "All:"
+      - generic [ref=e48] [cursor=pointer]: "6"
+    - 'button "🏢 Objects: 6" [active] [ref=e49] [cursor=pointer]':
+      - generic [ref=e50] [cursor=pointer]: 🏢
+      - generic [ref=e51] [cursor=pointer]: "Objects:"
+      - generic [ref=e52] [cursor=pointer]: "6"
+    - 'button "📝 Fields: 0 / 8" [ref=e53] [cursor=pointer]':
+      - generic [ref=e54] [cursor=pointer]: 📝
+      - generic [ref=e55] [cursor=pointer]: "Fields:"
+      - generic [ref=e56] [cursor=pointer]: 0 / 8
+    - 'button "🎛️ Controls: 0 / 18" [ref=e57] [cursor=pointer]':
+      - generic [ref=e58] [cursor=pointer]: 🎛️
+      - generic [ref=e59] [cursor=pointer]: "Controls:"
+      - generic [ref=e60] [cursor=pointer]: 0 / 18
+    - 'button "🎨 Icons: 0 / 1115" [ref=e61] [cursor=pointer]':
+      - generic [ref=e62] [cursor=pointer]: 🎨
+      - generic [ref=e63] [cursor=pointer]: "Icons:"
+      - generic [ref=e64] [cursor=pointer]: 0 / 1115
+    - 'button "📄 Templates: 0 / 2" [ref=e65] [cursor=pointer]':
+      - generic [ref=e66] [cursor=pointer]: 📄
+      - generic [ref=e67] [cursor=pointer]: "Templates:"
+      - generic [ref=e68] [cursor=pointer]: 0 / 2
+  - generic [ref=e71]:
+    - generic [ref=e72]:
+      - heading "Objects" [level=3] [ref=e73]
+      - generic [ref=e74]: "6"
+    - generic [ref=e75]:
+      - generic [ref=e77]:
+        - generic [ref=e78]: 👤
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - generic [ref=e81]: Worker
+            - generic [ref=e82]:
+              - button "use" [ref=e83] [cursor=pointer]
+              - button "copy" [ref=e84] [cursor=pointer]
+          - paragraph [ref=e85]: Add a Worker summary card with avatar, name, title, and status.
+          - generic [ref=e86]:
+            - generic [ref=e87]: "#person"
+            - generic [ref=e88]: "#employee"
+            - generic [ref=e89]: "#profile"
+      - generic [ref=e91]:
+        - generic [ref=e92]: 🧾
+        - generic [ref=e93]:
+          - generic [ref=e94]:
+            - generic [ref=e95]: Job Requisition
+            - generic [ref=e96]:
+              - button "use" [ref=e97] [cursor=pointer]
+              - button "copy" [ref=e98] [cursor=pointer]
+          - paragraph [ref=e99]: Create a Job Requisition dashboard with filters for location and status.
+          - generic [ref=e100]:
+            - generic [ref=e101]: "#recruiting"
+            - generic [ref=e102]: "#jobs"
+      - generic [ref=e104]:
+        - generic [ref=e105]: 🔁
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - generic [ref=e108]: Business Process
+            - generic [ref=e109]:
+              - button "use" [ref=e110] [cursor=pointer]
+              - button "copy" [ref=e111] [cursor=pointer]
+          - paragraph [ref=e112]: Show a Business Process timeline with steps and current status.
+          - generic [ref=e113]:
+            - generic [ref=e114]: "#workflow"
+            - generic [ref=e115]: "#approval"
+      - generic [ref=e117]:
+        - generic [ref=e118]: 🏖️
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e121]: Time Off Request
+            - generic [ref=e122]:
+              - button "use" [ref=e123] [cursor=pointer]
+              - button "copy" [ref=e124] [cursor=pointer]
+          - paragraph [ref=e125]: Compose a Time Off Request form with start/end dates and balance.
+          - generic [ref=e126]:
+            - generic [ref=e127]: "#time"
+            - generic [ref=e128]: "#pto"
+            - generic [ref=e129]: "#leave"
+      - generic [ref=e131]:
+        - generic [ref=e132]: 🧾
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - generic [ref=e135]: Expense Report
+            - generic [ref=e136]:
+              - button "use" [ref=e137] [cursor=pointer]
+              - button "copy" [ref=e138] [cursor=pointer]
+          - paragraph [ref=e139]: Build an Expense Report page with line items and total.
+          - generic [ref=e140]:
+            - generic [ref=e141]: "#finance"
+            - generic [ref=e142]: "#receipt"
+      - generic [ref=e144]:
+        - generic [ref=e145]: 🏢
+        - generic [ref=e146]:
+          - generic [ref=e147]:
+            - generic [ref=e148]: Supplier
+            - generic [ref=e149]:
+              - button "use" [ref=e150] [cursor=pointer]
+              - button "copy" [ref=e151] [cursor=pointer]
+          - paragraph [ref=e152]: Create a Supplier profile with contacts and active contracts.
+          - generic [ref=e153]:
+            - generic [ref=e154]: "#procurement"
+            - generic [ref=e155]: "#vendor"
+  - generic [ref=e156]:
+    - text: "Library grouped for clarity:"
+    - strong [ref=e157]: Objects
+    - text: (Workday entities),
+    - strong [ref=e158]: Fields
+    - text: (data attributes),
+    - strong [ref=e159]: Controls
+    - text: (Canvas Kit UI),
+    - strong [ref=e160]: Icons
+    - text: (visual cues).
+```
