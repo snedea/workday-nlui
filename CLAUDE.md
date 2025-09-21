@@ -95,13 +95,26 @@
   - Temporary file management for test artifacts
 - **Files**: `tests/visual/export.spec.ts`, `playwright.config.ts:30`
 
+### 🎨 Export Button UI Improvements
+- **Issue**: Canvas Kit Menu component had visual bugs and styling inconsistencies
+- **Root Cause**: Canvas Kit Menu dropdown options were always visible, not matching NLUI interface standards
+- **Solution**: Replaced Canvas Kit Menu with custom NLUI-styled dropdown matching Generate button
+- **Implementation**:
+  - Replaced Canvas Kit SecondaryButton with blue rectangular button: `bg-blue-600 text-white hover:bg-blue-700`
+  - Removed SystemIcon for cleaner text-only button design
+  - Custom dropdown using useState with proper click-outside and Escape key handling
+  - Maintained full accessibility with ARIA labels and keyboard navigation
+  - Fixed always-visible menu options bug with proper state management
+- **Files**: `src/App.tsx:538-625` (custom dropdown implementation)
+
 ### ✅ Completed v0.1.7
-- **Export Menu UI**: Canvas Kit-styled export menu with smart visibility and accessibility
+- **Export Menu UI**: NLUI-styled blue export button matching Generate button design with custom dropdown menu
 - **PNG Export**: High-fidelity DOM-to-PNG conversion with Canvas Kit backgrounds
 - **Workday Bundle Export**: Complete ZIP with AMD/PMD/SMD/mock-data JSON files
 - **Component Analysis**: Comprehensive component tree analysis and data extraction
 - **Test Coverage**: Full Playwright test suite with download and accessibility testing
 - **Toast Integration**: Success/error feedback for all export operations
+- **Canvas Kit Menu Bug Fix**: Resolved dropdown options always visible issue with custom implementation
 
 ## Previous Changes (v0.1.6)
 

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { CanvasProvider, Menu, SecondaryButton, SystemIcon } from '@workday/canvas-kit-react';
+import { CanvasProvider, SystemIcon } from '@workday/canvas-kit-react';
 // Remove fonts CSS import - it's not needed for v14
 import '@workday/canvas-tokens-web/css/base/_variables.css';
 import '@workday/canvas-tokens-web/css/brand/_variables.css';
@@ -63,6 +63,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
   const previewRef = useRef<HTMLDivElement>(null);
+  const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
 
   // Template editing state
   const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
@@ -430,6 +431,7 @@ function App() {
   // Export handlers
   const handleExportPNG = async () => {
     if (!previewRef.current || !generatedUI) return;
+    setIsExportMenuOpen(false); // Close menu
 
     try {
       await exportPreviewAsPNG(previewRef.current, {
@@ -444,6 +446,7 @@ function App() {
 
   const handleExportWorkday = async () => {
     if (!generatedUI) return;
+    setIsExportMenuOpen(false); // Close menu
 
     try {
       const payload: NLUIExportPayload = {
@@ -460,6 +463,29 @@ function App() {
       showToast('Failed to export Workday bundle. Please try again.', 'error');
     }
   };
+
+  // Close export menu when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isExportMenuOpen && !(event.target as Element)?.closest('[data-export-menu]')) {
+        setIsExportMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isExportMenuOpen && event.key === 'Escape') {
+        setIsExportMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isExportMenuOpen]);
 
   // Register action handlers for template interactivity
   useEffect(() => {
@@ -536,22 +562,46 @@ function App() {
             )}
           </div>
           {generatedUI && (
-            <Menu>
-              <Menu.Target as={SecondaryButton} aria-label="Export" data-testid="export-menu">
-                <SystemIcon icon={systemIcons.documentDownloadIcon} />
+            <div className="relative" data-export-menu>
+              <button
+                className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsExportMenuOpen(!isExportMenuOpen);
+                  } else if (e.key === 'Escape') {
+                    setIsExportMenuOpen(false);
+                  }
+                }}
+                aria-label="Export"
+                aria-haspopup="menu"
+                aria-expanded={isExportMenuOpen}
+                data-testid="export-menu"
+              >
                 Export
-              </Menu.Target>
-              <Menu.Card>
-                <Menu.List>
-                  <Menu.Item onClick={handleExportPNG} data-testid="export-png">
-                    PNG Snapshot
-                  </Menu.Item>
-                  <Menu.Item onClick={handleExportWorkday} data-testid="export-zip">
-                    Workday Extend Bundle (.zip)
-                  </Menu.Item>
-                </Menu.List>
-              </Menu.Card>
-            </Menu>
+              </button>
+              {isExportMenuOpen && (
+                <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-[200px]">
+                  <div className="py-1">
+                    <button
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      onClick={handleExportPNG}
+                      data-testid="export-png"
+                    >
+                      PNG Snapshot
+                    </button>
+                    <button
+                      className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      onClick={handleExportWorkday}
+                      data-testid="export-zip"
+                    >
+                      Workday Extend Bundle (.zip)
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
         <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[300px] max-h-[600px] h-[450px]">

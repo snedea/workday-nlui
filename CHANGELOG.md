@@ -14,7 +14,8 @@ This release introduces comprehensive export functionality, allowing users to ca
 ### ✨ Added
 
 #### Export Menu & UI
-- **Canvas Kit Export Menu**: Styled SecondaryButton with SystemIcon in Preview header
+- **NLUI-styled Export Button**: Blue rectangular button matching Generate button design with custom dropdown menu
+- **Canvas Kit Menu Bug Fix**: Resolved issue where dropdown options were always visible
 - **Smart Visibility**: Export menu only appears when preview content is available
 - **Toast Notifications**: Success/error feedback for all export operations
 - **Accessibility**: Full keyboard navigation with proper ARIA labels

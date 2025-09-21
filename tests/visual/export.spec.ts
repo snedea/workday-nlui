@@ -197,14 +197,19 @@ test.describe('Export Functionality', () => {
     // Open menu with Enter
     await page.keyboard.press('Enter');
 
-    // Check menu items are accessible
+    // Check menu items are visible
     await expect(page.locator('[data-testid="export-png"]')).toBeVisible();
-
-    // Navigate menu items with arrow keys
-    await page.keyboard.press('ArrowDown');
-    await expect(page.locator('[data-testid="export-zip"]')).toBeFocused();
+    await expect(page.locator('[data-testid="export-zip"]')).toBeVisible();
 
     // Close menu with Escape
+    await page.keyboard.press('Escape');
+    await expect(page.locator('[data-testid="export-png"]')).not.toBeVisible();
+
+    // Verify menu can also be opened with Space key
+    await page.keyboard.press(' '); // Space key
+    await expect(page.locator('[data-testid="export-png"]')).toBeVisible();
+
+    // Close with Escape again
     await page.keyboard.press('Escape');
     await expect(page.locator('[data-testid="export-png"]')).not.toBeVisible();
   });

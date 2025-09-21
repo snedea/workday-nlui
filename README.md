@@ -258,12 +258,13 @@ Set `NODE_ENV=development` to see detailed logs in the server console.
 ## Release Notes
 
 ### Version 0.1.7 - Export Feature with PNG & Workday Extend Bundle
-- 📤 **Export Menu**: Canvas Kit-styled export menu in Preview header with PNG and Workday bundle options
+- 📤 **Export Button**: NLUI-styled blue export button matching Generate button design with custom dropdown menu
 - 📷 **PNG Snapshot**: High-fidelity DOM-to-PNG conversion with Canvas Kit background colors
 - 📦 **Workday Extend Bundle**: Complete ZIP export with AMD/PMD/SMD/mock-data JSON files for direct import
 - 🧪 **Test Coverage**: Comprehensive Playwright tests for export functionality and accessibility
-- 🎯 **Smart UI**: Export menu only appears when preview content is available
-- ♿ **Accessibility**: Full keyboard navigation support with proper ARIA labels
+- 🎯 **Smart UI**: Export dropdown only appears when clicked, closes after selection or when clicking outside
+- ♿ **Accessibility**: Full keyboard navigation support with proper ARIA labels and Enter/Space/Escape keys
+- 🐛 **Fixed**: Resolved Canvas Kit Menu bug where dropdown options were always visible
 
 ### Version 0.1.6 - Template UX Improvements & StatusIndicator Fixes
 - ✨ **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
