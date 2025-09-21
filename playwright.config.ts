@@ -25,6 +25,9 @@ export default defineConfig({
 
     /* Screenshot settings for visual regression testing */
     screenshot: 'only-on-failure',
+
+    /* Enable download handling for export tests */
+    acceptDownloads: true,
   },
 
   /* Configure projects for major browsers */
