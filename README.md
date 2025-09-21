@@ -1,6 +1,6 @@
 # Workday NLUI Studio - Natural Language UI Design Studio
 
-![Version](https://img.shields.io/badge/version-0.1.5-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.6-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/typescript-5.2+-blue.svg)
@@ -256,6 +256,21 @@ Toggle between renderers in the preview window to compare Canvas Kit fidelity vs
 Set `NODE_ENV=development` to see detailed logs in the server console.
 
 ## Release Notes
+
+### Version 0.1.6 - Template UX Improvements & StatusIndicator Fixes
+- ✨ **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
+- 🔧 **StatusIndicator Modernization**: Migrated from deprecated Canvas Kit StatusIndicator to Preview API
+- 🎯 **Context-Aware Status System**: Dynamic status mapping with semantic color variants (positive, caution, critical, neutral)
+- 📐 **StatusIndicator Width Fix**: Implemented dynamic width sizing using fit-content and inline-flex
+- 🚀 **Server Stability**: Fixed 500 errors from crashed server processes with improved error handling
+
+### Version 0.1.5 - Smart Auto-Layout & Independent Dragging
+- 🎯 **Independent Component Dragging**: Components can now be moved independently without affecting parent containers
+- 🧠 **Smart Auto-Layout**: Collision detection prevents overlapping, automatically repositions components
+- 📄 **Template Auto-Population**: Template names now auto-populate from preview titles
+- 🔗 **Real URL Support**: Fixed Credly badge URLs and other external image loading
+- 🎛️ **Z-Index Layering**: Right-click context menu for layer control (F to front, B to back)
+- 🖱️ **Tab Clickability**: Fixed tabs being clickable while maintaining draggable tab groups
 
 ### Version 0.1.4 - Fixed Nested Drag Handle Interactions
 - 🐛 **Fixed**: Nested drag handles in tables and complex layouts now fully clickable

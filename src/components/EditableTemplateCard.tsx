@@ -45,15 +45,15 @@ export const EditableTemplateCard: React.FC<EditableTemplateCardProps> = ({
             <div className="flex gap-1 flex-shrink-0 ml-2">
               <button
                 className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
-                onClick={() => onUse(item)}
-              >
-                use
-              </button>
-              <button
-                className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
                 onClick={() => onCopy(item)}
               >
                 copy
+              </button>
+              <button
+                className="text-[11px] px-1.5 py-0.5 rounded border bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => onUse(item)}
+              >
+                use
               </button>
             </div>
           </div>

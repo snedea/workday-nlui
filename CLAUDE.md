@@ -2,6 +2,14 @@
 
 ## Resolved Issues (Previous Versions)
 
+### ✅ Fixed in v0.1.6
+- **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
+- **StatusIndicator Modernization**: Migrated from deprecated Canvas Kit StatusIndicator to Preview API
+- **Context-Aware Status System**: Removed hardcoded status constraints, allowing LLM to choose appropriate statuses
+- **Global StatusIndicator Width Fix**: Implemented dynamic width sizing using fit-content and inline-flex
+- **Semantic Status Mapping**: Intelligent color mapping based on status keywords (positive, caution, critical, neutral)
+- **Server Stability**: Fixed 500 errors from crashed server processes
+
 ### ✅ Fixed in v0.1.5
 - **Independent Component Dragging**: Components can now be moved independently without affecting parent containers
 - **Smart Auto-Layout**: Collision detection prevents overlapping, automatically repositions components
@@ -19,7 +27,62 @@
 - **Button Position Memory**: Buttons don't consistently remember their dragged positions when switching between static/draggable modes
 - **Table Size Changes**: Table components change size when switching from static to draggable view, causing layout shifts
 
-## Recent Changes (v0.1.5)
+## Recent Changes (v0.1.6)
+
+### 🎯 StatusIndicator Component Modernization
+- **Issue**: React component errors with deprecated StatusIndicator from Canvas Kit
+- **Root Cause**: Using old `@workday/canvas-kit-react/status-indicator` with Preview API syntax
+- **Solution**: Migrated to `@workday/canvas-kit-preview-react` StatusIndicator
+- **Implementation**:
+  - Removed deprecated `emphasis` prop
+  - Updated to use correct `variant` values
+  - Fixed "React.jsx: type is invalid" errors
+- **Files**: `src/runtime/canvasRenderer.tsx:29`
+
+### 🎯 Context-Aware Status System
+- **Issue**: Expense reports showing inappropriate "On Leave" status
+- **Root Cause**: Hardcoded status constraints in LLM prompt limited to employee statuses
+- **Solution**: Removed hardcoded constraints, implemented semantic status mapping
+- **Implementation**:
+  - Changed `Badge: { status: "Active" | "On Leave" | "Terminated" | "Draft" }` to `Badge: { status: string }`
+  - Added intelligent keyword-based color mapping system
+  - Expense reports now show "Submitted", "Approved", "Rejected"
+  - Employee profiles show "Active", "Terminated", "On Leave"
+- **Files**: `server/llm.ts:25`, `src/runtime/canvasRenderer.tsx:448-477`
+
+### 🎯 Global StatusIndicator Width Fix
+- **Issue**: StatusIndicators had fixed widths causing layout problems in tables and cards
+- **Solution**: Implemented dynamic width sizing using CSS fit-content and inline-flex
+- **Implementation**:
+  - Added `style={{ display: 'inline-flex', width: 'fit-content' }}` to all StatusIndicator components
+  - Wrapped table cell content in fit-content divs for proper sizing
+  - Applied same fix to Pill components for consistency
+- **Files**: `src/runtime/canvasRenderer.tsx:377-385, 394-401, 482-488, 525`
+
+### 🎯 Server Stability Improvements
+- **Issue**: "Request failed with status code 500" errors when generating prompts
+- **Root Cause**: Server process crashes but remains running, causing ECONNREFUSED errors
+- **Solution**: Proper server restart procedures and monitoring
+- **Quick Fix**: `pkill -f "npm run dev" && npm run dev`
+
+### 🎯 Template Button UX Improvements
+- **Issue**: Template hover buttons needed better order and visual hierarchy
+- **Solution**: Reordered buttons from "use, copy, edit, delete" to "delete, edit, copy, use"
+- **Implementation**:
+  - Moved destructive "delete" action to leftmost position to prevent accidental clicks
+  - Styled "Use" button with blue background (`bg-blue-600 text-white hover:bg-blue-700`) as primary action
+  - Applied consistent styling across LibraryCard and EditableTemplateCard components
+- **Files**: `src/components/LibraryCard.tsx:24-53`, `src/components/EditableTemplateCard.tsx:45-58`
+
+### ✅ Completed v0.1.6
+- **Template Button UX**: Reordered and styled template hover buttons for better usability
+- **StatusIndicator Modernization**: Migrated to Canvas Kit Preview API
+- **Context-Aware Status System**: Implemented flexible, context-aware status system
+- **Global StatusIndicator Width Fix**: Fixed width issues with dynamic sizing using fit-content and inline-flex
+- **Semantic Status Mapping**: Added intelligent color mapping with semantic color variants
+- **Server Stability**: Improved error handling and recovery processes
+
+## Previous Changes (v0.1.5)
 
 ### 🎯 Smart Auto-Layout Engine
 - **Issue**: Components could overlap when dragged, creating messy layouts
@@ -53,7 +116,7 @@
 - Enhanced z-index layering with right-click controls
 - Maintained tab clickability while enabling tab group dragging
 
-## Previous Changes (v0.1.3)
+## Previous Changes (v0.1.4 and v0.1.3)
 
 ### ✅ Completed
 - Replaced complex custom drag-and-drop with lightweight `react-draggable` library
@@ -118,6 +181,12 @@ npm run dev
 3. Ensure position is being saved to localStorage
 4. Check console for React warnings
 
+### Debug StatusIndicator Issues
+1. Verify using Canvas Kit Preview import: `@workday/canvas-kit-preview-react`
+2. Check variant values: `positive`, `caution`, `critical`, `neutral`
+3. Ensure no `emphasis` prop is used (deprecated)
+4. Verify semantic status mapping in `canvasRenderer.tsx:448-477`
+
 ## Useful Commands
 
 ```bash
@@ -180,5 +249,44 @@ interface ExportOptions {
 }
 ```
 
+## Code Examples
+
+### Semantic Status Mapping System
+```typescript
+// Context-aware status color mapping (canvasRenderer.tsx:448-477)
+const getStatusConfig = (status: string) => {
+  const statusLower = status.toLowerCase();
+
+  // Positive indicators
+  if (['active', 'approved', 'completed', 'success', 'confirmed'].some(word => statusLower.includes(word))) {
+    return { variant: 'positive' as const, label: status };
+  }
+
+  // Caution indicators
+  if (['pending', 'review', 'draft', 'submitted'].some(word => statusLower.includes(word))) {
+    return { variant: 'caution' as const, label: status };
+  }
+
+  // Critical indicators
+  if (['rejected', 'terminated', 'failed', 'error'].some(word => statusLower.includes(word))) {
+    return { variant: 'critical' as const, label: status };
+  }
+
+  // Default neutral
+  return { variant: 'neutral' as const, label: status };
+};
+```
+
+### Dynamic Width StatusIndicator
+```typescript
+// Global width fix with inline-flex and fit-content
+<StatusIndicator
+  variant={statusConfig.variant}
+  style={{ display: 'inline-flex', width: 'fit-content' }}
+>
+  <StatusIndicator.Label>{statusConfig.label}</StatusIndicator.Label>
+</StatusIndicator>
+```
+
 ---
-*Last updated: v0.1.5 - Smart auto-layout and independent component dragging*
+*Last updated: v0.1.6 - Template UX improvements, StatusIndicator modernization and context-aware status system*

@@ -22,26 +22,6 @@ export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy, o
           <div className="flex items-center justify-between">
             <div className="font-medium text-gray-900 truncate">{item.name}</div>
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition flex-shrink-0 ml-2">
-              <button
-                className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
-                onClick={() => onUse(item)}
-              >
-                use
-              </button>
-              <button
-                className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
-                onClick={() => onCopy(item)}
-              >
-                copy
-              </button>
-              {isTemplate && onEdit && (
-                <button
-                  className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
-                  onClick={() => onEdit(item)}
-                >
-                  edit
-                </button>
-              )}
               {isTemplate && onDelete && (
                 <button
                   className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-red-600 hover:bg-red-50"
@@ -50,6 +30,26 @@ export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy, o
                   delete
                 </button>
               )}
+              {isTemplate && onEdit && (
+                <button
+                  className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
+                  onClick={() => onEdit(item)}
+                >
+                  edit
+                </button>
+              )}
+              <button
+                className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
+                onClick={() => onCopy(item)}
+              >
+                copy
+              </button>
+              <button
+                className="text-[11px] px-1.5 py-0.5 rounded border bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => onUse(item)}
+              >
+                use
+              </button>
             </div>
           </div>
           {item.example && (

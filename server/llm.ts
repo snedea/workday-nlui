@@ -12,7 +12,9 @@ UiNode = {
   "type": "Page" | "Header" | "Section" | "Card" | "Tabs" | "Tab" |
            "Table" | "Form" | "Field" | "Text" | "Badge" | "Button" |
            "Icon" | "Banner" | "Toast" | "Modal" | "Avatar" |
-           "Breadcrumbs" | "Footer",
+           "Breadcrumbs" | "Footer" | "Checkbox" | "Radio" | "Switch" |
+           "TextArea" | "Tooltip" | "Layout" | "Menu" | "Pagination" |
+           "ColorPicker" | "SegmentedControl" | "Pill" | "Image",
   "props"?: { [key: string]: any },
   "children"?: UiNode[]
 }
@@ -22,14 +24,19 @@ Guidelines:
 - Prefer concise labels and Canvas-like props:
   - Button: { variant: "primary" | "secondary", text: string }
   - Field: { kind: "text" | "select" | "date" | "combobox", label: string, required?: boolean, readOnly?: boolean }
-  - Badge: { status: "Active" | "On Leave" | "Terminated" | "Draft" }
+  - Badge: { status: string }
   - Tabs: children are Tab nodes with { label: string }
-  - Table: { columns: string[], rows: Array<Record<string,string>> }
+  - Table: { columns: string[], rows: Array<Record<string, string | UiNode | UiNode[]>> }
   - Avatar: { src?: string, name: string, size?: "sm" | "md" | "lg" | "xl", variant?: "circle" | "square" }
   - Card: { title?: string, image?: string }
   - Banner: { message: string, image?: string }
+  - Pill: { label: string, variant?: "default" | "removable", color?: "blue" | "green" | "orange" | "red" | "gray" }
+  - Image: { src: string, alt?: string, width?: string, height?: string }
+  - Radio: { label: string, options: string[], value?: string, orientation?: "horizontal" | "vertical", required?: boolean, error?: string, hint?: string }
 - For images in tables: Use the exact URLs provided by the user. If no URLs are provided, use emoji (🦸‍♂️) as fallback
 - When asked for character images, use the exact URLs provided by the user, otherwise use emoji representations
+- For Pills in table cells: Use UiNode format: {type: "Pill", props: {label: "Skill"}} or arrays for multiple Pills: [{type: "Pill", props: {label: "Skill1"}}, {type: "Pill", props: {label: "Skill2"}}]
+- For radio buttons: Use {type: "Radio", props: {label: "Question", options: ["Option1", "Option2"], orientation?: "horizontal"}} instead of Field with kind: "radio"
 - Avoid custom CSS or code. No markdown, no prose. JSON ONLY.`;
 
 export async function generateUI(prompt: string): Promise<UiResponse> {

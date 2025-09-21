@@ -1,5 +1,5 @@
 export interface UiNode {
-  type: 'Page' | 'Header' | 'Section' | 'Card' | 'Tabs' | 'Tab' | 'Table' | 'Form' | 'Field' | 'Text' | 'Badge' | 'Button' | 'Icon' | 'Banner' | 'Toast' | 'Modal' | 'Avatar' | 'Breadcrumbs' | 'Footer' | 'Checkbox' | 'Radio' | 'Switch' | 'TextArea' | 'Tooltip' | 'Layout' | 'Menu' | 'Pagination' | 'ColorPicker' | 'SegmentedControl';
+  type: 'Page' | 'Header' | 'Section' | 'Card' | 'Tabs' | 'Tab' | 'Table' | 'Form' | 'Field' | 'Text' | 'Badge' | 'Button' | 'Icon' | 'Banner' | 'Toast' | 'Modal' | 'Avatar' | 'Breadcrumbs' | 'Footer' | 'Checkbox' | 'Radio' | 'Switch' | 'TextArea' | 'Tooltip' | 'Layout' | 'Menu' | 'Pagination' | 'ColorPicker' | 'SegmentedControl' | 'Pill' | 'Image';
   props?: Record<string, any>;
   children?: UiNode[];
   position?: { x: number; y: number };

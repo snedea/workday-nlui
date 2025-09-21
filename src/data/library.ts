@@ -28,7 +28,7 @@ export const LIB: LibraryData = {
     {name:"Select / Dropdown", tags:["picker","choice"], example:'Add a department dropdown with common options.', visual:"▾"},
     {name:"Combobox", tags:["search","autocomplete"], example:'Add an employee search combobox.', visual:"🔎"},
     {name:"Checkbox", tags:["boolean","agree","form"], example:'Add a checkbox labeled "I agree to the terms".', visual:"☑️"},
-    {name:"Radio Group", tags:["exclusive","choice","form"], example:'Add a radio group for "Employment Type" with options "Full Time" and "Part Time".', visual:"🔘"},
+    {name:"Radio Group", tags:["exclusive","choice","form"], example:'Add a radio group for "Employment Type" with options "Full Time", "Part Time", and "Contract". Use horizontal orientation for Yes/No questions.', visual:"🔘"},
     {name:"Switch", tags:["toggle","settings","boolean"], example:'Add a switch labeled "Enable Notifications".', visual:"🔀"},
     {name:"Date Picker", tags:["calendar"], example:'Add a date picker for "Effective Date".', visual:"📅"},
     {name:"Tabs", tags:["navigation","sections"], example:'Create tabs: Profile, Job, Pay, Time Off.', visual:"📑"},
@@ -45,6 +45,7 @@ export const LIB: LibraryData = {
     {name:"Card", tags:["container","group"], example:'Create a Worker card with avatar and quick actions.', visual:"🃏"},
     {name:"Avatar", tags:["profile","photo","image"], example:'Add a profile avatar with name initials or photo.', visual:"👤"},
     {name:"Breadcrumbs", tags:["nav","path"], example:'Add breadcrumbs: Home / Directory / Worker.', visual:"🍞"},
+    {name:"Pill", tags:["label","tag","filter","badge"], example:'Add a pill labeled "Full Time" for employment type filtering.', visual:"💊"},
   ],
   icons: [
     {name:"User", tags:["avatar","person"], example:'Use the User icon inside the profile header.', visual:"👤"},

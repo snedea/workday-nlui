@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UiNode } from './types';
 import { DraggableWrapper } from '../components/DraggableWrapper';
 import {
@@ -11,7 +11,6 @@ import {
   TextInput,
   Select,
   Table,
-  StatusIndicator,
   Banner,
   Toast,
   Tabs,
@@ -27,12 +26,53 @@ import {
   Menu,
   Pagination,
 } from '@workday/canvas-kit-react';
-import { Avatar, ColorPicker, SegmentedControl } from '@workday/canvas-kit-preview-react';
+import { FormField } from '@workday/canvas-kit-react/form-field';
+import { RadioGroup } from '@workday/canvas-kit-react/radio';
+import { Avatar, ColorPicker, SegmentedControl, Pill, StatusIndicator } from '@workday/canvas-kit-preview-react';
 
 // Import icon assets
 import * as systemIcons from '@workday/canvas-system-icons-web';
 import * as accentIcons from '@workday/canvas-accent-icons-web';
 import * as appletIcons from '@workday/canvas-applet-icons-web';
+
+
+// Simplified Radio components without FormField wrapper
+const SimpleRadioGroup: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
+  const groupName = props.name || id || `radio-group-${Math.random().toString(36).substr(2, 9)}`;
+  const orientation = props.orientation === 'horizontal' ? 'horizontal' : 'vertical';
+  const [selectedValue, setSelectedValue] = useState(props.value || '');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: orientation === 'horizontal' ? 'row' : 'column', gap: '8px' }}>
+      {props.options.map((option: string, index: number) => (
+        <Radio
+          key={index}
+          name={groupName}
+          value={option}
+          label={option}
+          checked={selectedValue === option}
+          onChange={() => setSelectedValue(option)}
+          disabled={props.disabled}
+        />
+      ))}
+    </div>
+  );
+};
+
+const SimpleSingleRadio: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
+  const [isChecked, setIsChecked] = useState(props.checked || false);
+
+  return (
+    <Radio
+      checked={isChecked}
+      onChange={() => setIsChecked(!isChecked)}
+      disabled={props.disabled}
+      value={props.value || 'option'}
+      label={props.text || props.children || props.label || 'Radio option'}
+      name={props.name || id || `radio-${Math.random().toString(36).substr(2, 9)}`}
+    />
+  );
+};
 
 // Helper function to detect if a string is an image URL
 const isImageURL = (url: string): boolean => {
@@ -149,8 +189,8 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
 
   // Helper function to determine if a component should be draggable
   const isDraggableComponent = (componentType: string) => {
-    // Don't make containers draggable - only individual components
-    const nonDraggableTypes = ['Page', 'Tab', 'Form', 'Section'];
+    // Don't make containers or form inputs draggable
+    const nonDraggableTypes = ['Page', 'Tab', 'Form', 'Section', 'Radio', 'Checkbox'];
     return !nonDraggableTypes.includes(componentType);
   };
 
@@ -332,17 +372,74 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
               <Table.Row key={i}>
                 {(props.columns || []).map((col: string, j: number) => {
                   const cellValue = row[col];
+
+                  // If cell contains an array of objects (e.g., multiple Pills)
+                  if (Array.isArray(cellValue)) {
+                    return (
+                      <Table.Cell key={j}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                          {cellValue.map((item: any, index: number) => {
+                            // If array item is a UiNode, render it
+                            if (item && typeof item === 'object' && item.type) {
+                              return (
+                                <CanvasRenderNode
+                                  key={index}
+                                  node={item}
+                                  isDraggableMode={isDraggableMode}
+                                  onPositionChange={onPositionChange}
+                                  onZIndexChange={onZIndexChange}
+                                  onCollisionDetected={onCollisionDetected}
+                                />
+                              );
+                            }
+                            // If array item looks like a Pill object, convert it
+                            if (item && typeof item === 'object' && item.label) {
+                              return (
+                                <Pill key={index}>
+                                  <Pill.Label>{item.label}</Pill.Label>
+                                  {item.variant === 'removable' && (
+                                    <Pill.IconButton aria-label="Remove pill" />
+                                  )}
+                                </Pill>
+                              );
+                            }
+                            // Otherwise render as string
+                            return <span key={index}>{String(item)}</span>;
+                          })}
+                        </div>
+                      </Table.Cell>
+                    );
+                  }
+
                   // If cell contains a UiNode object, render it through CanvasRenderNode
                   if (cellValue && typeof cellValue === 'object' && cellValue.type) {
                     return (
                       <Table.Cell key={j}>
-                        <CanvasRenderNode
-                          node={cellValue}
-                          isDraggableMode={isDraggableMode}
-                          onPositionChange={onPositionChange}
-                          onZIndexChange={onZIndexChange}
-                          onCollisionDetected={onCollisionDetected}
-                        />
+                        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+                          <CanvasRenderNode
+                            node={cellValue}
+                            isDraggableMode={isDraggableMode}
+                            onPositionChange={onPositionChange}
+                            onZIndexChange={onZIndexChange}
+                            onCollisionDetected={onCollisionDetected}
+                          />
+                        </div>
+                      </Table.Cell>
+                    );
+                  }
+
+                  // If cell contains an object that looks like a Pill, convert it
+                  if (cellValue && typeof cellValue === 'object' && cellValue.label) {
+                    return (
+                      <Table.Cell key={j}>
+                        <div style={{ display: 'inline-block', width: 'fit-content' }}>
+                          <Pill>
+                            <Pill.Label>{cellValue.label}</Pill.Label>
+                            {cellValue.variant === 'removable' && (
+                              <Pill.IconButton aria-label="Remove pill" />
+                            )}
+                          </Pill>
+                        </div>
                       </Table.Cell>
                     );
                   }
@@ -377,6 +474,12 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
                     }
                   }
 
+                  // Handle other object types by converting to string
+                  if (cellValue && typeof cellValue === 'object') {
+                    // If it's an object without a type (not a UiNode), convert to string
+                    return <Table.Cell key={j}>{JSON.stringify(cellValue)}</Table.Cell>;
+                  }
+
                   // Otherwise render as string
                   return <Table.Cell key={j}>{cellValue || ''}</Table.Cell>;
                 })}
@@ -387,26 +490,46 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
       );
 
     case 'Badge':
-      const getStatusType = () => {
-        switch (props.status) {
-          case 'Active':
-            return 'green';
-          case 'On Leave':
-            return 'orange';
-          case 'Terminated':
-            return 'red';
-          default:
-            return 'gray';
-        }
+      const getStatusConfig = () => {
+        const statusText = props.status || props.text || props.children || 'Badge';
+        const originalText = statusText.toString();
+
+        // Normalize status text for semantic analysis
+        const normalizedStatus = originalText.toLowerCase().replace(/\s+/g, ' ').trim();
+
+        // Semantic mapping based on meaning, not hardcoded values
+        const positiveKeywords = ['active', 'approved', 'completed', 'successful', 'verified', 'confirmed', 'accepted', 'published', 'enabled', 'passed', 'valid', 'current'];
+        const cautionKeywords = ['pending', 'review', 'processing', 'draft', 'submitted', 'in progress', 'scheduled', 'queued', 'waiting', 'hold', 'paused', 'reviewing'];
+        const criticalKeywords = ['rejected', 'failed', 'expired', 'terminated', 'denied', 'cancelled', 'error', 'invalid', 'blocked', 'disabled', 'overdue'];
+        const neutralKeywords = ['new', 'created', 'unknown', 'other', 'n/a', 'none'];
+
+        // Check if any keyword matches
+        const isPositive = positiveKeywords.some(keyword => normalizedStatus.includes(keyword));
+        const isCaution = cautionKeywords.some(keyword => normalizedStatus.includes(keyword));
+        const isCritical = criticalKeywords.some(keyword => normalizedStatus.includes(keyword));
+        const isNeutral = neutralKeywords.some(keyword => normalizedStatus.includes(keyword));
+
+        // Determine variant based on semantic meaning
+        let variant: 'positive' | 'caution' | 'critical' | 'neutral' = 'neutral';
+
+        if (isPositive) variant = 'positive';
+        else if (isCritical) variant = 'critical';
+        else if (isCaution) variant = 'caution';
+        else if (isNeutral) variant = 'neutral';
+
+        // Always preserve the original text from the LLM
+        return { variant, label: originalText };
       };
 
-      const statusType = getStatusType();
+      const statusConfig = getStatusConfig();
 
       return (
         <StatusIndicator
-          type={statusType as any}
-          label={props.status || props.text || props.children || 'Badge'}
-        />
+          variant={statusConfig.variant}
+          style={{ display: 'inline-flex', width: 'fit-content' }}
+        >
+          <StatusIndicator.Label>{statusConfig.label}</StatusIndicator.Label>
+        </StatusIndicator>
       );
 
     case 'Icon':
@@ -435,6 +558,35 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
           name={props.name || 'User'}
           size={avatarSize as any}
           variant={props.variant || 'light'}
+        />
+      );
+
+    case 'Pill':
+      return maybeWrapWithDraggable(
+        <Pill style={{ display: 'inline-flex', width: 'fit-content' }}>
+          <Pill.Label>{props.label || 'Pill'}</Pill.Label>
+          {props.variant === 'removable' && (
+            <Pill.IconButton aria-label="Remove pill" />
+          )}
+        </Pill>
+      );
+
+    case 'Image':
+      return maybeWrapWithDraggable(
+        <img
+          src={props.src || props.url}
+          alt={props.alt || 'Image'}
+          style={{
+            width: props.width || 'auto',
+            height: props.height || 'auto',
+            maxWidth: '100%',
+            objectFit: 'contain'
+          }}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            target.parentElement!.innerHTML = '🖼️';
+          }}
         />
       );
 
@@ -614,44 +766,13 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
       );
 
     case 'Radio':
-      // Handle Radio Group (multiple radio buttons)
+      // Handle Radio Group (multiple radio buttons) - simplified version
       if (props.options && Array.isArray(props.options)) {
-        const groupName = props.name || id || `radio-group-${Math.random().toString(36).substr(2, 9)}`;
-        return maybeWrapWithDraggable(
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {props.label && (
-              <Text as="label" style={{ fontWeight: 500, marginBottom: '4px' }}>
-                {props.label}
-              </Text>
-            )}
-            {props.options.map((option: string, index: number) => (
-              <Radio
-                key={index}
-                name={groupName}
-                value={option}
-                checked={props.value === option}
-                disabled={props.disabled}
-                id={`${groupName}-${index}`}
-              >
-                {option}
-              </Radio>
-            ))}
-          </div>
-        );
+        return maybeWrapWithDraggable(<SimpleRadioGroup props={props} id={id} />);
       }
 
-      // Single Radio button
-      return maybeWrapWithDraggable(
-        <Radio
-          checked={props.checked}
-          disabled={props.disabled}
-          value={props.value}
-          name={props.name || id || `radio-${Math.random().toString(36).substr(2, 9)}`}
-          id={id || `radio-${Math.random().toString(36).substr(2, 9)}`}
-        >
-          {props.label || props.text || props.children || 'Radio'}
-        </Radio>
-      );
+      // Single Radio button - simplified version
+      return maybeWrapWithDraggable(<SimpleSingleRadio props={props} id={id} />);
 
     case 'Switch':
       return maybeWrapWithDraggable(
