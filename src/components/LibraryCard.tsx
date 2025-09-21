@@ -5,9 +5,13 @@ interface LibraryCardProps {
   item: LibraryItem;
   onUse: (item: LibraryItem) => void;
   onCopy: (item: LibraryItem) => void;
+  onEdit?: (item: LibraryItem) => void;
+  onDelete?: (item: LibraryItem) => void;
 }
 
-export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy }) => {
+export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy, onEdit, onDelete }) => {
+  const isTemplate = item._type === 'Templates';
+
   return (
     <div className="group bg-white border border-gray-200 rounded-xl p-3 hover:shadow-sm transition">
       <div className="flex items-start gap-3">
@@ -30,6 +34,22 @@ export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy })
               >
                 copy
               </button>
+              {isTemplate && onEdit && (
+                <button
+                  className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-gray-700 hover:bg-gray-50"
+                  onClick={() => onEdit(item)}
+                >
+                  edit
+                </button>
+              )}
+              {isTemplate && onDelete && (
+                <button
+                  className="text-[11px] px-1.5 py-0.5 rounded border bg-white text-red-600 hover:bg-red-50"
+                  onClick={() => onDelete(item)}
+                >
+                  delete
+                </button>
+              )}
             </div>
           </div>
           {item.example && (

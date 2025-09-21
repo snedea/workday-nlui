@@ -28,8 +28,8 @@ Guidelines:
   - Avatar: { src?: string, name: string, size?: "sm" | "md" | "lg" | "xl", variant?: "circle" | "square" }
   - Card: { title?: string, image?: string }
   - Banner: { message: string, image?: string }
-- For images in tables: Use placeholder URLs like "https://via.placeholder.com/150x150/0066cc/ffffff?text=CHARACTER" or emoji (🦸‍♂️) instead of real image URLs
-- When asked for character images, prefer using emoji representations or placeholder images rather than attempting real URLs
+- For images in tables: Use the exact URLs provided by the user. If no URLs are provided, use emoji (🦸‍♂️) as fallback
+- When asked for character images, use the exact URLs provided by the user, otherwise use emoji representations
 - Avoid custom CSS or code. No markdown, no prose. JSON ONLY.`;
 
 export async function generateUI(prompt: string): Promise<UiResponse> {

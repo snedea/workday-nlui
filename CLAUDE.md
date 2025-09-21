@@ -2,6 +2,14 @@
 
 ## Resolved Issues (Previous Versions)
 
+### ✅ Fixed in v0.1.5
+- **Independent Component Dragging**: Components can now be moved independently without affecting parent containers
+- **Smart Auto-Layout**: Collision detection prevents overlapping, automatically repositions components
+- **Template Auto-Population**: Template names now auto-populate from preview titles
+- **Real URL Support**: Fixed Credly badge URLs and other external image loading
+- **Z-Index Layering**: Right-click context menu for layer control (F to front, B to back)
+- **Tab Clickability**: Fixed tabs being clickable while maintaining draggable tab groups
+
 ### ✅ Fixed in v0.1.4
 - **Nested Drag Handles**: Fixed issue where drag handles inside tables/complex layouts were visible but not clickable
 - Added `pointer-events: auto !important` CSS override for `.drag-handle` class
@@ -11,18 +19,39 @@
 - **Button Position Memory**: Buttons don't consistently remember their dragged positions when switching between static/draggable modes
 - **Table Size Changes**: Table components change size when switching from static to draggable view, causing layout shifts
 
-## Recent Changes (v0.1.4)
+## Recent Changes (v0.1.5)
 
-### 🎯 Nested Drag & Drop Fix
-- **Issue**: Drag handles inside tables, forms, and complex layouts were visible but not clickable
-- **Root Cause**: Parent `DraggableWrapper` components set `pointer-events: none` on children, blocking nested handle interactions
-- **Solution**: Added CSS override `pointer-events: auto !important` specifically for `.drag-handle` elements
-- **Impact**: All nested components now fully draggable regardless of container depth
+### 🎯 Smart Auto-Layout Engine
+- **Issue**: Components could overlap when dragged, creating messy layouts
+- **Solution**: Implemented collision detection system that automatically moves overlapping components
+- **Features**: Cascade positioning, z-index management, intelligent spacing
+- **Impact**: Clean, professional layouts with automatic component organization
 
-### ✅ Completed v0.1.4
-- Fixed nested drag handle pointer events blocking
-- Enhanced CSS specificity for drag handle interactions
-- Improved user experience in complex layouts (tables, forms)
+### 🎯 Independent Component Dragging
+- **Issue**: Moving form fields or nested elements would drag entire containers
+- **Root Cause**: Section containers were draggable, interfering with child component positioning
+- **Solution**: Added Section to non-draggable types, fixed absolute positioning during drag
+- **Impact**: Individual fields, buttons, and elements can be positioned independently
+
+### 🎯 Template Auto-Population
+- **Issue**: Users had to manually enter template names when saving custom templates
+- **Solution**: Auto-populate template name from preview title, description from prompt content
+- **Implementation**: Pass preview title as prop to PromptComposer, use as default template name
+- **Impact**: Streamlined template creation workflow
+
+### 🎯 Real URL Support
+- **Issue**: Credly badge URLs and external images showed placeholder errors
+- **Root Cause**: LLM prompt instructed to use placeholder.com URLs
+- **Solution**: Updated prompt to use exact user-provided URLs, fallback to emoji
+- **Impact**: Authentic badge images and external content now display correctly
+
+### ✅ Completed v0.1.5
+- Implemented smart collision detection and auto-layout
+- Fixed independent component dragging for all element types
+- Added template name auto-population from preview titles
+- Fixed external URL support for badges and images
+- Enhanced z-index layering with right-click controls
+- Maintained tab clickability while enabling tab group dragging
 
 ## Previous Changes (v0.1.3)
 
@@ -51,7 +80,7 @@
 ```typescript
 // Components that support dragging
 const isDraggableComponent = (componentType: string) => {
-  const nonDraggableTypes = ['Page', 'Tabs', 'Tab', 'Form'];
+  const nonDraggableTypes = ['Page', 'Tab', 'Form', 'Section'];
   return !nonDraggableTypes.includes(componentType);
 };
 ```
@@ -126,12 +155,12 @@ src/
 ```
 
 ## Next Priority Fixes
-1. **Component ID stability** - prevent ID regeneration on re-renders
-2. **Export functionality** - wireframe formats and AI-friendly code output
-3. **Enhanced positioning** - improve grid snapping and alignment tools
-4. **Performance optimization** - reduce re-renders during drag operations
+1. **Export functionality** - wireframe formats and AI-friendly code output
+2. **Enhanced positioning** - improve grid snapping and alignment tools
+3. **Performance optimization** - reduce re-renders during drag operations
+4. **Undo/Redo system** - track drag operations for better user experience
 
-## Upcoming Features (v0.1.5 Roadmap)
+## Upcoming Features (v0.1.6 Roadmap)
 
 ### 🔄 Export System
 - **Wireframe Formats**: Export to Figma JSON, Sketch, Adobe XD
@@ -152,4 +181,4 @@ interface ExportOptions {
 ```
 
 ---
-*Last updated: v0.1.4 - Fixed nested drag handle interactions*
+*Last updated: v0.1.5 - Smart auto-layout and independent component dragging*

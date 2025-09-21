@@ -14,7 +14,8 @@ import { canvasIconsLibrary } from './data/canvasIcons';
 import { loadTemplates } from './templates/loader';
 import { LibraryItem, UiResponse } from './runtime/types';
 import { on, showToast } from './runtime/actions';
-import { addCustomTemplate, onTemplateChange, saveTemplateFile } from './templates/templateStore';
+import { addCustomTemplate, onTemplateChange, saveTemplateFile, updateCustomTemplate, removeCustomTemplate } from './templates/templateStore';
+import { ConfirmDialog } from './components/ConfirmDialog';
 
 const STORAGE_KEYS = {
   LAST_PROMPT: 'workday-nlui-last-prompt',
@@ -60,6 +61,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
 
+  // Template editing state
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
+
+  // Delete confirmation state
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    template?: LibraryItem;
+  }>({ isOpen: false });
+
 
   const flatLibrary = useMemo(() => {
     const withType = (arr: LibraryItem[], type: string) =>
@@ -73,7 +83,8 @@ function App() {
       example: t.summary,
       visual: "📄", // Template icon
       _type: "Templates",
-      onUseInsert: t.prompt // Use prompt directly from TemplateEntry
+      onUseInsert: t.prompt, // Use prompt directly from TemplateEntry
+      templateId: t.id // Add template ID for editing
     }));
 
 
@@ -248,6 +259,52 @@ function App() {
     }
   };
 
+  // Template editing handlers
+  const handleEditTemplate = (item: LibraryItem) => {
+    if (item.templateId) {
+      setEditingTemplateId(item.templateId);
+      // Pre-fill the composer with the template prompt
+      setComposer(item.onUseInsert || '');
+    }
+  };
+
+  // Get template name for editing
+  const getEditingTemplateName = () => {
+    if (!editingTemplateId) return '';
+    const template = flatLibrary.find(item => item.templateId === editingTemplateId);
+    return template?.name || '';
+  };
+
+  const handleSaveTemplate = (templateId: string, updates: { title: string; prompt: string }) => {
+    updateCustomTemplate(templateId, {
+      title: updates.title,
+      prompt: updates.prompt
+    });
+    setEditingTemplateId(null);
+    setTemplateVersion(prev => prev + 1);
+    showToast('Template updated successfully!', 'success');
+  };
+
+  const handleDeleteTemplate = (item: LibraryItem) => {
+    setDeleteConfirm({
+      isOpen: true,
+      template: item
+    });
+  };
+
+  const confirmDeleteTemplate = () => {
+    if (deleteConfirm.template?.templateId) {
+      removeCustomTemplate(deleteConfirm.template.templateId);
+      setTemplateVersion(prev => prev + 1);
+      showToast('Template deleted successfully!', 'success');
+    }
+    setDeleteConfirm({ isOpen: false });
+  };
+
+  const cancelDeleteTemplate = () => {
+    setDeleteConfirm({ isOpen: false });
+  };
+
   // Position handling for draggable mode
   const handlePositionChange = (id: string, position: { x: number; y: number }) => {
     setGeneratedUI(prev => {
@@ -268,6 +325,104 @@ function App() {
     });
   };
 
+  // Z-index handling for layering
+  const handleZIndexChange = (id: string, zIndex: number) => {
+    setGeneratedUI(prev => {
+      if (!prev) return prev;
+
+      // Update the UI tree with new z-index
+      const updateNodeZIndex = (node: any): any => {
+        if (node.id === id) {
+          return { ...node, zIndex };
+        }
+        if (node.children) {
+          return { ...node, children: node.children.map(updateNodeZIndex) };
+        }
+        return node;
+      };
+
+      return { ...prev, tree: updateNodeZIndex(prev.tree) };
+    });
+  };
+
+  // Collision detection and auto-layout system
+  const handleCollisionDetected = (draggedId: string, newPos: { x: number; y: number }, bounds: DOMRect) => {
+    if (!generatedUI) return;
+
+    // Get all positioned components
+    const getAllComponentsWithBounds = (node: any, parentOffset = { x: 0, y: 0 }): Array<{id: string, bounds: DOMRect, position: {x: number, y: number}}> => {
+      const components = [];
+
+      if (node.id && node.position) {
+        const actualX = parentOffset.x + (node.position.x || 0);
+        const actualY = parentOffset.y + (node.position.y || 0);
+
+        // Create mock bounds based on position - we'll refine this
+        const mockBounds = new DOMRect(actualX, actualY, 200, 60); // Approximate component size
+        components.push({
+          id: node.id,
+          bounds: mockBounds,
+          position: { x: actualX, y: actualY }
+        });
+      }
+
+      if (node.children) {
+        node.children.forEach((child: any) => {
+          components.push(...getAllComponentsWithBounds(child, parentOffset));
+        });
+      }
+
+      return components;
+    };
+
+    const components = getAllComponentsWithBounds(generatedUI.tree);
+    const draggedBounds = new DOMRect(newPos.x, newPos.y, bounds.width, bounds.height);
+
+    // Check for collisions and calculate moves
+    const moves: {[id: string]: {x: number, y: number}} = {};
+
+    components.forEach(comp => {
+      if (comp.id === draggedId) return;
+
+      // Check if dragged component would overlap with this component
+      const overlaps = !(draggedBounds.right < comp.bounds.left ||
+                       draggedBounds.left > comp.bounds.right ||
+                       draggedBounds.bottom < comp.bounds.top ||
+                       draggedBounds.top > comp.bounds.bottom);
+
+      if (overlaps) {
+        // Calculate how much to move this component down/right
+        const moveDownBy = Math.max(0, draggedBounds.bottom - comp.bounds.top + 16); // 16px spacing
+        const moveRightBy = Math.max(0, draggedBounds.right - comp.bounds.left + 16);
+
+        // Prefer moving down over moving right
+        if (moveDownBy <= moveRightBy) {
+          moves[comp.id] = { x: comp.position.x, y: comp.position.y + moveDownBy };
+        } else {
+          moves[comp.id] = { x: comp.position.x + moveRightBy, y: comp.position.y };
+        }
+      }
+    });
+
+    // Apply the moves
+    Object.entries(moves).forEach(([id, position]) => {
+      setGeneratedUI(prev => {
+        if (!prev) return prev;
+
+        const updateNodePosition = (node: any): any => {
+          if (node.id === id) {
+            return { ...node, position };
+          }
+          if (node.children) {
+            return { ...node, children: node.children.map(updateNodePosition) };
+          }
+          return node;
+        };
+
+        return { ...prev, tree: updateNodePosition(prev.tree) };
+      });
+    });
+  };
 
   // Register action handlers for template interactivity
   useEffect(() => {
@@ -350,7 +505,9 @@ function App() {
               {renderCanvasUi(
                 generatedUI.tree,
                 isDraggableMode,
-                handlePositionChange
+                handlePositionChange,
+                handleZIndexChange,
+                handleCollisionDetected
               )}
             </div>
           ) : (
@@ -371,6 +528,11 @@ function App() {
           onGenerate={handleGenerate}
           isGenerating={isGenerating}
           onAddTemplate={handleAddTemplate}
+          editingTemplateId={editingTemplateId}
+          editingTemplateName={getEditingTemplateName()}
+          onSaveTemplate={handleSaveTemplate}
+          onCancelEdit={() => setEditingTemplateId(null)}
+          previewTitle={generatedUI?.title}
         />
 
         {/* Error Display */}
@@ -446,6 +608,8 @@ function App() {
           filteredItems={filteredItems}
           onUse={insertToken}
           onCopy={copyExample}
+          onEditTemplate={handleEditTemplate}
+          onDeleteTemplate={handleDeleteTemplate}
         />
       </div>
 
@@ -455,6 +619,18 @@ function App() {
       </div>
     </div>
   </div>
+
+  {/* Delete Confirmation Dialog */}
+  <ConfirmDialog
+    isOpen={deleteConfirm.isOpen}
+    title="Delete Template"
+    message={`Are you sure you want to delete the template "${deleteConfirm.template?.name}"? This action cannot be undone.`}
+    confirmText="Delete"
+    cancelText="Cancel"
+    onConfirm={confirmDeleteTemplate}
+    onCancel={cancelDeleteTemplate}
+    isDestructive={true}
+  />
   </CanvasProvider>
   );
 }

@@ -53,6 +53,12 @@ body {
 /* Drag handle styles */
 .drag-handle {
   pointer-events: auto !important;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out, background-color 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.drag-handle.visible {
+  opacity: 1;
 }
 
 .drag-handle:hover {

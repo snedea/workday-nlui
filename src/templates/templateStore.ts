@@ -49,6 +49,25 @@ export function addCustomTemplate(template: TemplateEntry): void {
   notifyTemplateChange();
 }
 
+// Update an existing custom template
+export function updateCustomTemplate(templateId: string, updates: Partial<TemplateEntry>): void {
+  const existingIndex = customTemplates.findIndex(t => t.id === templateId);
+
+  if (existingIndex !== -1) {
+    // Update existing template with new data
+    customTemplates[existingIndex] = {
+      ...customTemplates[existingIndex],
+      ...updates
+    };
+
+    // Save to localStorage
+    saveCustomTemplatesToStorage(customTemplates);
+
+    // Trigger any listeners
+    notifyTemplateChange();
+  }
+}
+
 // Remove a custom template
 export function removeCustomTemplate(templateId: string): void {
   customTemplates = customTemplates.filter(t => t.id !== templateId);

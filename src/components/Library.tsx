@@ -21,9 +21,11 @@ interface CategoryPanelProps {
   items: LibraryItem[];
   onUse: (item: LibraryItem) => void;
   onCopy: (item: LibraryItem) => void;
+  onEdit?: (item: LibraryItem) => void;
+  onDelete?: (item: LibraryItem) => void;
 }
 
-const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCopy }) => {
+const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCopy, onEdit, onDelete }) => {
   if (items.length === 0) return null;
 
   return (
@@ -36,6 +38,8 @@ const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCo
             item={item}
             onUse={onUse}
             onCopy={onCopy}
+            onEdit={onEdit}
+            onDelete={onDelete}
           />
         ))}
       </div>
@@ -47,9 +51,11 @@ interface LibraryProps {
   filteredItems: LibraryItem[];
   onUse: (item: LibraryItem) => void;
   onCopy: (item: LibraryItem) => void;
+  onEditTemplate?: (item: LibraryItem) => void;
+  onDeleteTemplate?: (item: LibraryItem) => void;
 }
 
-export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy }) => {
+export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy, onEditTemplate, onDeleteTemplate }) => {
   const grouped = useMemo(() => {
     const groups: Record<string, LibraryItem[]> = {
       Object: [],
@@ -74,7 +80,14 @@ export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy }
       <CategoryPanel label="Fields" items={grouped.Field} onUse={onUse} onCopy={onCopy} />
       <CategoryPanel label="Controls (Canvas Kit)" items={grouped.Control} onUse={onUse} onCopy={onCopy} />
       <CategoryPanel label="Icons" items={grouped.Icon} onUse={onUse} onCopy={onCopy} />
-      <CategoryPanel label="Templates" items={grouped.Templates} onUse={onUse} onCopy={onCopy} />
+      <CategoryPanel
+        label="Templates"
+        items={grouped.Templates}
+        onUse={onUse}
+        onCopy={onCopy}
+        onEdit={onEditTemplate}
+        onDelete={onDeleteTemplate}
+      />
     </div>
   );
 };

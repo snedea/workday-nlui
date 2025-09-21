@@ -1,5 +1,11 @@
 # Workday NLUI Studio - Natural Language UI Design Studio
 
+![Version](https://img.shields.io/badge/version-0.1.5-blue.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![TypeScript](https://img.shields.io/badge/typescript-5.2+-blue.svg)
+![React](https://img.shields.io/badge/react-18.2+-blue.svg)
+
 A local, browser-based design studio that turns natural-language prompts into **authentic Workday UI** using React, Vite, AI, and **Canvas Kit v14** with official fonts and design system.
 
 ## Features

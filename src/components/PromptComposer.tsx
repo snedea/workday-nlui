@@ -12,6 +12,11 @@ interface PromptComposerProps {
     tags: string;
     prompt: string;
   }) => void;
+  editingTemplateId?: string | null;
+  editingTemplateName?: string;
+  onSaveTemplate?: (templateId: string, updates: { title: string; prompt: string }) => void;
+  onCancelEdit?: () => void;
+  previewTitle?: string;
 }
 
 export const PromptComposer: React.FC<PromptComposerProps> = ({
@@ -19,7 +24,12 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
   onChange,
   onGenerate,
   isGenerating = false,
-  onAddTemplate
+  onAddTemplate,
+  editingTemplateId,
+  editingTemplateName = '',
+  onSaveTemplate,
+  onCancelEdit,
+  previewTitle
 }) => {
   const [copied, setCopied] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -48,10 +58,10 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
   const saveAsTemplate = () => {
     if (!value.trim()) return;
 
-    // Pre-fill form with smart defaults
-    const firstLine = value.split('\n')[0].substring(0, 50);
+    // Pre-fill form with preview title if available, otherwise use first line
+    const defaultName = previewTitle || value.split('\n')[0].substring(0, 50);
     setTemplateForm({
-      name: firstLine,
+      name: defaultName,
       description: value.substring(0, 100) + (value.length > 100 ? '...' : ''),
       tags: 'Custom'
     });
@@ -73,6 +83,17 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
     setShowSaveDialog(false);
     setTemplateForm({ name: '', description: '', tags: '' });
   };
+
+  const handleSaveEditingTemplate = () => {
+    if (!editingTemplateId || !onSaveTemplate || !editingTemplateName) return;
+
+    onSaveTemplate(editingTemplateId, {
+      title: editingTemplateName,
+      prompt: value
+    });
+  };
+
+  const isInEditMode = !!editingTemplateId;
 
   const importTemplate = () => {
     fileInputRef.current?.click();
@@ -99,9 +120,20 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
 
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col">
+    <div className={`bg-white border rounded-2xl p-4 flex flex-col ${isInEditMode ? 'border-blue-300 bg-blue-50/20' : 'border-gray-200'}`}>
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900">Prompt Composer</h3>
+        <div>
+          <h3 className="font-semibold text-gray-900">
+            {isInEditMode ? (
+              <>Editing Template: <span className="text-blue-600">{editingTemplateName}</span></>
+            ) : (
+              'Prompt Composer'
+            )}
+          </h3>
+          {isInEditMode && (
+            <p className="text-xs text-blue-600 mt-1">Make your changes and click "Save Template" to update.</p>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <button
             className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
@@ -111,20 +143,43 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
             {copied ? "Copied ✓" : "Copy"}
           </button>
 
-          <button
-            className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
-            onClick={importTemplate}
-          >
-            Import Template
-          </button>
+          {!isInEditMode && (
+            <>
+              <button
+                className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+                onClick={importTemplate}
+              >
+                Import Template
+              </button>
 
-          <button
-            className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
-            onClick={saveAsTemplate}
-            disabled={!value.trim() || !onAddTemplate}
-          >
-            Save as Template
-          </button>
+              <button
+                className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+                onClick={saveAsTemplate}
+                disabled={!value.trim() || !onAddTemplate}
+              >
+                Save as Template
+              </button>
+            </>
+          )}
+
+          {isInEditMode && (
+            <>
+              <button
+                className="px-2 py-1 text-xs rounded border hover:bg-gray-50 transition-colors"
+                onClick={onCancelEdit}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
+                onClick={handleSaveEditingTemplate}
+                disabled={!value.trim()}
+              >
+                Save Template
+              </button>
+            </>
+          )}
 
           <button
             className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors disabled:opacity-50"
