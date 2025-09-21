@@ -5,7 +5,35 @@ import { getCustomTemplates } from "./templateStore";
 // Note: Vite glob imports for JSON files had issues, using hardcoded approach for reliability
 // TODO: Investigate proper Vite configuration for JSON glob imports
 
+// Cache for loaded templates
+let templatesCache: TemplateEntry[] | null = null;
+
+// Async function to load templates with caching
+export async function loadTemplatesAsync(): Promise<TemplateEntry[]> {
+  if (templatesCache) {
+    return templatesCache;
+  }
+
+  // Simulate async loading for heavy template data
+  await new Promise(resolve => setTimeout(resolve, 0));
+
+  templatesCache = loadTemplatesSyncInternal();
+  return templatesCache;
+}
+
+// Synchronous fallback for immediate use (returns empty array first, then loads async)
 export function loadTemplates(): TemplateEntry[] {
+  if (templatesCache) {
+    return templatesCache;
+  }
+
+  // Return empty array initially, load async in background
+  loadTemplatesAsync();
+  return [];
+}
+
+// Internal function with the actual template data
+function loadTemplatesSyncInternal(): TemplateEntry[] {
   // Built-in templates (hardcoded for reliability)
   const builtInTemplates: TemplateEntry[] = [
     {

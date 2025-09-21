@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { LibraryCard } from './LibraryCard';
 import { LibraryItem } from '../runtime/types';
 
@@ -7,14 +7,14 @@ interface SectionHeaderProps {
   count: number;
 }
 
-const SectionHeader: React.FC<SectionHeaderProps> = ({ title, count }) => (
+const SectionHeader: React.FC<SectionHeaderProps> = memo(({ title, count }) => (
   <div className="flex items-center justify-between mb-2">
     <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
     <span className="text-[11px] px-2 py-0.5 rounded bg-gray-100 text-gray-600">
       {count}
     </span>
   </div>
-);
+));
 
 interface CategoryPanelProps {
   label: string;
@@ -25,7 +25,7 @@ interface CategoryPanelProps {
   onDelete?: (item: LibraryItem) => void;
 }
 
-const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCopy, onEdit, onDelete }) => {
+const CategoryPanel: React.FC<CategoryPanelProps> = memo(({ label, items, onUse, onCopy, onEdit, onDelete }) => {
   if (items.length === 0) return null;
 
   return (
@@ -45,7 +45,7 @@ const CategoryPanel: React.FC<CategoryPanelProps> = ({ label, items, onUse, onCo
       </div>
     </div>
   );
-};
+});
 
 interface LibraryProps {
   filteredItems: LibraryItem[];
@@ -55,7 +55,7 @@ interface LibraryProps {
   onDeleteTemplate?: (item: LibraryItem) => void;
 }
 
-export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy, onEditTemplate, onDeleteTemplate }) => {
+export const Library: React.FC<LibraryProps> = memo(({ filteredItems, onUse, onCopy, onEditTemplate, onDeleteTemplate }) => {
   const grouped = useMemo(() => {
     const groups: Record<string, LibraryItem[]> = {
       Object: [],
@@ -90,4 +90,4 @@ export const Library: React.FC<LibraryProps> = ({ filteredItems, onUse, onCopy, 
       />
     </div>
   );
-};
+});

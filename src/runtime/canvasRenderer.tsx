@@ -72,6 +72,50 @@ const CanvasSingleRadio: React.FC<{ props: any; id?: string }> = ({ props, id })
   );
 };
 
+// Canvas-compliant Tabs component with state management
+const CanvasTabs: React.FC<{
+  tabItems: any[];
+  isDraggableMode: boolean;
+  onPositionChange?: (id: string, position: { x: number; y: number }) => void;
+  onZIndexChange?: (id: string, zIndex: number) => void;
+  onCollisionDetected?: (draggedId: string, newPos: { x: number; y: number }, bounds: DOMRect) => void;
+}> = ({ tabItems, isDraggableMode, onPositionChange, onZIndexChange, onCollisionDetected }) => {
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+
+  return (
+    <Tabs>
+      <Tabs.List>
+        {tabItems.map((tab, i) => (
+          <Tabs.Item
+            key={i}
+            onClick={() => setActiveTabIndex(i)}
+            aria-selected={i === activeTabIndex}
+            style={{
+              cursor: 'pointer',
+              opacity: i === activeTabIndex ? 1 : 0.7,
+              borderBottom: i === activeTabIndex ? '2px solid #0073e6' : 'none'
+            }}
+          >
+            {tab.props?.label || `Tab ${i + 1}`}
+          </Tabs.Item>
+        ))}
+      </Tabs.List>
+      <Tabs.Panel key={activeTabIndex}>
+        {tabItems[activeTabIndex]?.children?.map((child: any, j: number) => (
+          <CanvasRenderNode
+            key={child.id || j}
+            node={child}
+            isDraggableMode={isDraggableMode}
+            onPositionChange={onPositionChange}
+            onZIndexChange={onZIndexChange}
+            onCollisionDetected={onCollisionDetected}
+          />
+        ))}
+      </Tabs.Panel>
+    </Tabs>
+  );
+};
+
 // Helper function to detect if a string is an image URL
 const isImageURL = (url: string): boolean => {
   if (!url || typeof url !== 'string') return false;
@@ -496,10 +540,10 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
         const normalizedStatus = originalText.toLowerCase().replace(/\s+/g, ' ').trim();
 
         // Semantic mapping based on meaning, not hardcoded values
-        const positiveKeywords = ['active', 'approved', 'completed', 'successful', 'verified', 'confirmed', 'accepted', 'published', 'enabled', 'passed', 'valid', 'current'];
-        const cautionKeywords = ['pending', 'review', 'processing', 'draft', 'submitted', 'in progress', 'scheduled', 'queued', 'waiting', 'hold', 'paused', 'reviewing'];
-        const criticalKeywords = ['rejected', 'failed', 'expired', 'terminated', 'denied', 'cancelled', 'error', 'invalid', 'blocked', 'disabled', 'overdue'];
-        const neutralKeywords = ['new', 'created', 'unknown', 'other', 'n/a', 'none'];
+        const positiveKeywords = ['active', 'approved', 'completed', 'successful', 'verified', 'confirmed', 'accepted', 'published', 'enabled', 'passed', 'valid', 'current', 'available', 'open', 'accessible', 'ready', 'online', 'operational', 'healthy', 'ok', 'good', 'low', 'minimal', 'safe', 'secure'];
+        const cautionKeywords = ['pending', 'review', 'processing', 'draft', 'submitted', 'in progress', 'scheduled', 'queued', 'waiting', 'hold', 'paused', 'reviewing', 'limited', 'partial', 'maintenance', 'updating', 'warning', 'temporary', 'medium', 'moderate', 'elevated', 'intermediate'];
+        const criticalKeywords = ['rejected', 'failed', 'expired', 'terminated', 'denied', 'cancelled', 'error', 'invalid', 'blocked', 'disabled', 'overdue', 'restricted', 'locked', 'unavailable', 'closed', 'offline', 'forbidden', 'suspended', 'high', 'critical', 'severe', 'extreme', 'urgent'];
+        const neutralKeywords = ['new', 'created', 'unknown', 'other', 'n/a', 'none', 'info', 'note', 'archived', 'inactive'];
 
         // Check if any keyword matches
         const isPositive = positiveKeywords.some(keyword => normalizedStatus.includes(keyword));
@@ -591,27 +635,13 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
     case 'Tabs':
       const tabItems = children.filter(child => child.type === 'Tab');
       return maybeWrapWithDraggable(
-        <Tabs>
-          <Tabs.List>
-            {tabItems.map((tab, i) => (
-              <Tabs.Item key={i}>{tab.props?.label || `Tab ${i + 1}`}</Tabs.Item>
-            ))}
-          </Tabs.List>
-          {tabItems.map((tab, i) => (
-            <Tabs.Panel key={i}>
-              {tab.children?.map((child, j) => (
-                <CanvasRenderNode
-                  key={child.id || j}
-                  node={child}
-                  isDraggableMode={isDraggableMode}
-                  onPositionChange={onPositionChange}
-                  onZIndexChange={onZIndexChange}
-                  onCollisionDetected={onCollisionDetected}
-                />
-              ))}
-            </Tabs.Panel>
-          ))}
-        </Tabs>
+        <CanvasTabs
+          tabItems={tabItems}
+          isDraggableMode={isDraggableMode}
+          onPositionChange={onPositionChange}
+          onZIndexChange={onZIndexChange}
+          onCollisionDetected={onCollisionDetected}
+        />
       );
 
     case 'Tab':

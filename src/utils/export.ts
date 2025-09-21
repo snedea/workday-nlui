@@ -94,9 +94,58 @@ export async function exportPreviewAsPNG(
           element.style.maxWidth = 'none';
           element.style.width = 'auto';
         }
+
+        // Step 3: Fix text wrapping with better word break handling
+        const tagName = element.tagName.toLowerCase();
+        const textContent = element.textContent || '';
+        const isShortText = textContent.trim().length < 50;
+
+        // Detect labels and form elements that should not break
+        const isLabel = tagName === 'label' ||
+                       element.getAttribute('role') === 'label' ||
+                       elementClasses.includes('label') ||
+                       element.closest('label') !== null ||
+                       (isShortText && (elementClasses.includes('field') || elementClasses.includes('form')));
+
+        // Apply table-specific styles for better layout
+        if (tagName === 'table') {
+          element.style.width = '100%';
+          element.style.maxWidth = '100%';
+          element.style.tableLayout = 'fixed';
+          element.style.wordBreak = 'normal'; // Changed from break-word
+        }
+
+        // Handle labels and short text - prevent word breaking
+        if (isLabel || isShortText) {
+          element.style.whiteSpace = 'nowrap';
+          element.style.wordBreak = 'normal';
+          element.style.overflowWrap = 'normal';
+        }
+
+        // Handle table headers - allow wrapping for multi-word headers but preserve words
+        else if (tagName === 'th' || element.getAttribute('role') === 'columnheader') {
+          element.style.whiteSpace = 'normal';
+          element.style.wordBreak = 'normal'; // Changed from break-word
+          element.style.overflowWrap = 'break-word'; // Only break very long words
+          element.style.lineHeight = '1.2';
+          element.style.padding = '8px';
+          element.style.verticalAlign = 'top';
+        }
+
+        // Handle table cells - prevent excessive wrapping but allow reasonable breaks
+        else if (tagName === 'td' || element.getAttribute('role') === 'cell') {
+          element.style.whiteSpace = 'normal';
+          element.style.wordBreak = 'normal'; // Changed from break-word
+          element.style.overflowWrap = 'break-word'; // Only break very long words
+          element.style.minWidth = '80px';
+          element.style.maxWidth = '200px';
+          element.style.padding = '8px';
+          element.style.verticalAlign = 'top';
+          element.style.lineHeight = '1.3';
+        }
       });
 
-      // Step 3: Capture with html-to-image (skip fontEmbedCSS since we applied fonts inline)
+      // Step 4: Capture with html-to-image (skip fontEmbedCSS since we applied fonts inline)
       const blob = await toPng(root, {
         quality: 1,
         pixelRatio: scale,
@@ -126,7 +175,7 @@ export async function exportPreviewAsPNG(
       document.body.removeChild(link);
 
     } finally {
-      // Step 4: Restore ALL original styles
+      // Step 5: Restore ALL original styles
       originalStyles.forEach((originalStyle, element) => {
         element.style.cssText = originalStyle;
       });

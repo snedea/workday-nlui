@@ -1,23 +1,22 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { CanvasProvider, useTheme, ContentDirection } from '@workday/canvas-kit-react';
-import { SystemIcon } from '@workday/canvas-kit-react/icon';
 // Remove fonts CSS import - it's not needed for v14
 import '@workday/canvas-tokens-web/css/base/_variables.css';
 import '@workday/canvas-tokens-web/css/brand/_variables.css';
 import '@workday/canvas-tokens-web/css/system/_variables.css';
-import * as systemIcons from '@workday/canvas-system-icons-web';
 import { SearchBar } from './components/SearchBar';
 import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
 import { renderCanvasUi } from './runtime/canvasRenderer';
 import { LIB } from './data/library';
-import { canvasIconsLibrary } from './data/canvasIcons';
-import { loadTemplates } from './templates/loader';
+import { loadCanvasIconsLibrary } from './data/canvasIcons';
+import { loadTemplates, loadTemplatesAsync } from './templates/loader';
 import { LibraryItem, UiResponse } from './runtime/types';
 import { on, showToast } from './runtime/actions';
 import { addCustomTemplate, onTemplateChange, saveTemplateFile, updateCustomTemplate, removeCustomTemplate } from './templates/templateStore';
 import { ConfirmDialog } from './components/ConfirmDialog';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { exportPreviewAsPNG, exportWorkdayBundleZip, NLUIExportPayload } from './utils/export';
 
 const STORAGE_KEYS = {
@@ -49,20 +48,25 @@ function App() {
   });
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeGroup, setActiveGroup] = useState("all");
+  const [activeGroup, setActiveGroup] = useState("templates");
   const [composer, setComposer] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEYS.LAST_PROMPT);
     return stored || "Create a Workday-style profile page for Worker with header (avatar, Legal Name, title, Status), tabs (Profile, Job, Pay, Time Off), and a primary \"Save\" button.";
   });
   const [generatedUI, setGeneratedUI] = useState<UiResponse | null>(() => {
-    const stored = localStorage.getItem(STORAGE_KEYS.LAST_RESPONSE);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      // Ensure loaded UI has IDs
-      return {
-        ...parsed,
-        tree: ensureComponentIds(parsed.tree)
-      };
+    try {
+      const stored = localStorage.getItem(STORAGE_KEYS.LAST_RESPONSE);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Ensure loaded UI has IDs
+        return {
+          ...parsed,
+          tree: ensureComponentIds(parsed.tree)
+        };
+      }
+    } catch (error) {
+      console.warn('Failed to load cached UI data, clearing localStorage:', error);
+      localStorage.removeItem(STORAGE_KEYS.LAST_RESPONSE);
     }
     return null;
   });
@@ -70,6 +74,8 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
+  const [canvasIcons, setCanvasIcons] = useState<LibraryItem[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
   const previewRef = useRef<HTMLDivElement>(null);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
 
@@ -85,14 +91,25 @@ function App() {
     template?: LibraryItem;
   }>({ isOpen: false });
 
+  // Load Canvas Kit icons and templates asynchronously on component mount
+  useEffect(() => {
+    Promise.all([
+      loadCanvasIconsLibrary(),
+      loadTemplatesAsync()
+    ]).then(([icons, templates]) => {
+      setCanvasIcons(icons);
+      setTemplates(templates);
+    }).catch(error => {
+      console.warn('Failed to load Canvas Kit resources:', error);
+    });
+  }, []);
 
   const flatLibrary = useMemo(() => {
     const withType = (arr: LibraryItem[], type: string) =>
       arr.map(x => ({ ...x, _type: type }));
 
-    // Load templates dynamically (includes custom templates)
-    const allTemplates = loadTemplates();
-    const templatesAsLibraryItems = allTemplates.map(t => ({
+    // Use loaded templates from state (includes custom templates)
+    const templatesAsLibraryItems = templates.map(t => ({
       name: t.title,
       tags: t.tags || [], // Use tags directly from TemplateEntry
       example: t.summary,
@@ -109,10 +126,10 @@ function App() {
       ...withType(LIB.fields, "Field"),
       ...withType(LIB.controls, "Control"),
       ...withType(LIB.icons, "Icon"),
-      ...canvasIconsLibrary, // Add all Canvas icons
+      ...canvasIcons, // Add all Canvas icons (loaded asynchronously)
       ...templatesAsLibraryItems,
     ];
-  }, [templateVersion]); // Re-run when templates change
+  }, [templateVersion, canvasIcons, templates]); // Re-run when templates or icons change
 
   const filteredItems = useMemo(() => {
     const term = searchQuery.trim().toLowerCase();
@@ -636,15 +653,17 @@ function App() {
         </div>
         <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[300px] max-h-[600px] h-[450px]">
           {generatedUI ? (
-            <div ref={previewRef} id="nlui-preview-root" data-testid="nlui-preview-root" style={{ position: 'relative', minHeight: '300px' }}>
-              {renderCanvasUi(
-                generatedUI.tree,
-                isDraggableMode,
-                handlePositionChange,
-                handleZIndexChange,
-                handleCollisionDetected
-              )}
-            </div>
+            <ErrorBoundary>
+              <div ref={previewRef} id="nlui-preview-root" data-testid="nlui-preview-root" style={{ position: 'relative', minHeight: '300px' }}>
+                {renderCanvasUi(
+                  generatedUI.tree,
+                  isDraggableMode,
+                  handlePositionChange,
+                  handleZIndexChange,
+                  handleCollisionDetected
+                )}
+              </div>
+            </ErrorBoundary>
           ) : (
             <div className="text-center text-gray-500 py-8">
               <div className="text-4xl mb-2">🎨</div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, memo } from 'react';
 import { LIB } from '../data/library';
 
 interface PromptComposerProps {
@@ -19,7 +19,7 @@ interface PromptComposerProps {
   previewTitle?: string;
 }
 
-export const PromptComposer: React.FC<PromptComposerProps> = ({
+export const PromptComposer: React.FC<PromptComposerProps> = memo(({
   value,
   onChange,
   onGenerate,
@@ -300,4 +300,4 @@ export const PromptComposer: React.FC<PromptComposerProps> = ({
       )}
     </div>
   );
-};
+});

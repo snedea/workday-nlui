@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { LibraryItem } from '../runtime/types';
 
 interface LibraryCardProps {
@@ -9,7 +9,7 @@ interface LibraryCardProps {
   onDelete?: (item: LibraryItem) => void;
 }
 
-export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy, onEdit, onDelete }) => {
+export const LibraryCard: React.FC<LibraryCardProps> = memo(({ item, onUse, onCopy, onEdit, onDelete }) => {
   const isTemplate = item._type === 'Templates';
 
   return (
@@ -69,4 +69,4 @@ export const LibraryCard: React.FC<LibraryCardProps> = ({ item, onUse, onCopy, o
       </div>
     </div>
   );
-};
+});
