@@ -52,6 +52,15 @@ This release introduces comprehensive export functionality, allowing users to ca
 - **Toast Integration**: Success/error notification verification
 - **Menu State Testing**: Export menu visibility based on preview state
 
+### 🐛 Fixed
+
+#### PNG Export Improvements
+- **Roboto Font Display**: PNG exports now properly display Roboto font throughout all text elements
+- **Tab Text Truncation**: Full tab names display without ellipsis ("My Shifts", "Available Shifts", "Swap Requests")
+- **Font Embedding Workaround**: Inline font application bypasses html-to-image v1.11.13 font embedding issues
+- **Style Preservation**: Enhanced export function with complete style restoration using Map storage and try/finally blocks
+- **Canvas Kit Tab Styling**: Temporary removal of text truncation styles during capture with automatic restoration
+
 #### Test Infrastructure
 - **Playwright Configuration**: Added `acceptDownloads: true` for download testing
 - **Temporary File Management**: Safe test artifact creation and cleanup

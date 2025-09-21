@@ -107,14 +107,31 @@
   - Fixed always-visible menu options bug with proper state management
 - **Files**: `src/App.tsx:538-625` (custom dropdown implementation)
 
+### 🔧 PNG Export Font & Tab Fixes
+- **Issue**: PNG exports not displaying Roboto font and tab text being truncated
+- **Root Cause 1**: html-to-image v1.11.13 has known font embedding issues with `fontEmbedCSS` option
+- **Root Cause 2**: Canvas Kit Tabs apply text truncation with ellipsis when text exceeds container width
+- **Solution**: Enhanced export function with inline font application and temporary style modifications
+- **Implementation**:
+  - Apply `font-family: 'Roboto'` directly inline to ALL elements before capture (bypasses library font bugs)
+  - Identify tab-related elements and temporarily remove truncation styles:
+    - `text-overflow: unset` (removes ellipsis)
+    - `overflow: visible` (allows text to overflow)
+    - `max-width: none` (removes width constraints)
+  - Use Map to store and restore ALL original styles after capture with try/finally block
+  - Set `skipFonts: true` in html-to-image options since fonts are applied inline
+- **Files**: `src/utils/export.ts:52-137` (enhanced export function with style management)
+
 ### ✅ Completed v0.1.7
 - **Export Menu UI**: NLUI-styled blue export button matching Generate button design with custom dropdown menu
-- **PNG Export**: High-fidelity DOM-to-PNG conversion with Canvas Kit backgrounds
+- **PNG Export**: High-fidelity DOM-to-PNG conversion with Canvas Kit backgrounds and proper Roboto fonts
+- **Tab Text Display**: Full tab names without truncation ("My Shifts", "Available Shifts", "Swap Requests")
 - **Workday Bundle Export**: Complete ZIP with AMD/PMD/SMD/mock-data JSON files
 - **Component Analysis**: Comprehensive component tree analysis and data extraction
 - **Test Coverage**: Full Playwright test suite with download and accessibility testing
 - **Toast Integration**: Success/error feedback for all export operations
 - **Canvas Kit Menu Bug Fix**: Resolved dropdown options always visible issue with custom implementation
+- **Font & Style Preservation**: Inline font application with complete style restoration system
 
 ## Previous Changes (v0.1.6)
 

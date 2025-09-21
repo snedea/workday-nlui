@@ -1,6 +1,40 @@
 import { toPng } from 'html-to-image';
-import JSZip from 'jszip';
+import * as JSZip from 'jszip';
 import { UiResponse, UiNode } from '../runtime/types';
+
+// Canvas Kit Roboto font CSS for PNG export embedding
+const ROBOTO_FONT_CSS = `
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url('https://design.workdaycdn.com/beta/assets/fonts@1.0.0/roboto/ttf/Roboto-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'), url('https://design.workdaycdn.com/beta/assets/fonts@1.0.0/roboto/ttf/Roboto-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url('https://design.workdaycdn.com/beta/assets/fonts@1.0.0/roboto/ttf/Roboto-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url('https://design.workdaycdn.com/beta/assets/fonts@1.0.0/roboto/ttf/Roboto-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Mono'), local('RobotoMono-Regular'), url('https://design.workdaycdn.com/beta/assets/fonts@1.0.0/roboto/ttf/RobotoMono-Regular.ttf') format('truetype');
+}
+`;
 
 export type NLUIExportPayload = {
   version: string;                            // e.g., "0.1.7"
@@ -13,40 +47,90 @@ export type NLUIExportPayload = {
 };
 
 /**
- * Export the preview container as a PNG image
+ * Export ONLY the preview content as PNG with proper Roboto fonts and full tab text
  */
 export async function exportPreviewAsPNG(
   root: HTMLElement,
   opts?: { scale?: number; background?: string }
 ): Promise<void> {
   try {
-    const scale = opts?.scale || window.devicePixelRatio || 1;
+    // Get actual dimensions of the preview content
+    const rect = root.getBoundingClientRect();
+    const scale = opts?.scale || 1;
     const background = opts?.background || '#f7f7f7'; // Canvas Kit soap.200
 
-    const blob = await toPng(root, {
-      quality: 1,
-      pixelRatio: scale,
-      backgroundColor: background,
-      filter: (node) => {
-        // Filter out any node marked with data-no-export="true"
-        if (node instanceof Element && node.getAttribute('data-no-export') === 'true') {
-          return false;
+    // Store all original styles for restoration
+    const originalStyles = new Map<HTMLElement, string>();
+    const allElements = root.querySelectorAll('*');
+
+    // Store root element style
+    originalStyles.set(root, root.style.cssText);
+
+    try {
+      // Step 1: Apply Roboto font directly to ALL elements (works around html-to-image font issues)
+      root.style.fontFamily = 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+      allElements.forEach((el) => {
+        const element = el as HTMLElement;
+        // Store original style
+        originalStyles.set(element, element.style.cssText);
+
+        // Apply Roboto font inline
+        element.style.fontFamily = 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+
+        // Step 2: Fix tab text truncation by removing truncation styles
+        const computedStyle = getComputedStyle(element);
+        const elementClasses = element.className || '';
+
+        // Identify tab-related elements and remove truncation
+        if (elementClasses.includes('tab') ||
+            element.getAttribute('role') === 'tab' ||
+            element.closest('[role="tablist"]') ||
+            computedStyle.textOverflow === 'ellipsis') {
+
+          element.style.whiteSpace = 'nowrap';
+          element.style.textOverflow = 'unset';
+          element.style.overflow = 'visible';
+          element.style.maxWidth = 'none';
+          element.style.width = 'auto';
         }
-        return true;
-      },
-    });
+      });
 
-    // Generate filename with timestamp
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const filename = `nlui-preview-${timestamp}.png`;
+      // Step 3: Capture with html-to-image (skip fontEmbedCSS since we applied fonts inline)
+      const blob = await toPng(root, {
+        quality: 1,
+        pixelRatio: scale,
+        backgroundColor: background,
+        width: rect.width,
+        height: rect.height,
+        skipFonts: true, // Skip since we applied fonts inline
+        filter: (node) => {
+          // Only exclude elements explicitly marked for exclusion
+          if (node instanceof Element && node.getAttribute('data-no-export') === 'true') {
+            return false;
+          }
+          return true;
+        },
+      });
 
-    // Create download link
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = blob;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+      // Generate filename with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `nlui-preview-${timestamp}.png`;
+
+      // Download the PNG
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = blob;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+    } finally {
+      // Step 4: Restore ALL original styles
+      originalStyles.forEach((originalStyle, element) => {
+        element.style.cssText = originalStyle;
+      });
+    }
   } catch (error) {
     console.error('Failed to export PNG:', error);
     throw new Error('Failed to export preview as PNG');
@@ -58,7 +142,7 @@ export async function exportPreviewAsPNG(
  */
 export async function exportWorkdayBundleZip(payload: NLUIExportPayload): Promise<void> {
   try {
-    const zip = new JSZip();
+    const zip = new (JSZip as any)();
     const workdayFolder = zip.folder('workday');
 
     if (!workdayFolder) {

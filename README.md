@@ -265,6 +265,9 @@ Set `NODE_ENV=development` to see detailed logs in the server console.
 - 🎯 **Smart UI**: Export dropdown only appears when clicked, closes after selection or when clicking outside
 - ♿ **Accessibility**: Full keyboard navigation support with proper ARIA labels and Enter/Space/Escape keys
 - 🐛 **Fixed**: Resolved Canvas Kit Menu bug where dropdown options were always visible
+- 🎨 **Font Fix**: PNG exports now properly display Roboto font throughout all text elements
+- 📏 **Tab Text Fix**: Full tab names display without truncation ("My Shifts", "Available Shifts", "Swap Requests")
+- 🔧 **Enhanced Export**: Inline font application and temporary style modifications ensure pixel-perfect captures
 
 ### Version 0.1.6 - Template UX Improvements & StatusIndicator Fixes
 - ✨ **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
