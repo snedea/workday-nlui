@@ -1,6 +1,6 @@
 # Workday NLUI Studio - Natural Language UI Design Studio
 
-![Version](https://img.shields.io/badge/version-0.1.7-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.8-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/typescript-5.2+-blue.svg)
@@ -115,8 +115,10 @@ npm start
 
 ### Example Templates
 
+- **40+ Enterprise Templates**: Complete library spanning all major business functions including HR Engagement, Orchestration, Finance, IT Admin, and more
 - **Shift Swap/Bid**: Restaurant workers can swap shifts or bid on open shifts with tabs for My Shifts, Available Shifts, and Swap Requests
 - **Expense Report**: Submit and track business expense reports with receipt management and approval workflow
+- **Workday Extend Apps**: Templates for Charitable Donations, Employee Recognition, Project Forecasting, Asset Barcoding, Tuition Reimbursement, and 25+ more
 - **Custom Templates**: Save your own frequently-used prompts as reusable templates with tags and descriptions
 
 ## Canvas Design System Compliance
@@ -124,7 +126,7 @@ npm start
 **NLUI Studio** achieves **100% compliance** with Workday's Canvas Design System v14, ensuring authentic enterprise-grade UI components.
 
 ### ✅ Compliance Highlights
-- **Authentic Components**: All 25+ UI components from official Canvas Kit packages
+- **Authentic Components**: All 41 UI components from official Canvas Kit packages
 - **1,115 Verified Icons**: System, Accent, and Applet icons from Canvas packages
 - **Accessibility**: WCAG 2.1 AA compliance through Canvas components
 - **Typography**: Official Roboto fonts from Workday CDN
@@ -273,6 +275,18 @@ Toggle between renderers in the preview window to compare Canvas Kit fidelity vs
 Set `NODE_ENV=development` to see detailed logs in the server console.
 
 ## Release Notes
+
+### Version 0.1.8 - Template Library Expansion & Component System Enhancement
+- 📚 **30 New Workday Extend Templates**: Complete library spanning all major business functions (HR, Finance, IT, Operations)
+- 🧩 **14 New Canvas Kit Components**: Timeline, Calendar, Chart, DatePicker, Map, Upload, Download, Scanner, Stepper, ProgressBar, Select, Preview, Points, Code
+- 📊 **4x Template Growth**: Expanded from 10 to 40+ enterprise-grade templates with proper categorization
+- 🏗️ **Extended Component Schema**: Updated Zod validation and LLM prompts to support all new component types
+- 🐛 **ZIP Export Fix**: Resolved JSZip import issue causing "Failed to export Workday bundle" error
+- 🔧 **Component Validation**: Fixed "Invalid enum value" errors for Timeline and other new components
+- 🚀 **Development Stability**: Fixed HMR failures and component rendering crashes during schema updates
+- 📁 **Structured Organization**: Templates organized in `/src/templates/extend/` directory with 14 categories
+- 🎯 **Template Integration**: All templates properly integrated into loader.ts for reliable loading
+- ✨ **Placeholder Renderers**: Functional implementations for all new components with Canvas Kit styling
 
 ### Version 0.1.7 - Export Feature with PNG & Workday Extend Bundle
 - 📤 **Export Button**: NLUI-styled blue export button matching Generate button design with custom dropdown menu
@@ -424,7 +438,7 @@ When you type something like "Restaurant workers can swap shifts or bid on open 
 - **Model**: Configurable via `OPENAI_API_MODEL` (default: gpt-4o-mini)
 - **Temperature**: 0.7 (balanced creativity and consistency)
 - **Response Format**: Enforced JSON output with Zod validation
-- **Component Types**: 25+ UI components including tables, forms, tabs, badges, and more
+- **Component Types**: 41 UI components including tables, forms, tabs, badges, timelines, charts, and more
 - **Workday Focus**: Designed specifically for enterprise Workday applications
 
 This documentation gives you complete transparency into how NLUI generates professional UI components from simple text descriptions.
