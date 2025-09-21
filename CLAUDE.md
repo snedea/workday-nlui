@@ -2,6 +2,13 @@
 
 ## Resolved Issues (Previous Versions)
 
+### ✅ Fixed in v0.1.7
+- **Export Feature**: Added comprehensive PNG and Workday Extend bundle export functionality
+- **Canvas Kit Menu**: Implemented export menu with proper accessibility and keyboard navigation
+- **High-Fidelity Export**: DOM-to-PNG conversion with Canvas Kit background colors
+- **Workday Integration**: Complete ZIP bundle with AMD/PMD/SMD/mock-data JSON files
+- **Test Coverage**: Comprehensive Playwright tests for export functionality and downloads
+
 ### ✅ Fixed in v0.1.6
 - **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
 - **StatusIndicator Modernization**: Migrated from deprecated Canvas Kit StatusIndicator to Preview API
@@ -27,7 +34,76 @@
 - **Button Position Memory**: Buttons don't consistently remember their dragged positions when switching between static/draggable modes
 - **Table Size Changes**: Table components change size when switching from static to draggable view, causing layout shifts
 
-## Recent Changes (v0.1.6)
+## Recent Changes (v0.1.7)
+
+### 📤 Export Feature Implementation
+
+#### 🎯 Export Menu Integration
+- **Issue**: Users needed a way to export their generated UI designs for external use
+- **Solution**: Added Canvas Kit-styled export menu in Preview header with PNG and Workday bundle options
+- **Implementation**:
+  - Canvas Kit Menu component with SecondaryButton trigger and SystemIcon
+  - Smart visibility logic (only shows when preview content exists)
+  - Proper data-testid attributes for testing
+  - Toast notification integration for user feedback
+- **Files**: `src/App.tsx:538-555, 430-462`
+
+#### 🖼️ PNG Snapshot Export
+- **Issue**: Need high-fidelity visual export of generated UI previews
+- **Solution**: DOM-to-PNG conversion using html-to-image library with Canvas Kit styling
+- **Implementation**:
+  - `html-to-image@^1.11.13` for high-quality DOM capture
+  - Canvas Kit soap.200 background color (#f7f7f7) by default
+  - Configurable scale and background options
+  - Timestamped filename generation (nlui-preview-YYYY-MM-DDTHH-mm-ss.png)
+  - Element filtering with data-no-export attribute support
+- **Files**: `src/utils/export.ts:20-53`
+
+#### 📦 Workday Extend Bundle Export
+- **Issue**: Users need structured data export for Workday Extend App Builder integration
+- **Solution**: Complete ZIP bundle with AMD/PMD/SMD/mock-data JSON files
+- **Implementation**:
+  - **AMD.json**: Application metadata with Canvas Kit version info and component analytics
+  - **PMD.json**: Page metadata with component structure and layout information
+  - **SMD.json**: Section metadata with hierarchy and navigation structure
+  - **mock-data.json**: Sample data extracted from rendered components
+  - All files include proper Workday schema URLs for validation
+  - Comprehensive component tree analysis and data extraction helpers
+- **Files**: `src/utils/export.ts:55-344`
+
+#### ♿ Accessibility Implementation
+- **Issue**: Export functionality needed to be fully accessible
+- **Solution**: Complete keyboard navigation and ARIA support
+- **Implementation**:
+  - aria-label="Export" on menu trigger
+  - aria-haspopup="menu" for proper menu semantics
+  - Full keyboard support (Tab, Enter, Arrow keys, Escape)
+  - Focus management and restoration
+  - Logical tab order integration
+- **Files**: `src/App.tsx:540-543`, Playwright tests verify accessibility
+
+#### 🧪 Comprehensive Testing
+- **Issue**: Export functionality needed thorough testing coverage
+- **Solution**: Complete Playwright test suite with download verification
+- **Implementation**:
+  - PNG and ZIP download verification with file size validation
+  - ZIP structure verification (all required JSON files present)
+  - JSON schema compliance testing
+  - Accessibility testing (keyboard navigation, ARIA labels)
+  - Toast notification verification
+  - Menu visibility state testing
+  - Temporary file management for test artifacts
+- **Files**: `tests/visual/export.spec.ts`, `playwright.config.ts:30`
+
+### ✅ Completed v0.1.7
+- **Export Menu UI**: Canvas Kit-styled export menu with smart visibility and accessibility
+- **PNG Export**: High-fidelity DOM-to-PNG conversion with Canvas Kit backgrounds
+- **Workday Bundle Export**: Complete ZIP with AMD/PMD/SMD/mock-data JSON files
+- **Component Analysis**: Comprehensive component tree analysis and data extraction
+- **Test Coverage**: Full Playwright test suite with download and accessibility testing
+- **Toast Integration**: Success/error feedback for all export operations
+
+## Previous Changes (v0.1.6)
 
 ### 🎯 StatusIndicator Component Modernization
 - **Issue**: React component errors with deprecated StatusIndicator from Canvas Kit
@@ -289,4 +365,4 @@ const getStatusConfig = (status: string) => {
 ```
 
 ---
-*Last updated: v0.1.6 - Template UX improvements, StatusIndicator modernization and context-aware status system*
+*Last updated: v0.1.7 - Export feature with PNG snapshots and Workday Extend bundle integration*

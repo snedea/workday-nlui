@@ -5,6 +5,124 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2025-09-21
+
+### 📤 Export Feature
+
+This release introduces comprehensive export functionality, allowing users to capture their generated UI designs as PNG snapshots or export complete Workday Extend bundles for direct integration.
+
+### ✨ Added
+
+#### Export Menu & UI
+- **Canvas Kit Export Menu**: Styled SecondaryButton with SystemIcon in Preview header
+- **Smart Visibility**: Export menu only appears when preview content is available
+- **Toast Notifications**: Success/error feedback for all export operations
+- **Accessibility**: Full keyboard navigation with proper ARIA labels
+
+#### PNG Snapshot Export
+- **High-Fidelity Capture**: DOM-to-PNG conversion using `html-to-image` library
+- **Canvas Kit Background**: Automatic Canvas Kit soap.200 background color application
+- **Configurable Options**: Scale and background color customization
+- **Smart Filtering**: Excludes elements marked with `data-no-export="true"`
+- **Timestamped Files**: Automatic filename generation with ISO timestamp
+
+#### Workday Extend Bundle Export
+- **Complete ZIP Bundle**: Four structured JSON files for Workday Extend integration
+- **AMD.json**: Application Metadata with Canvas Kit version and component analytics
+- **PMD.json**: Page Metadata with component structure and layout information
+- **SMD.json**: Section Metadata with hierarchy and navigation structure
+- **mock-data.json**: Sample data extracted from rendered components
+- **Schema Validation**: All files include proper Workday schema URLs
+- **Component Analysis**: Comprehensive component tree analysis and data extraction
+
+#### Developer Experience
+- **TypeScript Support**: Full type definitions for all export interfaces
+- **Error Handling**: Comprehensive error handling with user-friendly messages
+- **Utility Functions**: Reusable export utilities in `src/utils/export.ts`
+- **Test Coverage**: Complete Playwright test suite for all export functionality
+
+### 🧪 Testing
+
+#### Comprehensive Test Suite
+- **Download Verification**: Validates PNG and ZIP file downloads with file size checks
+- **ZIP Structure Validation**: Confirms all required JSON files are present and valid
+- **Schema Compliance**: Verifies JSON structure matches Workday schema requirements
+- **Accessibility Testing**: Keyboard navigation and ARIA label validation
+- **Toast Integration**: Success/error notification verification
+- **Menu State Testing**: Export menu visibility based on preview state
+
+#### Test Infrastructure
+- **Playwright Configuration**: Added `acceptDownloads: true` for download testing
+- **Temporary File Management**: Safe test artifact creation and cleanup
+- **Multiple Browser Support**: Tests across Chromium, Firefox, and WebKit
+
+### 🛠 Technical Details
+
+**New Dependencies:**
+- `html-to-image@^1.11.13` - High-quality DOM-to-image conversion
+
+**New Files:**
+- `src/utils/export.ts` - Export utility functions and type definitions
+- `tests/visual/export.spec.ts` - Comprehensive export test suite
+
+**Enhanced Files:**
+- `src/App.tsx` - Export menu integration and preview container setup
+- `playwright.config.ts` - Download handling configuration
+
+### 📋 Export File Structures
+
+#### PNG Export
+- Filename: `nlui-preview-YYYY-MM-DDTHH-mm-ss.png`
+- Background: Canvas Kit soap.200 (#f7f7f7)
+- Quality: Maximum with device pixel ratio scaling
+
+#### Workday Extend Bundle
+- Filename: `nlui-extend-bundle-0.1.7.zip`
+- Structure:
+  ```
+  workday/
+  ├── AMD.json  - Application metadata and Canvas Kit integration
+  ├── PMD.json  - Page structure and component definitions
+  ├── SMD.json  - Section hierarchy and navigation
+  └── mock-data.json - Sample data and component values
+  ```
+
+### 🎯 Usage
+
+#### PNG Export
+1. Generate any UI preview
+2. Click Export menu in Preview header
+3. Select "PNG Snapshot"
+4. File downloads automatically with timestamp
+
+#### Workday Extend Bundle
+1. Generate any UI preview
+2. Click Export menu in Preview header
+3. Select "Workday Extend Bundle (.zip)"
+4. ZIP file downloads with all required metadata
+
+### ♿ Accessibility
+
+- **Keyboard Navigation**: Full support for Tab, Enter, Arrow keys, and Escape
+- **ARIA Labels**: Proper labeling for screen readers (`aria-label="Export"`)
+- **Focus Management**: Logical tab order and focus restoration
+- **Menu Popup**: `aria-haspopup="menu"` for assistive technology
+
+## [0.1.6] - 2025-09-21
+
+### 🎨 Template UX & StatusIndicator Improvements
+
+### ✨ Added
+- **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
+- **Context-Aware Status System**: Dynamic status mapping with semantic color variants
+
+### 🔄 Changed
+- **StatusIndicator Modernization**: Migrated from deprecated Canvas Kit StatusIndicator to Preview API
+- **StatusIndicator Width Fix**: Implemented dynamic width sizing using fit-content and inline-flex
+
+### 🐛 Fixed
+- **Server Stability**: Fixed 500 errors from crashed server processes with improved error handling
+
 ## [0.1.1] - 2025-09-18
 
 ### 🎨 Canvas Kit v14 Integration

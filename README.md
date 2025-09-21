@@ -1,6 +1,6 @@
 # Workday NLUI Studio - Natural Language UI Design Studio
 
-![Version](https://img.shields.io/badge/version-0.1.6-blue.svg)
+![Version](https://img.shields.io/badge/version-0.1.7-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/typescript-5.2+-blue.svg)
@@ -256,6 +256,14 @@ Toggle between renderers in the preview window to compare Canvas Kit fidelity vs
 Set `NODE_ENV=development` to see detailed logs in the server console.
 
 ## Release Notes
+
+### Version 0.1.7 - Export Feature with PNG & Workday Extend Bundle
+- 📤 **Export Menu**: Canvas Kit-styled export menu in Preview header with PNG and Workday bundle options
+- 📷 **PNG Snapshot**: High-fidelity DOM-to-PNG conversion with Canvas Kit background colors
+- 📦 **Workday Extend Bundle**: Complete ZIP export with AMD/PMD/SMD/mock-data JSON files for direct import
+- 🧪 **Test Coverage**: Comprehensive Playwright tests for export functionality and accessibility
+- 🎯 **Smart UI**: Export menu only appears when preview content is available
+- ♿ **Accessibility**: Full keyboard navigation support with proper ARIA labels
 
 ### Version 0.1.6 - Template UX Improvements & StatusIndicator Fixes
 - ✨ **Template Button UX**: Reordered hover buttons (delete, edit, copy, use) with blue primary "Use" action
