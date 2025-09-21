@@ -5,7 +5,9 @@ export const UiNode = z.object({
     'Page','Header','Section','Card','Tabs','Tab','Table','Form','Field',
     'Text','Badge','Button','Icon','Banner','Toast','Modal','Avatar',
     'Breadcrumbs','Footer','Checkbox','Radio','Switch','TextArea','Tooltip',
-    'Layout','Menu','Pagination','ColorPicker','SegmentedControl','Pill','Image'
+    'Layout','Menu','Pagination','ColorPicker','SegmentedControl','Pill','Image',
+    'Timeline','Calendar','Chart','DatePicker','Map','Upload','Download',
+    'Scanner','Stepper','ProgressBar','Select','Preview','Points','Code'
   ]),
   props: z.record(z.any()).optional(),
   children: z.array(z.lazy(() => UiNode)).optional()

@@ -1,0 +1,10 @@
+{
+  "id": "time-absence/timesheet-assistant",
+  "title": "Timesheet Assistant",
+  "summary": "AI-powered timesheet completion assistant with smart suggestions and automation",
+  "tags": ["Time", "Absence", "Assistant", "AI", "Automation"],
+  "canvasKit": ["Form", "Table", "Button", "Calendar", "Field", "Badge"],
+  "prompt": "Create an intelligent timesheet assistant with automated time entry suggestions based on calendar events and historical patterns. Include a weekly timesheet grid with smart auto-completion and project code recommendations. Show time allocation charts and overtime alerts. Add a table of recent time entries with columns for Date, Project, Hours, Type, Status, and Approval badges. Include time tracking analytics and primary 'Submit Timesheet' and secondary 'Save Draft' buttons with AI-powered validation and error detection.",
+  "version": "1.0",
+  "category": "Templates"
+}

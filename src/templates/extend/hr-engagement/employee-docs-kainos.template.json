@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/employee-docs-kainos",
+  "title": "Employee Docs Kainos",
+  "summary": "Kainos-specific employee document management and self-service portal",
+  "tags": ["HR", "Documents", "Kainos", "Self-Service", "Portal"],
+  "canvasKit": ["Form", "Table", "Button", "Upload", "Download", "Badge"],
+  "prompt": "Create a Kainos employee document portal with document categories including contracts, policies, benefits, and personal records. Include document upload and download functionality with version control. Show a table of available documents with columns for Document Type, Title, Version, Last Updated, and Access badges. Add document request forms for missing documents and approval workflows. Include search and filter capabilities with primary 'Request Document' and secondary 'Upload Document' buttons featuring Kainos-specific document templates.",
+  "version": "1.0",
+  "category": "Templates"
+}

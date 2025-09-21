@@ -1,0 +1,10 @@
+{
+  "id": "data-capture/dynamic-data-capture",
+  "title": "Dynamic Data Capture",
+  "summary": "Configurable data capture forms with dynamic fields and validation rules",
+  "tags": ["Data", "Capture", "Dynamic", "Forms", "Configuration"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Select", "Badge"],
+  "prompt": "Create a dynamic data capture system with configurable form builder including field types, validation rules, and conditional logic. Show form templates and custom field options with real-time preview. Include a table of captured data with customizable columns based on form configuration. Add data export capabilities and validation reporting. Include primary 'Create Form' and secondary 'Capture Data' buttons with form versioning and approval workflows for data collection processes.",
+  "version": "1.0",
+  "category": "Templates"
+}

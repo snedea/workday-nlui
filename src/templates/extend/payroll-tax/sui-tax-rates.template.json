@@ -1,0 +1,10 @@
+{
+  "id": "payroll-tax/sui-tax-rates",
+  "title": "SUI Tax Rates",
+  "summary": "Manage State Unemployment Insurance tax rates by location and period",
+  "tags": ["Payroll", "Tax", "SUI", "Rates", "Compliance"],
+  "canvasKit": ["Table", "Form", "Button", "DatePicker", "Field", "Select"],
+  "prompt": "Create a SUI tax rates management page with a header showing current tax period and jurisdiction. Include a searchable table with columns for State, Tax Rate, Wage Base, Effective Date, End Date, and Status badges. Add a form for updating tax rates with fields for state selection, rate percentage, wage base amount, and effective date range. Include filter controls for state, status, and date range. Provide primary 'Update Rates' and secondary 'Export Data' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

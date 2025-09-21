@@ -1,5 +1,5 @@
 import { toPng } from 'html-to-image';
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 import { UiResponse, UiNode } from '../runtime/types';
 
 // Canvas Kit Roboto font CSS for PNG export embedding
@@ -142,7 +142,7 @@ export async function exportPreviewAsPNG(
  */
 export async function exportWorkdayBundleZip(payload: NLUIExportPayload): Promise<void> {
   try {
-    const zip = new (JSZip as any)();
+    const zip = new JSZip();
     const workdayFolder = zip.folder('workday');
 
     if (!workdayFolder) {

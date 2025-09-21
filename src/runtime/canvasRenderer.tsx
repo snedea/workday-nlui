@@ -1,33 +1,26 @@
 import React, { useState } from 'react';
 import { UiNode } from './types';
 import { DraggableWrapper } from '../components/DraggableWrapper';
-import {
-  Card,
-  Heading,
-  Text,
-  PrimaryButton,
-  SecondaryButton,
-  TertiaryButton,
-  TextInput,
-  Select,
-  Table,
-  Banner,
-  Toast,
-  Tabs,
-  SystemIcon,
-  AccentIcon,
-  AppletIcon,
-  Breadcrumbs,
-  Checkbox,
-  Radio,
-  Switch,
-  TextArea,
-  Tooltip,
-  Menu,
-  Pagination,
-} from '@workday/canvas-kit-react';
+// Tree-shakeable imports for better performance
+import { Card } from '@workday/canvas-kit-react/card';
+import { Heading, Text } from '@workday/canvas-kit-react/text';
+import { PrimaryButton, SecondaryButton, TertiaryButton } from '@workday/canvas-kit-react/button';
+import { TextInput } from '@workday/canvas-kit-react/text-input';
+import { Select } from '@workday/canvas-kit-react/select';
+import { Table } from '@workday/canvas-kit-react/table';
+import { Banner } from '@workday/canvas-kit-react/banner';
+import { Toast } from '@workday/canvas-kit-react/toast';
+import { Tabs } from '@workday/canvas-kit-react/tabs';
+import { SystemIcon, AccentIcon, AppletIcon } from '@workday/canvas-kit-react/icon';
+import { Breadcrumbs } from '@workday/canvas-kit-react/breadcrumbs';
+import { Checkbox } from '@workday/canvas-kit-react/checkbox';
+import { Radio, RadioGroup } from '@workday/canvas-kit-react/radio';
+import { Switch } from '@workday/canvas-kit-react/switch';
+import { TextArea } from '@workday/canvas-kit-react/text-area';
+import { Tooltip } from '@workday/canvas-kit-react/tooltip';
+import { Menu } from '@workday/canvas-kit-react/menu';
+import { Pagination } from '@workday/canvas-kit-react/pagination';
 import { FormField } from '@workday/canvas-kit-react/form-field';
-import { RadioGroup } from '@workday/canvas-kit-react/radio';
 import { Avatar, ColorPicker, SegmentedControl, Pill, StatusIndicator } from '@workday/canvas-kit-preview-react';
 
 // Import icon assets
@@ -36,41 +29,46 @@ import * as accentIcons from '@workday/canvas-accent-icons-web';
 import * as appletIcons from '@workday/canvas-applet-icons-web';
 
 
-// Simplified Radio components without FormField wrapper
-const SimpleRadioGroup: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
+// Canvas-compliant RadioGroup component with compound pattern
+const CanvasRadioGroup: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
   const groupName = props.name || id || `radio-group-${Math.random().toString(36).substr(2, 9)}`;
-  const orientation = props.orientation === 'horizontal' ? 'horizontal' : 'vertical';
   const [selectedValue, setSelectedValue] = useState(props.value || '');
 
   return (
-    <div style={{ display: 'flex', flexDirection: orientation === 'horizontal' ? 'row' : 'column', gap: '8px' }}>
-      {props.options.map((option: string, index: number) => (
-        <Radio
-          key={index}
-          name={groupName}
-          value={option}
-          label={option}
-          checked={selectedValue === option}
-          onChange={() => setSelectedValue(option)}
-          disabled={props.disabled}
-        />
-      ))}
-    </div>
+    <FormField label={props.label || 'Radio Group'} error={props.error} hint={props.hint}>
+      <RadioGroup name={groupName} orientation={props.orientation || 'vertical'}>
+        {props.options?.map((option: string, index: number) => (
+          <RadioGroup.RadioButton
+            key={`${groupName}-${index}`}
+            value={option}
+            checked={selectedValue === option}
+            onChange={() => setSelectedValue(option)}
+          >
+            <RadioGroup.RadioButton.Input />
+            <RadioGroup.RadioButton.Label>{option}</RadioGroup.RadioButton.Label>
+          </RadioGroup.RadioButton>
+        ))}
+      </RadioGroup>
+    </FormField>
   );
 };
 
-const SimpleSingleRadio: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
+const CanvasSingleRadio: React.FC<{ props: any; id?: string }> = ({ props, id }) => {
   const [isChecked, setIsChecked] = useState(props.checked || false);
 
   return (
-    <Radio
-      checked={isChecked}
-      onChange={() => setIsChecked(!isChecked)}
-      disabled={props.disabled}
-      value={props.value || 'option'}
-      label={props.text || props.children || props.label || 'Radio option'}
-      name={props.name || id || `radio-${Math.random().toString(36).substr(2, 9)}`}
-    />
+    <FormField label={props.label}>
+      <Radio
+        checked={isChecked}
+        onChange={() => setIsChecked(!isChecked)}
+        disabled={props.disabled}
+        value={props.value || 'option'}
+        name={props.name || id || `radio-${Math.random().toString(36).substr(2, 9)}`}
+      >
+        <Radio.Input />
+        <Radio.Label>{props.text || props.children || props.label || 'Radio option'}</Radio.Label>
+      </Radio>
+    </FormField>
   );
 };
 
@@ -766,13 +764,13 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
       );
 
     case 'Radio':
-      // Handle Radio Group (multiple radio buttons) - simplified version
+      // Handle Radio Group (multiple radio buttons) - Canvas-compliant compound pattern
       if (props.options && Array.isArray(props.options)) {
-        return maybeWrapWithDraggable(<SimpleRadioGroup props={props} id={id} />);
+        return maybeWrapWithDraggable(<CanvasRadioGroup props={props} id={id} />);
       }
 
-      // Single Radio button - simplified version
-      return maybeWrapWithDraggable(<SimpleSingleRadio props={props} id={id} />);
+      // Single Radio button - Canvas-compliant with FormField wrapper
+      return maybeWrapWithDraggable(<CanvasSingleRadio props={props} id={id} />);
 
     case 'Switch':
       return maybeWrapWithDraggable(
@@ -924,6 +922,227 @@ const CanvasRenderNode: React.FC<RenderUiProps> = ({ node, isDraggableMode = fal
               </SegmentedControl.Item>
             ))}
           </SegmentedControl>
+        </div>
+      );
+
+    case 'Timeline':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">📅 {props.title || 'Timeline'}</Text>
+          </Card.Header>
+          <Card.Body>
+            {(props.events || ['Event 1', 'Event 2', 'Event 3']).map((event: any, index: number) => (
+              <div key={index} style={{ marginBottom: '8px', paddingLeft: '16px', borderLeft: '2px solid #e0e0e0' }}>
+                <Text size="small">{typeof event === 'string' ? event : event.title}</Text>
+                {event.date && <Text size="tiny" color="subdued">{event.date}</Text>}
+              </div>
+            ))}
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Calendar':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">📅 {props.title || 'Calendar'}</Text>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ textAlign: 'center', padding: '16px', color: '#888' }}>
+              <Text size="small">Calendar view placeholder</Text>
+              <br />
+              <Text size="tiny">{props.month || 'Current Month'}</Text>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Chart':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">📊 {props.title || 'Chart'}</Text>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ height: '200px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Text size="small" color="subdued">{props.type || 'Bar'} Chart Placeholder</Text>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Map':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">🗺️ {props.title || 'Map'}</Text>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ height: '200px', background: '#e8f4fd', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Text size="small" color="subdued">Map view placeholder</Text>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Upload':
+      return maybeWrapWithDraggable(
+        <Card style={{ border: '2px dashed #ccc', textAlign: 'center', padding: '16px' }}>
+          <Text size="small">📎 {props.label || 'Upload Files'}</Text>
+          <br />
+          <Text size="tiny" color="subdued">Drag files here or click to browse</Text>
+        </Card>
+      );
+
+    case 'Download':
+      return maybeWrapWithDraggable(
+        <SecondaryButton>
+          📥 {props.text || 'Download'}
+        </SecondaryButton>
+      );
+
+    case 'Scanner':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">📷 {props.title || 'Scanner'}</Text>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ height: '150px', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+              <span style={{ fontSize: '14px' }}>Scanner view placeholder</span>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Stepper':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Body>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {(props.steps || ['Step 1', 'Step 2', 'Step 3']).map((step: string, index: number) => (
+                <React.Fragment key={index}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    background: index <= (props.currentStep || 0) ? '#0073e6' : '#ccc',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px'
+                  }}>
+                    {index + 1}
+                  </div>
+                  {index < (props.steps?.length || 3) - 1 && (
+                    <div style={{
+                      height: '2px',
+                      flex: 1,
+                      background: index < (props.currentStep || 0) ? '#0073e6' : '#ccc'
+                    }} />
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+            <div style={{ marginTop: '8px' }}>
+              <Text size="small">{props.steps?.[props.currentStep || 0] || 'Current Step'}</Text>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'ProgressBar':
+      return maybeWrapWithDraggable(
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {props.label && <Text size="small">{props.label}</Text>}
+          <div style={{
+            width: '100%',
+            height: '8px',
+            background: '#e0e0e0',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${props.value || 50}%`,
+              height: '100%',
+              background: '#0073e6',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+          {props.showValue && (
+            <Text size="tiny" color="subdued">{props.value || 50}%</Text>
+          )}
+        </div>
+      );
+
+    case 'Select':
+      return maybeWrapWithDraggable(
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          {props.label && (
+            <Text as="label" style={{ fontWeight: 500 }}>
+              {props.label}
+            </Text>
+          )}
+          <div style={{
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            padding: '8px 12px',
+            background: 'white',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <Text size="small">{props.value || props.placeholder || 'Select option'}</Text>
+            <Text size="small">▼</Text>
+          </div>
+        </div>
+      );
+
+    case 'Preview':
+      return maybeWrapWithDraggable(
+        <Card>
+          <Card.Header>
+            <Text size="small" fontWeight="medium">👁️ {props.title || 'Preview'}</Text>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ minHeight: '100px', background: '#f9f9f9', padding: '16px', borderRadius: '4px' }}>
+              <Text size="small" color="subdued">Preview content placeholder</Text>
+            </div>
+          </Card.Body>
+        </Card>
+      );
+
+    case 'Points':
+      return maybeWrapWithDraggable(
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            background: '#0073e6',
+            color: 'white',
+            padding: '4px 8px',
+            borderRadius: '12px',
+            fontSize: '14px',
+            fontWeight: 'bold'
+          }}>
+            {props.value || 0} pts
+          </div>
+          {props.label && <Text size="small">{props.label}</Text>}
+        </div>
+      );
+
+    case 'Code':
+      return maybeWrapWithDraggable(
+        <div style={{
+          background: '#f5f5f5',
+          border: '1px solid #e0e0e0',
+          borderRadius: '4px',
+          padding: '12px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          overflow: 'auto'
+        }}>
+          <Text size="small">{props.code || props.children || '// Code placeholder'}</Text>
         </div>
       );
 

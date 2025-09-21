@@ -1,0 +1,10 @@
+{
+  "id": "hr-benefits/tuition-reimbursement",
+  "title": "Tuition Reimbursement",
+  "summary": "Apply for and track educational tuition reimbursement benefits",
+  "tags": ["HR", "Benefits", "Education", "Tuition", "Reimbursement"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Upload", "Badge"],
+  "prompt": "Create a tuition reimbursement application page with a form for course information including institution, program details, cost breakdown, and business relevance. Include document upload for transcripts, receipts, and approval letters. Show a table of reimbursement requests with columns for Course, Institution, Amount, Semester, Grade, and Status badges. Add policy compliance checking and reimbursement calculation based on grades achieved. Include primary 'Submit Application' and secondary 'Save Progress' buttons with benefits balance tracking.",
+  "version": "1.0",
+  "category": "Templates"
+}

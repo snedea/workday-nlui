@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/employee-recognition",
+  "title": "Employee Recognition",
+  "summary": "Nominate and recognize employees for outstanding performance and achievements",
+  "tags": ["HR", "Recognition", "Performance", "Awards", "Peer Nomination"],
+  "canvasKit": ["Form", "Card", "Table", "Button", "Badge", "Avatar"],
+  "prompt": "Create an employee recognition page with a nomination form including employee search, recognition category dropdown, achievement description, and impact details. Show a recognition wall with employee cards displaying photos, names, recognition badges, and achievement summaries. Include a table of recent recognitions with columns for Date, Nominee, Nominator, Category, and Status badges. Add primary 'Submit Nomination' and secondary 'View All Awards' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

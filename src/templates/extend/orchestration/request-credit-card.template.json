@@ -1,0 +1,10 @@
+{
+  "id": "orchestration/request-credit-card",
+  "title": "Request Credit Card",
+  "summary": "Automated corporate credit card request workflow with approval routing",
+  "tags": ["Orchestration", "Credit Card", "Requests", "Approval", "Finance"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Badge", "Stepper"],
+  "prompt": "Create a credit card request page with a form for business justification, spending limits, card type selection, and manager approval routing. Show a workflow stepper displaying approval stages from request to card delivery. Include a table of existing requests with columns for Date, Card Type, Limit, Approver, and Status badges. Add automated spending policy checks and primary 'Submit Request' and secondary 'Save Draft' buttons with Orchestrate workflow integration.",
+  "version": "1.0",
+  "category": "Templates"
+}

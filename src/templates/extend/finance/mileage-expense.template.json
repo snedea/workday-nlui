@@ -1,0 +1,10 @@
+{
+  "id": "finance/mileage-expense",
+  "title": "Mileage Expense",
+  "summary": "Track and submit mileage expenses for business travel reimbursement",
+  "tags": ["Finance", "Expenses", "Mileage", "Travel", "Reimbursement"],
+  "canvasKit": ["Form", "Table", "Button", "DatePicker", "Field", "Map"],
+  "prompt": "Create a mileage expense tracking page with a form for logging trips including start/end locations, date, purpose, and odometer readings. Show calculated mileage and reimbursement amount based on current rates. Include a table of submitted mileage entries with columns for Date, Route, Miles, Rate, Amount, and Status badges. Add a summary card showing total monthly mileage and reimbursement amounts. Include primary 'Submit Expense' and secondary 'Save Draft' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

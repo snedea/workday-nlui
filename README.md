@@ -5,6 +5,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![TypeScript](https://img.shields.io/badge/typescript-5.2+-blue.svg)
 ![React](https://img.shields.io/badge/react-18.2+-blue.svg)
+![Canvas Kit v14](https://img.shields.io/badge/Canvas%20Kit-v14.0.2%20✓%20Compliant-brightgreen.svg)
 
 A local, browser-based design studio that turns natural-language prompts into **authentic Workday UI** using React, Vite, AI, and **Canvas Kit v14** with official fonts and design system.
 
@@ -67,6 +68,7 @@ cp .env.example .env
 OPENAI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-key-here
 OPENAI_API_MODEL=gpt-4o-mini
+OPENAI_TEMPERATURE=0.7
 ```
 
 **For Azure OpenAI:**
@@ -116,6 +118,21 @@ npm start
 - **Shift Swap/Bid**: Restaurant workers can swap shifts or bid on open shifts with tabs for My Shifts, Available Shifts, and Swap Requests
 - **Expense Report**: Submit and track business expense reports with receipt management and approval workflow
 - **Custom Templates**: Save your own frequently-used prompts as reusable templates with tags and descriptions
+
+## Canvas Design System Compliance
+
+**NLUI Studio** achieves **100% compliance** with Workday's Canvas Design System v14, ensuring authentic enterprise-grade UI components.
+
+### ✅ Compliance Highlights
+- **Authentic Components**: All 25+ UI components from official Canvas Kit packages
+- **1,115 Verified Icons**: System, Accent, and Applet icons from Canvas packages
+- **Accessibility**: WCAG 2.1 AA compliance through Canvas components
+- **Typography**: Official Roboto fonts from Workday CDN
+- **Token System**: Canvas-native spacing, colors, and design tokens
+- **Tree-Shakeable**: Optimized bundle size with component-specific imports
+
+### 📋 Full Documentation
+For complete compliance details, architecture patterns, and remediation history, see our comprehensive [**COMPLIANCE.md**](./COMPLIANCE.md) documentation.
 
 ## Architecture
 
@@ -301,6 +318,116 @@ Set `NODE_ENV=development` to see detailed logs in the server console.
 - 🐛 Fixed Canvas Kit Table and StatusIndicator rendering errors
 - 🎨 Canvas Kit v14 Integration with Authentic Workday Fonts and Spacing
 - 📚 Rebrand to Workday NLUI Studio with enhanced template features
+
+## Model Selection
+
+NLUI Studio supports any OpenAI model that supports chat completions. Simply change the `OPENAI_API_MODEL` in your `.env` file to experiment with different models.
+
+### Available Models
+
+| Model | Speed | Cost (per 1M tokens) | Best For | Quality |
+|-------|-------|---------------------|----------|---------|
+| `gpt-4o-mini` | ⚡⚡⚡ | ~$0.15 | **Default choice** - fast, cost-effective | ⭐⭐⭐⭐ |
+| `gpt-4o` | ⚡⚡ | ~$5.00 | Highest quality UI generation | ⭐⭐⭐⭐⭐ |
+| `gpt-4-turbo` | ⚡⚡ | ~$10.00 | Balanced performance | ⭐⭐⭐⭐ |
+| `gpt-3.5-turbo` | ⚡⚡⚡ | ~$0.50 | Basic UIs, fastest generation | ⭐⭐⭐ |
+| `o1-mini` | ⚡ | ~$3.00 | Reasoning-powered UI generation | ⭐⭐⭐⭐⭐ |
+| `o4-mini` | ⚡ | TBD | Latest reasoning model | ⭐⭐⭐⭐⭐ |
+
+### How to Change Models
+
+1. **Edit your `.env` file:**
+   ```env
+   OPENAI_API_MODEL=gpt-4o     # Change model
+   OPENAI_TEMPERATURE=0.7      # Adjust creativity (optional)
+   ```
+
+2. **Restart the server:**
+   ```bash
+   npm run dev
+   ```
+
+3. **Test the new model** by generating a UI prompt
+
+### Model-Specific Recommendations
+
+- **For Production**: `gpt-4o-mini` (default) - optimal balance of speed, cost, and quality
+- **For Best Quality**: `gpt-4o` - use when you need the most sophisticated UI layouts
+- **For Development/Testing**: `gpt-3.5-turbo` - fastest and cheapest for rapid iteration
+- **For Complex Workflows**: `gpt-4-turbo` - handles intricate business logic well
+- **For Reasoning Tasks**: `o1-mini` - deep analysis of UI requirements and logic
+- **For Latest Features**: `o4-mini` - newest reasoning capabilities
+
+### Reasoning Models (Supported)
+
+✅ **Great News**: OpenAI's reasoning models are now fully supported!
+
+- **o1-mini**: Fast reasoning model with deep UI analysis
+- **o1-preview**: Advanced reasoning with sophisticated layout planning
+- **o4-mini**: Latest reasoning model with enhanced capabilities
+
+NLUI Studio automatically detects reasoning models and adjusts the API calls accordingly:
+- Combines system and user prompts for compatibility
+- Removes unsupported parameters like `response_format`
+- Maintains full JSON output functionality
+
+### Azure OpenAI Models
+
+For Azure OpenAI users, you can deploy any of these models and use the deployment name:
+```env
+OPENAI_PROVIDER=azure
+AZURE_OPENAI_DEPLOYMENT=your-gpt4o-deployment  # Any model deployment
+OPENAI_TEMPERATURE=0.7                          # Temperature also works with Azure
+```
+
+## Temperature Configuration
+
+Control the creativity and randomness of AI-generated UIs with the `OPENAI_TEMPERATURE` setting:
+
+| Temperature | Behavior | Best For |
+|-------------|----------|----------|
+| `0.0` | Deterministic, same output every time | Production environments requiring consistency |
+| `0.3` | Conservative, minimal variation | Enterprise applications needing predictable layouts |
+| `0.7` | **Balanced** (default) | General use - good mix of creativity and consistency |
+| `1.0` | Creative, more varied responses | Exploring different UI approaches |
+| `1.5-2.0` | Very creative/experimental | Brainstorming, ideation, creative exploration |
+
+### Examples:
+```env
+# For consistent production UIs
+OPENAI_TEMPERATURE=0.0
+
+# For balanced creativity (default)
+OPENAI_TEMPERATURE=0.7
+
+# For creative exploration
+OPENAI_TEMPERATURE=1.2
+```
+
+## Prompt System Documentation
+
+### Understanding How NLUI Works
+
+Ever wondered how NLUI Studio transforms your natural language into professional UI components? We've documented the complete "behind the curtain" process for you.
+
+**📁 [View Complete Prompt Documentation](./prompts/)**
+
+When you type something like "Restaurant workers can swap shifts or bid on open shifts", here's what happens:
+
+1. **Your Input** → **System Prompt Wrapper** → **[Selected Model]** → **JSON Response** → **Canvas Kit UI**
+
+### Key Files:
+- **[prompts/SYSTEM_PROMPT.md](./prompts/SYSTEM_PROMPT.md)** - The complete system prompt that wraps all user inputs
+- **[prompts/README.md](./prompts/README.md)** - Comprehensive architecture documentation with API configuration, component schemas, and real examples
+
+### Quick Facts:
+- **Model**: Configurable via `OPENAI_API_MODEL` (default: gpt-4o-mini)
+- **Temperature**: 0.7 (balanced creativity and consistency)
+- **Response Format**: Enforced JSON output with Zod validation
+- **Component Types**: 25+ UI components including tables, forms, tabs, badges, and more
+- **Workday Focus**: Designed specifically for enterprise Workday applications
+
+This documentation gives you complete transparency into how NLUI generates professional UI components from simple text descriptions.
 
 ## License
 

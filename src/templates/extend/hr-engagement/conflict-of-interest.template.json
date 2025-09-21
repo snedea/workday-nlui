@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/conflict-of-interest",
+  "title": "Conflict of Interest",
+  "summary": "Declare and manage potential conflicts of interest for compliance and transparency",
+  "tags": ["HR", "Compliance", "Ethics", "Conflict", "Disclosure"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Select", "Badge"],
+  "prompt": "Create a conflict of interest disclosure page with a comprehensive form for reporting potential conflicts including financial interests, business relationships, family connections, and outside activities. Include conflict assessment tools and risk evaluation criteria. Show a table of declared conflicts with columns for Type, Description, Risk Level, Mitigation Plan, Review Date, and Status badges. Add policy guidance and approval workflow tracking. Include primary 'Submit Declaration' and secondary 'Request Guidance' buttons with annual review reminders.",
+  "version": "1.0",
+  "category": "Templates"
+}

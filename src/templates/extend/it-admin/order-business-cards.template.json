@@ -1,0 +1,10 @@
+{
+  "id": "it-admin/order-business-cards",
+  "title": "Order Business Cards",
+  "summary": "Request and customize business cards with company branding and contact information",
+  "tags": ["IT", "Admin", "Business Cards", "Ordering", "Branding"],
+  "canvasKit": ["Form", "Card", "Button", "Field", "Select", "Preview"],
+  "prompt": "Create a business card ordering page with a form for customizing card details including name, title, department, contact information, and design template selection. Show a live preview card displaying the selected design and entered information. Include quantity selection, delivery address fields, and rush order options. Add a table of previous orders with columns for Date, Design, Quantity, Status, and Delivery badges. Include primary 'Place Order' and secondary 'Save Draft' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

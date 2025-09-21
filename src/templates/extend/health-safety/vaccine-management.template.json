@@ -1,0 +1,10 @@
+{
+  "id": "health-safety/vaccine-management",
+  "title": "Vaccine Management",
+  "summary": "Upload vaccine proof documents and track vaccination status for compliance",
+  "tags": ["Health", "Safety", "Vaccine", "Compliance", "Documents"],
+  "canvasKit": ["Form", "Upload", "Table", "Badge", "Button", "Card"],
+  "prompt": "Create a vaccine management page with a status card showing current vaccination compliance status and requirements. Include an upload form for vaccine documents with fields for vaccine type, date administered, healthcare provider, and document upload. Add a table showing vaccination history with columns for Vaccine Type, Date, Provider, Document Status, and Approval badges. Include document preview functionality and primary 'Submit for Review' and secondary 'Save Draft' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

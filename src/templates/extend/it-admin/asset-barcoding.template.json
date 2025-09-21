@@ -1,0 +1,10 @@
+{
+  "id": "it-admin/asset-barcoding",
+  "title": "Asset Barcoding",
+  "summary": "Generate and manage barcode labels for IT assets and equipment tracking",
+  "tags": ["IT", "Admin", "Barcoding", "Assets", "Inventory"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Upload", "Code"],
+  "prompt": "Create an asset barcoding page with a form for generating barcode labels including asset ID, description, location, and owner information. Show barcode preview with customizable label formats and print options. Include a table of barcoded assets with columns for Asset ID, Barcode, Description, Location, Owner, and Status badges. Add bulk barcode generation and label printing capabilities. Include primary 'Generate Labels' and secondary 'Print Selected' buttons with barcode scanning integration.",
+  "version": "1.0",
+  "category": "Templates"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "orchestration/disable-account-during-leave",
+  "title": "Disable Workday Account During Leave",
+  "summary": "Automated account management for employees on extended leave with reactivation scheduling",
+  "tags": ["Orchestration", "Security", "Leave", "Account Management", "Automation"],
+  "canvasKit": ["Form", "Table", "Button", "DatePicker", "Badge", "Timeline"],
+  "prompt": "Create an account management page for leave periods with a form for leave dates, account access levels, and automated reactivation settings. Show a timeline view of account status changes with access restrictions and reactivation schedules. Include a table of employees on leave with columns for Name, Leave Type, Start Date, End Date, Account Status, and Access badges. Add Orchestrate workflow triggers and primary 'Schedule Deactivation' and secondary 'Manual Override' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

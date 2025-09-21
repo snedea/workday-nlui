@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { CanvasProvider, SystemIcon } from '@workday/canvas-kit-react';
+import { CanvasProvider, useTheme, ContentDirection } from '@workday/canvas-kit-react';
+import { SystemIcon } from '@workday/canvas-kit-react/icon';
 // Remove fonts CSS import - it's not needed for v14
 import '@workday/canvas-tokens-web/css/base/_variables.css';
 import '@workday/canvas-tokens-web/css/brand/_variables.css';
@@ -40,6 +41,13 @@ const ensureComponentIds = (node: any, path: string = 'root'): any => {
 };
 
 function App() {
+  // Configure Canvas theme with proper direction
+  const theme = useTheme({
+    canvas: {
+      direction: ContentDirection.LTR
+    }
+  });
+
   const [searchQuery, setSearchQuery] = useState("");
   const [activeGroup, setActiveGroup] = useState("all");
   const [composer, setComposer] = useState(() => {
@@ -64,6 +72,9 @@ function App() {
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
   const previewRef = useRef<HTMLDivElement>(null);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
+
+  // Model info state
+  const [modelInfo, setModelInfo] = useState<{provider: string; model: string} | null>(null);
 
   // Template editing state
   const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
@@ -487,6 +498,25 @@ function App() {
     };
   }, [isExportMenuOpen]);
 
+  // Fetch model info on component mount
+  useEffect(() => {
+    const fetchModelInfo = async () => {
+      try {
+        const response = await fetch('/api/health');
+        const data = await response.json();
+        if (data.provider && data.model) {
+          setModelInfo({ provider: data.provider, model: data.model });
+        }
+      } catch (error) {
+        console.warn('Failed to fetch model info:', error);
+        // Fallback for when health endpoint is not available
+        setModelInfo({ provider: 'AI', model: 'Model' });
+      }
+    };
+
+    fetchModelInfo();
+  }, []);
+
   // Register action handlers for template interactivity
   useEffect(() => {
     // Drawer actions
@@ -535,7 +565,7 @@ function App() {
   }, []);
 
   return (
-    <CanvasProvider>
+    <CanvasProvider theme={theme}>
       <div className="min-h-screen bg-gray-50">
         {/* Workday Gradient Bar */}
         <div className="h-1 bg-gradient-to-r from-blue-600 via-teal-500 to-purple-600"></div>
@@ -558,7 +588,7 @@ function App() {
           <div className="flex items-center gap-1">
             <span className="font-semibold text-gray-900">Preview:</span>
             {generatedUI && (
-              <span className="text-sm text-gray-600">{generatedUI.title}</span>
+              <span className="text-gray-600">{generatedUI.title}</span>
             )}
           </div>
           {generatedUI && (
@@ -660,12 +690,12 @@ function App() {
       <div className="bg-white rounded-xl border border-gray-200 p-3 mb-4">
         <div className="flex flex-wrap gap-4 text-sm">
           {[
-            { key: 'all', label: 'All', icon: '📚' },
+            { key: 'templates', label: 'Templates', icon: '📄' },
+            { key: 'controls', label: 'Controls', icon: '🎛️' },
             { key: 'objects', label: 'Objects', icon: '🏢' },
             { key: 'fields', label: 'Fields', icon: '📝' },
-            { key: 'controls', label: 'Controls', icon: '🎛️' },
             { key: 'icons', label: 'Icons', icon: '🎨' },
-            { key: 'templates', label: 'Templates', icon: '📄' }
+            { key: 'all', label: 'All', icon: '📚' }
           ].map(category => {
             const isActive = activeGroup === (category.key === 'objects' ? 'object' :
                                              category.key === 'fields' ? 'field' :
@@ -736,6 +766,24 @@ function App() {
     onCancel={cancelDeleteTemplate}
     isDestructive={true}
   />
+
+  {/* Canvas Attribution Footer */}
+  <footer className="border-t border-gray-200 bg-gray-50 py-4 mt-8">
+    <div className="max-w-7xl mx-auto px-4 text-center">
+      <p className="text-sm text-gray-600">
+        Powered by{' '}
+        <a
+          href="https://workday.github.io/canvas-kit/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 font-medium"
+        >
+          Workday Canvas Design System v14
+        </a>
+        {' '} and {modelInfo ? `${modelInfo.provider === 'openai' ? 'OpenAI' : modelInfo.provider === 'azure' ? 'Azure OpenAI' : modelInfo.provider} ${modelInfo.model}` : 'AI Model'}
+      </p>
+    </div>
+  </footer>
   </CanvasProvider>
   );
 }

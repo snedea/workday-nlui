@@ -1,0 +1,10 @@
+{
+  "id": "hr-benefits/benefits-plus",
+  "title": "Benefits Plus",
+  "summary": "Enhanced benefits platform with additional voluntary benefits and wellness programs",
+  "tags": ["HR", "Benefits", "Wellness", "Voluntary", "Platform"],
+  "canvasKit": ["Form", "Card", "Table", "Button", "Chart", "Badge"],
+  "prompt": "Create a comprehensive benefits platform with enhanced voluntary benefits enrollment including supplemental insurance, wellness programs, and lifestyle benefits. Show benefits comparison charts and cost calculators. Include a personalized benefits recommendation engine based on employee demographics and life events. Add a table of enrolled benefits with columns for Benefit Type, Coverage Level, Cost, Provider, and Status badges. Include wellness tracking integration and primary 'Enroll in Benefits' and secondary 'View Recommendations' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

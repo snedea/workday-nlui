@@ -192,9 +192,15 @@ app.get('/api/health', (req, res) => {
     ? !!process.env.AZURE_OPENAI_API_KEY
     : !!process.env.OPENAI_API_KEY;
 
+  // Get model information based on provider
+  const model = provider === 'azure'
+    ? process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o-mini'
+    : process.env.OPENAI_API_MODEL || 'gpt-4o-mini';
+
   res.json({
     status: 'ok',
     provider,
+    model,
     configured: hasKey
   });
 });

@@ -1,0 +1,10 @@
+{
+  "id": "comp-rewards/create-spot-bonus",
+  "title": "Create Spot Bonus",
+  "summary": "Award immediate spot bonuses for exceptional performance and achievements",
+  "tags": ["Compensation", "Rewards", "Bonus", "Recognition", "Performance"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Select", "Badge"],
+  "prompt": "Create a spot bonus award page with a form for selecting employees, bonus amount, reason for award, and approval routing. Include fields for business justification, effective date, and budget allocation. Show a table of recent spot bonuses with columns for Employee, Amount, Reason, Date, Approver, and Status badges. Add validation for bonus limits and approval requirements. Include primary 'Award Bonus' and secondary 'Save Draft' buttons with real-time budget tracking.",
+  "version": "1.0",
+  "category": "Templates"
+}

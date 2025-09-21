@@ -1,0 +1,10 @@
+{
+  "id": "hcm/change-business-title",
+  "title": "Change Business Title",
+  "summary": "Update employee business titles and position information efficiently",
+  "tags": ["HCM", "Title", "Position", "Updates", "Management"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Select", "Badge"],
+  "prompt": "Create a business title change page with a form for selecting employees, new title information, effective dates, and approval routing. Include fields for title justification, grade level changes, and compensation impact assessment. Show a table of pending title changes with columns for Employee, Current Title, New Title, Effective Date, Approver, and Status badges. Add title hierarchy validation and approval workflow tracking. Include primary 'Submit Change' and secondary 'Save Draft' buttons with organizational chart integration.",
+  "version": "1.0",
+  "category": "Templates"
+}

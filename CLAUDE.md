@@ -2,6 +2,15 @@
 
 ## Resolved Issues (Previous Versions)
 
+### ✅ Fixed in v0.1.8
+- **30 New Workday Extend Templates**: Complete template library expansion covering all major business functions
+- **Extended Component Schema**: Added 14 new Canvas Kit components (Timeline, Calendar, Chart, Map, Upload, Download, Scanner, Stepper, ProgressBar, Select, Preview, Points, Code)
+- **ZIP Export Fix**: Resolved JSZip import issue causing "Failed to export Workday bundle" error
+- **Component Validation**: Fixed "Invalid enum value" errors for Timeline and other new components
+- **Button Components**: Corrected undefined Button component references to use specific Canvas Kit types
+- **Template Integration**: All 40+ templates properly integrated into loader.ts with hardcoded reliability
+- **Development Stability**: Fixed HMR failures and component rendering crashes during schema updates
+
 ### ✅ Fixed in v0.1.7
 - **Export Feature**: Added comprehensive PNG and Workday Extend bundle export functionality
 - **Canvas Kit Menu**: Implemented export menu with proper accessibility and keyboard navigation
@@ -395,4 +404,4 @@ const getStatusConfig = (status: string) => {
 ```
 
 ---
-*Last updated: v0.1.7 - Export feature with PNG snapshots and Workday Extend bundle integration*
+*Last updated: v0.1.8 - Template Library Expansion & Component System Enhancement*

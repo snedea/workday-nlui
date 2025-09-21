@@ -1,0 +1,10 @@
+{
+  "id": "orchestration/project-forecasting",
+  "title": "Project Forecasting",
+  "summary": "Automated project planning and resource forecasting with Workday Orchestrate integration",
+  "tags": ["Orchestration", "Forecasting", "Projects", "Planning", "Automation"],
+  "canvasKit": ["Form", "Chart", "Table", "Button", "DatePicker", "Card"],
+  "prompt": "Create a project forecasting page with input form for project parameters including scope, timeline, resource requirements, and budget constraints. Show forecasting charts displaying resource allocation, timeline projections, and budget estimates. Include a table of similar past projects with columns for Name, Duration, Resources, Budget, and Outcome badges. Add automated recommendations from Orchestrate workflows and primary 'Generate Forecast' and secondary 'Save Scenario' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

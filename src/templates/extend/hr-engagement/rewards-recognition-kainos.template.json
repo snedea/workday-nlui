@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/rewards-recognition-kainos",
+  "title": "Rewards Recognition Kainos",
+  "summary": "Kainos-specific rewards and recognition platform for employee achievements",
+  "tags": ["HR", "Rewards", "Recognition", "Kainos", "Achievements"],
+  "canvasKit": ["Form", "Card", "Table", "Button", "Badge", "Points"],
+  "prompt": "Create a Kainos rewards platform with a points-based recognition system including nomination forms for various achievement categories. Show a recognition feed with achievement cards displaying photos, descriptions, and point values. Include a points balance dashboard and redemption catalog for rewards. Add a table of recent recognitions with columns for Recipient, Achievement, Points, Nominator, and Category badges. Include leaderboards and primary 'Nominate Colleague' and secondary 'Redeem Points' buttons with Kainos branding elements.",
+  "version": "1.0",
+  "category": "Templates"
+}

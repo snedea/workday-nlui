@@ -1,0 +1,10 @@
+{
+  "id": "health-safety/return-to-office",
+  "title": "Return to Office",
+  "summary": "Manage office return scheduling and health screening requirements",
+  "tags": ["Health", "Safety", "Office", "Scheduling", "Screening"],
+  "canvasKit": ["Form", "Calendar", "Table", "Badge", "Button", "Card"],
+  "prompt": "Create a return to office page with a health screening form including temperature check, symptom questionnaire, and exposure declaration. Show a calendar view for booking office desk reservations with availability indicators. Include a table of upcoming office visits with columns for Date, Location, Desk Number, Health Status, and Approval badges. Add capacity indicators showing current office occupancy levels and primary 'Book Desk' and 'Complete Screening' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

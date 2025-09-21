@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/work-from-almost-anywhere",
+  "title": "Work From Almost Anywhere",
+  "summary": "Request and manage remote work arrangements from various global locations",
+  "tags": ["HR", "Remote Work", "Global", "Flexibility", "Arrangements"],
+  "canvasKit": ["Form", "Map", "Table", "Button", "Calendar", "Badge"],
+  "prompt": "Create a remote work request page with a form for selecting work locations, duration, business justification, and timezone considerations. Include an interactive map showing approved remote work locations and restrictions. Show a calendar view for scheduling remote work periods with approval status. Add a table of remote work history with columns for Location, Duration, Approval Status, Manager, and Compliance badges. Include policy guidance and primary 'Request Remote Work' and secondary 'View Policies' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

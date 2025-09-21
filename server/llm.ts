@@ -14,7 +14,10 @@ UiNode = {
            "Icon" | "Banner" | "Toast" | "Modal" | "Avatar" |
            "Breadcrumbs" | "Footer" | "Checkbox" | "Radio" | "Switch" |
            "TextArea" | "Tooltip" | "Layout" | "Menu" | "Pagination" |
-           "ColorPicker" | "SegmentedControl" | "Pill" | "Image",
+           "ColorPicker" | "SegmentedControl" | "Pill" | "Image" |
+           "Timeline" | "Calendar" | "Chart" | "DatePicker" | "Map" |
+           "Upload" | "Download" | "Scanner" | "Stepper" | "ProgressBar" |
+           "Select" | "Preview" | "Points" | "Code",
   "props"?: { [key: string]: any },
   "children"?: UiNode[]
 }
@@ -82,21 +85,68 @@ export async function generateUI(prompt: string): Promise<UiResponse> {
 
       const url = `${apiBase}/chat/completions`;
 
-      response = await axios.post(url, {
-        model,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: prompt }
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.7,
-        max_tokens: 2000
-      }, {
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
+      // Get configurable temperature (default 0.7)
+      const temperature = parseFloat(process.env.OPENAI_TEMPERATURE || '0.7');
+
+      // Detect different model types that require special handling
+      const isO4Model = model.startsWith('o4-');
+      const isO1Model = model.startsWith('o1-');
+      const isReasoningModel = isO1Model || isO4Model;
+
+      if (isReasoningModel) {
+        // Reasoning models don't support system messages or response_format
+        // Combine system prompt and user prompt into a single user message
+        const combinedPrompt = `${SYSTEM_PROMPT}\n\nUser Request: ${prompt}`;
+
+        if (isO4Model) {
+          // o4 models use max_completion_tokens parameter
+          response = await axios.post(url, {
+            model,
+            messages: [
+              { role: 'user', content: combinedPrompt }
+            ],
+            temperature,
+            max_completion_tokens: 2000
+          }, {
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        } else {
+          // o1 models use max_tokens parameter
+          response = await axios.post(url, {
+            model,
+            messages: [
+              { role: 'user', content: combinedPrompt }
+            ],
+            temperature,
+            max_tokens: 2000
+          }, {
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            }
+          });
         }
-      });
+      } else {
+        // Standard models support system messages and response_format
+        response = await axios.post(url, {
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'user', content: prompt }
+          ],
+          response_format: { type: 'json_object' },
+          temperature,
+          max_tokens: 2000
+        }, {
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
     }
 
     const content = response.data.choices[0]?.message?.content;
@@ -120,6 +170,17 @@ export async function generateUI(prompt: string): Promise<UiResponse> {
 
     if (error.response?.status === 429) {
       throw new Error('Rate limit exceeded - please try again later');
+    }
+
+    // Special error handling for reasoning models
+    const model = process.env.OPENAI_API_MODEL || 'gpt-4o-mini';
+    const isReasoningModel = model.startsWith('o1-') || model.startsWith('o4-');
+
+    if (error.response?.status === 400 && isReasoningModel) {
+      const errorMsg = error.response?.data?.error?.message || '';
+      if (errorMsg.includes('response_format') || errorMsg.includes('system')) {
+        throw new Error(`Reasoning model ${model} detected but API request failed. Please ensure you're using the latest version of NLUI Studio with reasoning model support.`);
+      }
     }
 
     throw new Error(`LLM request failed: ${error.message}`);

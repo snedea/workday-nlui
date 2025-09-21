@@ -1,0 +1,10 @@
+{
+  "id": "finance/project-billing-review",
+  "title": "Project Billing Review",
+  "summary": "Review and approve project billing rates and time allocations",
+  "tags": ["Finance", "Billing", "Projects", "Time Tracking", "Approval"],
+  "canvasKit": ["Table", "Form", "Button", "Badge", "DatePicker", "Field"],
+  "prompt": "Create a project billing review page with a header showing project details and billing period. Include a table of time entries with columns for Date, Employee, Hours, Rate, Amount, and Approval Status badges. Add filter controls for date range, employee, and billing status. Include an approval section with comments field and primary 'Approve All' and 'Reject Selected' buttons. Show summary totals for billable hours and amounts.",
+  "version": "1.0",
+  "category": "Templates"
+}

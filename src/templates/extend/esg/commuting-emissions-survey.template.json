@@ -1,0 +1,10 @@
+{
+  "id": "esg/commuting-emissions-survey",
+  "title": "Commuting Emissions Survey",
+  "summary": "Track employee commuting patterns and calculate carbon footprint for ESG reporting",
+  "tags": ["ESG", "Environment", "Commuting", "Carbon", "Sustainability"],
+  "canvasKit": ["Form", "Chart", "Table", "Button", "Card", "Select"],
+  "prompt": "Create a commuting emissions survey with a form for logging daily commute methods including transport type, distance, frequency, and fuel type. Show carbon footprint calculations with charts displaying emissions by transport mode and time period. Include a summary card showing total CO2 saved and environmental impact metrics. Add a table of commute entries with columns for Date, Method, Distance, Emissions, and Status. Include primary 'Log Commute' and secondary 'View Report' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

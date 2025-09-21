@@ -1,0 +1,10 @@
+{
+  "id": "hcm/quick-add-additional-job",
+  "title": "Quick Add Additional Job",
+  "summary": "Rapidly assign additional job roles and responsibilities to existing workers",
+  "tags": ["HCM", "Jobs", "Assignments", "Roles", "Quick Actions"],
+  "canvasKit": ["Form", "Table", "Button", "Select", "Field", "Badge"],
+  "prompt": "Create an additional job assignment page with a quick form for selecting workers, job positions, effective dates, and reporting relationships. Include job details like department, location, work schedule, and compensation adjustments. Show a table of current job assignments with columns for Worker, Primary Job, Additional Jobs, Effective Date, and Status badges. Add validation for conflicts and approval workflows. Include primary 'Assign Job' and secondary 'Preview Changes' buttons with job hierarchy visualization.",
+  "version": "1.0",
+  "category": "Templates"
+}

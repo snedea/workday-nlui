@@ -1,0 +1,10 @@
+{
+  "id": "it-admin/vehicle-registration",
+  "title": "Vehicle Registration",
+  "summary": "Register and manage company vehicles for parking and security access",
+  "tags": ["IT", "Admin", "Vehicles", "Registration", "Parking"],
+  "canvasKit": ["Form", "Table", "Button", "Field", "Upload", "Badge"],
+  "prompt": "Create a vehicle registration page with a form for adding vehicle details including make, model, year, license plate, color, and employee assignment. Include document upload for registration and insurance proof. Show a table of registered vehicles with columns for License Plate, Vehicle Info, Owner, Parking Zone, and Status badges. Add filter controls for location, status, and vehicle type. Include primary 'Register Vehicle' and secondary 'Update Info' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

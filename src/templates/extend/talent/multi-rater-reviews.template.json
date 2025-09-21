@@ -1,0 +1,10 @@
+{
+  "id": "talent/multi-rater-reviews",
+  "title": "Multi-Rater Reviews",
+  "summary": "Comprehensive 360-degree performance reviews with multiple rater perspectives",
+  "tags": ["Talent", "Reviews", "360", "Performance", "Feedback"],
+  "canvasKit": ["Form", "Table", "Button", "Chart", "Card", "Badge"],
+  "prompt": "Create a multi-rater review page with forms for different rater types including self-assessment, manager review, peer feedback, and direct report input. Show review progress tracking with completion status for each rater category. Include performance analytics charts comparing ratings across different dimensions and rater groups. Add a table of review participants with columns for Rater, Relationship, Completion Status, Submission Date, and Progress badges. Include primary 'Submit Review' and secondary 'Save Draft' buttons with review cycle management.",
+  "version": "1.0",
+  "category": "Templates"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/worker-badges",
+  "title": "Worker Badges",
+  "summary": "Award and claim digital achievement badges for employee recognition",
+  "tags": ["HR", "Badges", "Recognition", "Achievement", "Gamification"],
+  "canvasKit": ["Card", "Badge", "Button", "Table", "Modal", "Avatar"],
+  "prompt": "Create a worker badges page with a header section showing the employee's badge collection using colorful badge components. Include tabs for 'My Badges', 'Available Badges', and 'Badge Claims'. Show a grid of available badges with descriptions, criteria, and 'Claim Badge' buttons. Add a recent activity table with columns for Date, Badge Name, Awarded To, and Status. Include a badge detail modal that opens when clicking on badges, showing criteria and progress.",
+  "version": "1.0",
+  "category": "Templates"
+}

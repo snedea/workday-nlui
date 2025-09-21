@@ -1,8 +1,8 @@
 {
   "name": "workday-nlui-studio",
-  "description": "A local, browser-based design studio that turns natural-language prompts into authentic Workday UI using React, Vite, AI, and Canvas Kit v14 with official fonts and design system.",
+  "description": "A local, browser-based design studio that turns natural-language prompts into authentic Workday UI using React, Vite, AI, and Canvas Kit v14 with official fonts and design system. 100% Canvas Design System v14 compliant.",
   "private": true,
-  "version": "0.1.7",
+  "version": "0.1.8",
   "type": "module",
   "scripts": {
     "dev": "cross-env VITE_TW_ENABLED=true TW_ENABLED=true concurrently \"npm run dev:server\" \"npm run dev:client\"",

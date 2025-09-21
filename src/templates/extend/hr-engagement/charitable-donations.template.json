@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/charitable-donations",
+  "title": "Charitable Donations",
+  "summary": "Manage employee charitable giving campaigns and donation tracking",
+  "tags": ["HR", "Engagement", "Charity", "Donations", "Campaigns"],
+  "canvasKit": ["Card", "Form", "Table", "Button", "Badge", "ProgressBar"],
+  "prompt": "Create a charitable donations page with a header card showing current campaign details, total raised amount, and progress bar toward goal. Include a donation form with dropdown for charity selection, amount field, and payment method options. Add a table showing recent donations with columns for Date, Employee, Charity, Amount, and Status badges. Include primary 'Donate Now' and secondary 'View All Campaigns' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

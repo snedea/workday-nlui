@@ -1,0 +1,10 @@
+{
+  "id": "orchestration/cloud-commute-automation",
+  "title": "Cloud Commute Automation",
+  "summary": "Automated commute planning and expense tracking with cloud integration",
+  "tags": ["Orchestration", "Commute", "Automation", "Cloud", "Expenses"],
+  "canvasKit": ["Form", "Map", "Table", "Button", "Card", "Timeline"],
+  "prompt": "Create a commute automation page with intelligent route planning form including start/end locations, preferred departure times, and transportation preferences. Show automated expense calculations and route optimization suggestions. Include a timeline view of daily commute patterns with weather and traffic integration. Add a table of commute history with columns for Date, Route, Duration, Cost, Mode, and Efficiency badges. Include cloud-based predictions and primary 'Optimize Route' and secondary 'View Analytics' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

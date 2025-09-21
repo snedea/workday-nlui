@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/gift-registry",
+  "title": "Gift Registry",
+  "summary": "Create and manage employee gift registries for special occasions and milestones",
+  "tags": ["HR", "Engagement", "Gifts", "Registry", "Occasions"],
+  "canvasKit": ["Card", "Form", "Table", "Button", "Badge", "Image"],
+  "prompt": "Create a gift registry page with a header card showing the occasion details and recipient information. Include a form for adding gift items with fields for item name, description, price range, and preferred retailer. Show a table of registry items with columns for Item, Description, Price, Contributor, and Status badges. Add contribution tracking with progress indicators and primary 'Contribute to Gift' and secondary 'Add New Item' buttons. Display recent activity feed for registry updates.",
+  "version": "1.0",
+  "category": "Templates"
+}

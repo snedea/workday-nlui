@@ -1,0 +1,10 @@
+{
+  "id": "hr-engagement/reward-my-team",
+  "title": "Reward My Team",
+  "summary": "Team-based rewards and recognition platform for group achievements and collaboration",
+  "tags": ["HR", "Rewards", "Team", "Recognition", "Collaboration"],
+  "canvasKit": ["Form", "Card", "Table", "Button", "Chart", "Badge"],
+  "prompt": "Create a team rewards platform with group nomination forms for collective achievements including project completions, innovation initiatives, and collaboration efforts. Show team achievement galleries with project highlights and success stories. Include team leaderboards and group reward distribution tools. Add a table of team rewards with columns for Team, Achievement, Members, Points, Date, and Status badges. Include team analytics and performance tracking with primary 'Nominate Team' and secondary 'View Team Stats' buttons.",
+  "version": "1.0",
+  "category": "Templates"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "learning-events/badge-scanning",
+  "title": "Badge Scanning",
+  "summary": "Scan employee badges to track attendance at learning events and training sessions",
+  "tags": ["Learning", "Events", "Scanning", "Attendance", "Training"],
+  "canvasKit": ["Form", "Table", "Button", "Badge", "Scanner", "Card"],
+  "prompt": "Create a badge scanning page with a live scanner interface for reading employee badges at learning events. Include event details card showing session information, location, and expected attendees. Show a real-time attendance table with columns for Employee, Badge ID, Scan Time, Status, and Attendance badges. Add manual entry options for badge failures and attendance corrections. Include primary 'Start Scanning' and secondary 'Manual Entry' buttons with attendance reporting and export features.",
+  "version": "1.0",
+  "category": "Templates"
+}
