@@ -1,10 +1,11 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { CanvasProvider } from '@workday/canvas-kit-react';
+import { CanvasProvider, Menu, SecondaryButton, SystemIcon } from '@workday/canvas-kit-react';
 // Remove fonts CSS import - it's not needed for v14
 import '@workday/canvas-tokens-web/css/base/_variables.css';
 import '@workday/canvas-tokens-web/css/brand/_variables.css';
 import '@workday/canvas-tokens-web/css/system/_variables.css';
+import * as systemIcons from '@workday/canvas-system-icons-web';
 import { SearchBar } from './components/SearchBar';
 import { Library } from './components/Library';
 import { PromptComposer } from './components/PromptComposer';
@@ -16,6 +17,7 @@ import { LibraryItem, UiResponse } from './runtime/types';
 import { on, showToast } from './runtime/actions';
 import { addCustomTemplate, onTemplateChange, saveTemplateFile, updateCustomTemplate, removeCustomTemplate } from './templates/templateStore';
 import { ConfirmDialog } from './components/ConfirmDialog';
+import { exportPreviewAsPNG, exportWorkdayBundleZip, NLUIExportPayload } from './utils/export';
 
 const STORAGE_KEYS = {
   LAST_PROMPT: 'workday-nlui-last-prompt',
@@ -60,6 +62,7 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [templateVersion, setTemplateVersion] = useState(0); // Force re-render when templates change
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // Template editing state
   const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
@@ -424,6 +427,40 @@ function App() {
     });
   };
 
+  // Export handlers
+  const handleExportPNG = async () => {
+    if (!previewRef.current || !generatedUI) return;
+
+    try {
+      await exportPreviewAsPNG(previewRef.current, {
+        background: '#f7f7f7', // Canvas Kit soap.200
+      });
+      showToast('Preview exported as PNG successfully', 'success');
+    } catch (error) {
+      console.error('Export PNG failed:', error);
+      showToast('Failed to export PNG. Please try again.', 'error');
+    }
+  };
+
+  const handleExportWorkday = async () => {
+    if (!generatedUI) return;
+
+    try {
+      const payload: NLUIExportPayload = {
+        version: '0.1.7',
+        appName: generatedUI.title || 'NLUI App',
+        generatedAt: new Date().toISOString(),
+        previewState: generatedUI,
+      };
+
+      await exportWorkdayBundleZip(payload);
+      showToast('Workday Extend bundle exported successfully', 'success');
+    } catch (error) {
+      console.error('Export Workday bundle failed:', error);
+      showToast('Failed to export Workday bundle. Please try again.', 'error');
+    }
+  };
+
   // Register action handlers for template interactivity
   useEffect(() => {
     // Drawer actions
@@ -498,10 +535,28 @@ function App() {
               <span className="text-sm text-gray-600">{generatedUI.title}</span>
             )}
           </div>
+          {generatedUI && (
+            <Menu>
+              <Menu.Target as={SecondaryButton} aria-label="Export" data-testid="export-menu">
+                <SystemIcon icon={systemIcons.documentDownloadIcon} />
+                Export
+              </Menu.Target>
+              <Menu.Card>
+                <Menu.List>
+                  <Menu.Item onClick={handleExportPNG} data-testid="export-png">
+                    PNG Snapshot
+                  </Menu.Item>
+                  <Menu.Item onClick={handleExportWorkday} data-testid="export-zip">
+                    Workday Extend Bundle (.zip)
+                  </Menu.Item>
+                </Menu.List>
+              </Menu.Card>
+            </Menu>
+          )}
         </div>
         <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 overflow-auto resize-y min-h-[300px] max-h-[600px] h-[450px]">
           {generatedUI ? (
-            <div style={{ position: 'relative', minHeight: '300px' }}>
+            <div ref={previewRef} id="nlui-preview-root" data-testid="nlui-preview-root" style={{ position: 'relative', minHeight: '300px' }}>
               {renderCanvasUi(
                 generatedUI.tree,
                 isDraggableMode,
